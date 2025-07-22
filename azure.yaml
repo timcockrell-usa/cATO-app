@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: cato-dashboard
+metadata:
+  template: cato-dashboard@0.0.1-beta
+  
+services:
+  web:
+    project: .
+    language: js
+    host: staticwebapp
+    dist: dist
+
+infra:
+  provider: bicep
+
+hooks:
+  preprovision:
+    shell: pwsh
+    run: |
+      Write-Host "Setting up Azure environment variables..."
+      # Ensure required environment variables are set
+      if (-not $env:AZURE_ADMIN_GROUP_OBJECT_ID) {
+        Write-Warning "AZURE_ADMIN_GROUP_OBJECT_ID is not set. Please set this to your Azure AD admin group object ID."
+      }
+
+  postdeploy:
+    shell: pwsh
+    run: |
+      Write-Host "Deployment completed successfully!"
+      Write-Host "Next steps:"
+      Write-Host "1. Configure Azure Entra ID application registration"
+      Write-Host "2. Set up authentication redirect URIs"  
+      Write-Host "3. Populate initial data using the data migration scripts"
+      Write-Host "4. Configure role-based access control groups"
+
+pipeline:
+  variables:
+    - AZURE_ENV_NAME
+    - AZURE_LOCATION  
+    - AZURE_SUBSCRIPTION_ID
+    - AZURE_ADMIN_GROUP_OBJECT_ID
