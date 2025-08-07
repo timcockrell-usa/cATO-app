@@ -60,7 +60,7 @@ This guide is specifically for deploying the cATO Dashboard into your existing A
 ### Deployment Process
 
 ```bash
-# In Azure Cloud Shell or local Azure CLI
+# In Azure Cloud Shell (Bash) or local Azure CLI
 
 # 1. Clone the repository
 git clone https://github.com/timcockrell-usa/cATO-app.git
@@ -87,7 +87,9 @@ az deployment group create \
   --parameters adminGroupObjectId=$ADMIN_GROUP_ID
 ```
 
-> **Note**: This deployment will create new resources (Static Web App, Cosmos DB, Key Vault, etc.) in your existing resource group. It won't modify your existing VNet but will be ready for private endpoint integration if needed later.
+> **Important VNet Information**: This deployment **does NOT create or modify your existing VNet**. The Bicep template creates application resources with public endpoints by default. Your existing `ampe-eus-dev-vnet` (10.8.11.0/24) will remain completely untouched. For production, you can later add private endpoints to connect these resources to your existing VNet.
+
+> **Note**: This deployment will create new resources (Static Web App, Cosmos DB, Key Vault, etc.) in your existing resource group. For test environments, you can easily remove all these resources using the provided cleanup script without affecting your existing infrastructure.
 
 ### What is the Admin Group?
 
