@@ -68,7 +68,7 @@ cd cATO-app
 
 # 2. Set your existing environment variables
 RESOURCE_GROUP="ampe-eastus-dev-rg"
-LOCATION="eastus"
+LOCATION="eastus2"  # IMPORTANT: Use eastus2, not eastus (Static Web Apps not available in eastus)
 SUBSCRIPTION_ID="930a247f-b4fa-4f1b-ad73-6a03cf1d0f4e"
 VNET_NAME="ampe-eus-dev-vnet"
 ADMIN_GROUP_ID="your-admin-group-object-id"  # Get this from the section below
@@ -78,13 +78,18 @@ az account set --subscription $SUBSCRIPTION_ID
 az network vnet show --resource-group $RESOURCE_GROUP --name $VNET_NAME
 az group show --name $RESOURCE_GROUP
 
-# 4. Deploy the Bicep template into your existing resource group
+# 4a. Try Azure CLI deployment first
 az deployment group create \
   --resource-group $RESOURCE_GROUP \
   --template-file infra/main.bicep \
   --parameters environmentName=dev \
   --parameters location=$LOCATION \
   --parameters adminGroupObjectId=$ADMIN_GROUP_ID
+
+# 4b. If Azure CLI fails, use Azure PowerShell instead:
+# Connect-AzAccount
+# Set-Location "infra"
+# New-AzResourceGroupDeployment -ResourceGroupName $RESOURCE_GROUP -TemplateFile "main.json" -environmentName "dev" -location $LOCATION -adminGroupObjectId $ADMIN_GROUP_ID
 ```
 
 > **Important VNet Information**: This deployment **does NOT create or modify your existing VNet**. The Bicep template creates application resources with public endpoints by default. Your existing `ampe-eus-dev-vnet` (10.8.11.0/24) will remain completely untouched. For production, you can later add private endpoints to connect these resources to your existing VNet.
@@ -166,16 +171,30 @@ az ad group show --group "cATO Dashboard Admins" --query id -o tsv
 ```bash
 # Set your environment variables
 RESOURCE_GROUP="ampe-eastus-dev-rg"
-LOCATION="eastus"
+LOCATION="eastus2"  # IMPORTANT: Use eastus2, not eastus
 ADMIN_GROUP_ID="your-admin-group-object-id"  # Use the ID from Step 3
 
-# Deploy the Bicep template into your existing resource group
+# Method 1: Try Azure CLI first
 az deployment group create \
   --resource-group $RESOURCE_GROUP \
   --template-file infra/main.bicep \
   --parameters environmentName=dev \
   --parameters location=$LOCATION \
   --parameters adminGroupObjectId=$ADMIN_GROUP_ID
+```
+
+**If Azure CLI has issues (corrupted modules, etc.), use Azure PowerShell instead:**
+
+```powershell
+# Method 2: Azure PowerShell (if Azure CLI fails)
+Connect-AzAccount -SubscriptionId "930a247f-b4fa-4f1b-ad73-6a03cf1d0f4e"
+Set-Location "infra"
+New-AzResourceGroupDeployment `
+  -ResourceGroupName "ampe-eastus-dev-rg" `
+  -TemplateFile "main.json" `
+  -environmentName "dev" `
+  -location "eastus2" `
+  -adminGroupObjectId "your-admin-group-object-id"
 ```
 
 This deployment will create in your existing `ampe-eastus-dev-rg` resource group:
@@ -379,6 +398,35 @@ az staticwebapp show --name "your-static-app" --resource-group "your-rg"
 ## 🔧 Troubleshooting
 
 ### Common Deployment Issues
+
+**Issue**: `LocationNotAvailableForResourceType` for Azure Static Web Apps
+
+```bash
+# Solution: Use eastus2 instead of eastus
+LOCATION="eastus2"  # Static Web Apps not available in eastus
+```
+
+**Issue**: `bad magic number in 'urllib3._version'` or Azure CLI module errors
+
+```powershell
+# Solution: Use Azure PowerShell instead of Azure CLI
+Connect-AzAccount -SubscriptionId "930a247f-b4fa-4f1b-ad73-6a03cf1d0f4e"
+Set-Location "infra"
+New-AzResourceGroupDeployment `
+  -ResourceGroupName "ampe-eastus-dev-rg" `
+  -TemplateFile "main.json" `
+  -environmentName "dev" `
+  -location "eastus2" `
+  -adminGroupObjectId "your-admin-group-object-id"
+```
+
+**Issue**: `content already consumed` error
+
+```bash
+# Solution: Clear Azure CLI cache and re-authenticate
+az account clear
+az login
+```
 
 **Issue**: `AZURE_ADMIN_GROUP_OBJECT_ID not found`
 
