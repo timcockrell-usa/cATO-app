@@ -78,91 +78,132 @@ delete_resource() {
     echo ""
 }
 
-# Function to get resource token (matches Bicep logic)
-get_resource_token() {
-    # This approximates the Bicep uniqueString function
-    # In practice, you might need to adjust this based on actual deployed resource names
-    local input="$SUBSCRIPTION_ID$RESOURCE_GROUP$ENVIRONMENT_NAME"
-    echo "$input" | sha256sum | cut -c1-13 | tr '[:upper:]' '[:lower:]'
+# Function to discover cATO resources dynamically
+discover_cato_resources() {
+    echo -e "${BLUE}🔍 Discovering cATO Dashboard resources...${NC}"
+    
+    # Get all resources and filter for cATO patterns
+    local all_resources=$(az resource list --resource-group "$RESOURCE_GROUP" --query "[].{name:name, type:type}" -o tsv)
+    
+    # Find Cosmos DB resources (cosmos-*)
+    COSMOS_ACCOUNTS=($(echo "$all_resources" | grep "cosmos-" | cut -f1 | grep -v "Microsoft.DocumentDB/databaseAccounts/sqlDatabases"))
+    
+    # Find Static Web Apps (stapp-*)
+    STATIC_WEB_APPS=($(echo "$all_resources" | grep "stapp-" | cut -f1))
+    
+    # Find Managed Identities (id-*)
+    MANAGED_IDENTITIES=($(echo "$all_resources" | grep -E "^id-[a-z0-9]{13}$" | cut -f1))
+    
+    # Find Key Vaults (kv-*)
+    KEY_VAULTS=($(echo "$all_resources" | grep -E "^kv-[a-z0-9]{13}$" | cut -f1))
+    
+    # Find Log Analytics (log-*)
+    LOG_ANALYTICS=($(echo "$all_resources" | grep -E "^log-[a-z0-9]{13}$" | cut -f1))
+    
+    # Find Application Insights (appi-*)
+    APP_INSIGHTS=($(echo "$all_resources" | grep -E "^appi-[a-z0-9]{13}$" | cut -f1))
+    
+    # Find Smart Detector Alert Rules (these are auto-created with App Insights)
+    SMART_DETECTORS=($(az resource list --resource-group "$RESOURCE_GROUP" --resource-type "microsoft.alertsmanagement/smartDetectorAlertRules" --query "[].name" -o tsv))
+    
+    echo -e "${GREEN}✅ Discovered cATO resources:${NC}"
+    echo -e "   • Cosmos DB accounts: ${#COSMOS_ACCOUNTS[@]}"
+    echo -e "   • Static Web Apps: ${#STATIC_WEB_APPS[@]}"
+    echo -e "   • Managed Identities: ${#MANAGED_IDENTITIES[@]}"
+    echo -e "   • Key Vaults: ${#KEY_VAULTS[@]}"
+    echo -e "   • Log Analytics: ${#LOG_ANALYTICS[@]}"
+    echo -e "   • App Insights: ${#APP_INSIGHTS[@]}"
+    echo -e "   • Smart Detectors: ${#SMART_DETECTORS[@]}"
+    echo ""
 }
 
-RESOURCE_TOKEN=$(get_resource_token)
-echo -e "${BLUE}📋 Using resource token: $RESOURCE_TOKEN${NC}"
+# Discover resources
+discover_cato_resources
+
+echo -e "${BLUE}🎯 Found cATO resources to delete:${NC}"
+for resource in "${STATIC_WEB_APPS[@]}"; do echo -e "   • Static Web App: $resource"; done
+for resource in "${COSMOS_ACCOUNTS[@]}"; do echo -e "   • Cosmos DB: $resource"; done
+for resource in "${KEY_VAULTS[@]}"; do echo -e "   • Key Vault: $resource"; done
+for resource in "${MANAGED_IDENTITIES[@]}"; do echo -e "   • Managed Identity: $resource"; done
+for resource in "${LOG_ANALYTICS[@]}"; do echo -e "   • Log Analytics: $resource"; done
+for resource in "${APP_INSIGHTS[@]}"; do echo -e "   • App Insights: $resource"; done
+for resource in "${SMART_DETECTORS[@]}"; do echo -e "   • Smart Detector: $resource"; done
 echo ""
 
-# Define resource names (matches Bicep naming convention)
-COSMOS_ACCOUNT="cosmos-$RESOURCE_TOKEN"
-STATIC_WEB_APP="stapp-$RESOURCE_TOKEN"
-MANAGED_IDENTITY="id-$RESOURCE_TOKEN"
-KEY_VAULT="kv-$RESOURCE_TOKEN"
-LOG_ANALYTICS="log-$RESOURCE_TOKEN"
-APP_INSIGHTS="appi-$RESOURCE_TOKEN"
+# Final confirmation before deletion
+if [[ ${#STATIC_WEB_APPS[@]} -eq 0 && ${#COSMOS_ACCOUNTS[@]} -eq 0 && ${#KEY_VAULTS[@]} -eq 0 && ${#MANAGED_IDENTITIES[@]} -eq 0 && ${#LOG_ANALYTICS[@]} -eq 0 && ${#APP_INSIGHTS[@]} -eq 0 ]]; then
+    echo -e "${YELLOW}ℹ️  No cATO Dashboard resources found to delete.${NC}"
+    echo -e "${GREEN}✅ Resource group appears to be clean already.${NC}"
+    exit 0
+fi
 
-echo -e "${BLUE}🎯 Target resources to delete:${NC}"
-echo -e "   • Static Web App: $STATIC_WEB_APP"
-echo -e "   • Cosmos DB: $COSMOS_ACCOUNT"
-echo -e "   • Key Vault: $KEY_VAULT"
-echo -e "   • Managed Identity: $MANAGED_IDENTITY"
-echo -e "   • Log Analytics: $LOG_ANALYTICS"
-echo -e "   • App Insights: $APP_INSIGHTS"
-echo ""
+read -p "Proceed with deleting these $(( ${#STATIC_WEB_APPS[@]} + ${#COSMOS_ACCOUNTS[@]} + ${#KEY_VAULTS[@]} + ${#MANAGED_IDENTITIES[@]} + ${#LOG_ANALYTICS[@]} + ${#APP_INSIGHTS[@]} + ${#SMART_DETECTORS[@]} )) resources? (yes/no): " final_confirm
+if [[ $final_confirm != "yes" ]]; then
+    echo -e "${RED}❌ Cleanup cancelled.${NC}"
+    exit 1
+fi
 
 # Start deletion process
 echo -e "${BLUE}🚀 Starting cleanup process...${NC}"
 echo ""
 
-# Delete Static Web App first (fastest to delete)
-delete_resource "Microsoft.Web/staticSites" "$STATIC_WEB_APP" "Static Web App"
+# Delete Static Web Apps (fastest to delete)
+for resource in "${STATIC_WEB_APPS[@]}"; do
+    delete_resource "Microsoft.Web/staticSites" "$resource" "Static Web App"
+done
 
 # Delete Application Insights
-delete_resource "Microsoft.Insights/components" "$APP_INSIGHTS" "Application Insights"
+for resource in "${APP_INSIGHTS[@]}"; do
+    delete_resource "Microsoft.Insights/components" "$resource" "Application Insights"
+done
 
-# Delete Key Vault (with purge protection check)
-echo -e "${BLUE}🗑️  Checking for Key Vault...${NC}"
-if az keyvault show --name "$KEY_VAULT" --resource-group "$RESOURCE_GROUP" > /dev/null 2>&1; then
-    echo -e "${YELLOW}   Found Key Vault: $KEY_VAULT${NC}"
-    echo -e "${BLUE}   Deleting Key Vault...${NC}"
-    
-    if az keyvault delete --name "$KEY_VAULT" --resource-group "$RESOURCE_GROUP"; then
-        echo -e "${GREEN}   ✅ Key Vault deleted: $KEY_VAULT${NC}"
+# Delete Smart Detector Alert Rules
+for resource in "${SMART_DETECTORS[@]}"; do
+    delete_resource "microsoft.alertsmanagement/smartDetectorAlertRules" "$resource" "Smart Detector Alert Rule"
+done
+
+# Delete Key Vaults (with purge protection check)
+for kv_name in "${KEY_VAULTS[@]}"; do
+    echo -e "${BLUE}🗑️  Checking for Key Vault: $kv_name...${NC}"
+    if az keyvault show --name "$kv_name" --resource-group "$RESOURCE_GROUP" > /dev/null 2>&1; then
+        echo -e "${YELLOW}   Found Key Vault: $kv_name${NC}"
+        echo -e "${BLUE}   Deleting Key Vault...${NC}"
         
-        # Check if purge is needed (for complete cleanup)
-        echo -e "${YELLOW}   ⚠️  Key Vault is soft-deleted. Purging for complete cleanup...${NC}"
-        if az keyvault purge --name "$KEY_VAULT" --no-wait; then
-            echo -e "${GREEN}   ✅ Key Vault purged: $KEY_VAULT${NC}"
+        if az keyvault delete --name "$kv_name" --resource-group "$RESOURCE_GROUP"; then
+            echo -e "${GREEN}   ✅ Key Vault deleted: $kv_name${NC}"
+            
+            # Check if purge is needed (for complete cleanup)
+            echo -e "${YELLOW}   ⚠️  Key Vault is soft-deleted. Purging for complete cleanup...${NC}"
+            if az keyvault purge --name "$kv_name" --no-wait; then
+                echo -e "${GREEN}   ✅ Key Vault purged: $kv_name${NC}"
+            else
+                echo -e "${YELLOW}   ⚠️  Could not purge Key Vault (may require additional permissions)${NC}"
+            fi
         else
-            echo -e "${YELLOW}   ⚠️  Could not purge Key Vault (may require additional permissions)${NC}"
+            echo -e "${RED}   ❌ Failed to delete Key Vault${NC}"
         fi
     else
-        echo -e "${RED}   ❌ Failed to delete Key Vault${NC}"
+        echo -e "${YELLOW}   ℹ️  Key Vault not found: $kv_name${NC}"
     fi
-else
-    echo -e "${YELLOW}   ℹ️  Key Vault not found: $KEY_VAULT${NC}"
-fi
-echo ""
+    echo ""
+done
 
-# Delete Cosmos DB (takes longest)
-echo -e "${BLUE}🗑️  Checking for Cosmos DB...${NC}"
-if az cosmosdb show --name "$COSMOS_ACCOUNT" --resource-group "$RESOURCE_GROUP" > /dev/null 2>&1; then
-    echo -e "${YELLOW}   Found Cosmos DB: $COSMOS_ACCOUNT${NC}"
-    echo -e "${BLUE}   Deleting Cosmos DB (this may take several minutes)...${NC}"
-    
-    if az cosmosdb delete --name "$COSMOS_ACCOUNT" --resource-group "$RESOURCE_GROUP" --yes; then
-        echo -e "${GREEN}   ✅ Cosmos DB deletion initiated: $COSMOS_ACCOUNT${NC}"
-        echo -e "${YELLOW}   ℹ️  Cosmos DB deletion continues in the background${NC}"
-    else
-        echo -e "${RED}   ❌ Failed to delete Cosmos DB${NC}"
-    fi
-else
-    echo -e "${YELLOW}   ℹ️  Cosmos DB not found: $COSMOS_ACCOUNT${NC}"
-fi
-echo ""
+# Delete Log Analytics Workspaces
+for resource in "${LOG_ANALYTICS[@]}"; do
+    delete_resource "Microsoft.OperationalInsights/workspaces" "$resource" "Log Analytics Workspace"
+done
 
-# Delete Log Analytics workspace
-delete_resource "Microsoft.OperationalInsights/workspaces" "$LOG_ANALYTICS" "Log Analytics Workspace"
+# Delete Managed Identities
+for resource in "${MANAGED_IDENTITIES[@]}"; do
+    delete_resource "Microsoft.ManagedIdentity/userAssignedIdentities" "$resource" "User-Assigned Managed Identity"
+done
 
-# Delete Managed Identity (delete last as other resources may depend on it)
-delete_resource "Microsoft.ManagedIdentity/userAssignedIdentities" "$MANAGED_IDENTITY" "Managed Identity"
+# Delete Cosmos DB accounts (slowest, do last)
+for resource in "${COSMOS_ACCOUNTS[@]}"; do
+    echo -e "${BLUE}🗑️  Deleting Cosmos DB: $resource...${NC}"
+    echo -e "${YELLOW}   ⚠️  This may take several minutes...${NC}"
+    delete_resource "Microsoft.DocumentDB/databaseAccounts" "$resource" "Cosmos DB Account"
+done
 
 echo ""
 echo -e "${GREEN}🎉 Cleanup process completed!${NC}"
@@ -173,6 +214,6 @@ echo -e "${GREEN}✅ Your existing VNet and other infrastructure remain intact${
 echo -e "${YELLOW}ℹ️  Cosmos DB deletion may take additional time to complete in the background${NC}"
 echo ""
 echo -e "${BLUE}🔍 To verify cleanup, run:${NC}"
-echo -e "   az resource list --resource-group $RESOURCE_GROUP --query \"[?contains(tags.'azd-env-name', '$ENVIRONMENT_NAME')]\""
+echo -e "   az resource list --resource-group $RESOURCE_GROUP"
 echo ""
 echo -e "${GREEN}✨ Resource group '$RESOURCE_GROUP' is ready for fresh deployment!${NC}"
