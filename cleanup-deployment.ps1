@@ -121,7 +121,7 @@ function Remove-CatoResource {
     Write-Host "${Blue}🗑️  Deleting $DisplayName`: $($Resource.Name)...${Reset}"
     
     try {
-        Remove-AzResource -ResourceId $Resource.ResourceId -Force -ErrorAction Stop
+        Remove-AzResource -ResourceId $Resource.ResourceId -Force -Confirm:$false -ErrorAction Stop
         Write-Host "${Green}   ✅ Successfully deleted: $($Resource.Name)${Reset}"
     }
     catch {
@@ -152,13 +152,13 @@ foreach ($kv in $catoResources.KeyVaults) {
     Write-Host "${Blue}🗑️  Deleting Key Vault: $($kv.Name)...${Reset}"
     
     try {
-        Remove-AzKeyVault -VaultName $kv.Name -ResourceGroupName $ResourceGroup -Force -ErrorAction Stop
+        Remove-AzKeyVault -VaultName $kv.Name -ResourceGroupName $ResourceGroup -Force -Confirm:$false -ErrorAction Stop
         Write-Host "${Green}   ✅ Key Vault deleted: $($kv.Name)${Reset}"
         
         # Purge the Key Vault for complete cleanup
         Write-Host "${Yellow}   ⚠️  Purging Key Vault for complete cleanup...${Reset}"
         try {
-            Remove-AzKeyVault -VaultName $kv.Name -InRemovedState -Force -ErrorAction Stop
+            Remove-AzKeyVault -VaultName $kv.Name -InRemovedState -Force -Confirm:$false -ErrorAction Stop
             Write-Host "${Green}   ✅ Key Vault purged: $($kv.Name)${Reset}"
         }
         catch {
@@ -187,7 +187,7 @@ foreach ($cosmos in $catoResources.CosmosAccounts) {
     Write-Host "${Yellow}   ⚠️  This may take several minutes...${Reset}"
     
     try {
-        Remove-AzCosmosDBAccount -ResourceGroupName $ResourceGroup -Name $cosmos.Name -Force -ErrorAction Stop
+        Remove-AzCosmosDBAccount -ResourceGroupName $ResourceGroup -Name $cosmos.Name -Force -Confirm:$false -ErrorAction Stop
         Write-Host "${Green}   ✅ Cosmos DB deletion initiated: $($cosmos.Name)${Reset}"
         Write-Host "${Yellow}   ℹ️  Cosmos DB deletion continues in the background${Reset}"
     }

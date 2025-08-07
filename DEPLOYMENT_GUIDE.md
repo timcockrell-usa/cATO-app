@@ -428,6 +428,19 @@ az account clear
 az login
 ```
 
+**Issue**: Cleanup script not working - `unrecognized arguments: --yes`
+
+```bash
+# Problem: Azure CLI syntax has changed
+# OLD (broken): az resource delete --yes
+# NEW (fixed): az resource delete --force
+
+# Solution: Use the updated cleanup scripts
+./cleanup-deployment.sh     # For Linux/macOS/WSL
+# OR
+.\cleanup-deployment.ps1    # For Windows PowerShell (recommended)
+```
+
 **Issue**: `AZURE_ADMIN_GROUP_OBJECT_ID not found`
 
 ```bash

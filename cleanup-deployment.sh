@@ -67,7 +67,8 @@ delete_resource() {
         echo -e "${YELLOW}   Found: $resource_name${NC}"
         echo -e "${BLUE}   Deleting $display_name...${NC}"
         
-        if az resource delete --resource-group "$RESOURCE_GROUP" --name "$resource_name" --resource-type "$resource_type" --yes; then
+        # Use --force instead of --yes for az resource delete
+        if az resource delete --resource-group "$RESOURCE_GROUP" --name "$resource_name" --resource-type "$resource_type" --force; then
             echo -e "${GREEN}   ✅ Successfully deleted: $display_name${NC}"
         else
             echo -e "${RED}   ❌ Failed to delete: $display_name${NC}"
@@ -82,29 +83,29 @@ delete_resource() {
 discover_cato_resources() {
     echo -e "${BLUE}🔍 Discovering cATO Dashboard resources...${NC}"
     
-    # Get all resources and filter for cATO patterns
+    # Get all resources in the resource group
     local all_resources=$(az resource list --resource-group "$RESOURCE_GROUP" --query "[].{name:name, type:type}" -o tsv)
     
     # Find Cosmos DB resources (cosmos-*)
-    COSMOS_ACCOUNTS=($(echo "$all_resources" | grep "cosmos-" | cut -f1 | grep -v "Microsoft.DocumentDB/databaseAccounts/sqlDatabases"))
+    COSMOS_ACCOUNTS=($(echo "$all_resources" | awk '$2=="Microsoft.DocumentDB/databaseAccounts" {print $1}' | grep "^cosmos-"))
     
     # Find Static Web Apps (stapp-*)
-    STATIC_WEB_APPS=($(echo "$all_resources" | grep "stapp-" | cut -f1))
+    STATIC_WEB_APPS=($(echo "$all_resources" | awk '$2=="Microsoft.Web/staticSites" {print $1}' | grep "^stapp-"))
     
     # Find Managed Identities (id-*)
-    MANAGED_IDENTITIES=($(echo "$all_resources" | grep -E "^id-[a-z0-9]{13}$" | cut -f1))
+    MANAGED_IDENTITIES=($(echo "$all_resources" | awk '$2=="Microsoft.ManagedIdentity/userAssignedIdentities" {print $1}' | grep "^id-"))
     
     # Find Key Vaults (kv-*)
-    KEY_VAULTS=($(echo "$all_resources" | grep -E "^kv-[a-z0-9]{13}$" | cut -f1))
+    KEY_VAULTS=($(echo "$all_resources" | awk '$2=="Microsoft.KeyVault/vaults" {print $1}' | grep "^kv-"))
     
     # Find Log Analytics (log-*)
-    LOG_ANALYTICS=($(echo "$all_resources" | grep -E "^log-[a-z0-9]{13}$" | cut -f1))
+    LOG_ANALYTICS=($(echo "$all_resources" | awk '$2=="Microsoft.OperationalInsights/workspaces" {print $1}' | grep "^log-"))
     
     # Find Application Insights (appi-*)
-    APP_INSIGHTS=($(echo "$all_resources" | grep -E "^appi-[a-z0-9]{13}$" | cut -f1))
+    APP_INSIGHTS=($(echo "$all_resources" | awk '$2=="Microsoft.Insights/components" {print $1}' | grep "^appi-"))
     
     # Find Smart Detector Alert Rules (these are auto-created with App Insights)
-    SMART_DETECTORS=($(az resource list --resource-group "$RESOURCE_GROUP" --resource-type "microsoft.alertsmanagement/smartDetectorAlertRules" --query "[].name" -o tsv))
+    SMART_DETECTORS=($(echo "$all_resources" | awk '$2=="microsoft.alertsmanagement/smartDetectorAlertRules" {print $1}'))
     
     echo -e "${GREEN}✅ Discovered cATO resources:${NC}"
     echo -e "   • Cosmos DB accounts: ${#COSMOS_ACCOUNTS[@]}"
