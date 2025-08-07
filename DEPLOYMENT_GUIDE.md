@@ -79,6 +79,39 @@ az deployment group create \
   --parameters adminGroupObjectId=$ADMIN_GROUP_ID
 ```
 
+### Option 3: Deploy into Existing Resource Group & VNet
+
+If you already have a resource group and VNet deployed (like your ampe-eastus-dev-rg setup):
+
+```bash
+# In Azure Cloud Shell or local Azure CLI
+
+# 1. Clone the repository (if not already done)
+git clone https://github.com/timcockrell-usa/cATO-app.git
+cd cATO-app
+
+# 2. Set your existing environment variables
+RESOURCE_GROUP="ampe-eastus-dev-rg"
+LOCATION="eastus"
+SUBSCRIPTION_ID="930a247f-b4fa-4f1b-ad73-6a03cf1d0f4e"
+VNET_NAME="ampe-eus-dev-vnet"
+ADMIN_GROUP_ID="your-admin-group-object-id"  # Get this from the section below
+
+# 3. Verify your existing resources
+az network vnet show --resource-group $RESOURCE_GROUP --name $VNET_NAME
+az account set --subscription $SUBSCRIPTION_ID
+
+# 4. Deploy the Bicep template into existing resource group
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file infra/main.bicep \
+  --parameters environmentName=dev \
+  --parameters location=$LOCATION \
+  --parameters adminGroupObjectId=$ADMIN_GROUP_ID
+```
+
+> **Note**: The Bicep template will create new resources (Static Web App, Cosmos DB, Key Vault, etc.) in your existing resource group. It won't modify your existing VNet but will be ready for private endpoint integration if needed later.
+
 ### What is the Admin Group?
 
 The **Admin Group** is an Azure Entra ID (Azure Active Directory) security group that contains users who should have administrative access to the Key Vault and other management functions.
@@ -121,7 +154,13 @@ npm install
 # Login to Azure CLI
 az login
 
-# Login to Azure Developer CLI
+# Set your subscription (for existing infrastructure)
+az account set --subscription "930a247f-b4fa-4f1b-ad73-6a03cf1d0f4e"
+
+# Verify you're in the right subscription and can access your resource group
+az group show --name "ampe-eastus-dev-rg"
+
+# Login to Azure Developer CLI (if using azd method)
 azd auth login
 
 # Verify your subscription
