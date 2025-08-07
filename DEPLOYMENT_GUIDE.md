@@ -214,7 +214,31 @@ azd auth login
 azd env new il5-prod
 azd env set AZURE_LOCATION "usgovvirginia"
 azd up
-```---
+```
+
+> **Note**: Azure Government deployment uses the same Bicep templates and process as Azure Commercial, but connects to the Azure Government cloud endpoints. The main differences are:
+> - Different cloud endpoints (`.us` domains)
+> - Limited region availability (usgovvirginia, usgovtexas, etc.)
+> - Enhanced compliance features for government workloads
+> - Same resource types and configurations as Commercial
+
+### Azure Commercial (IL2) - Recommended for Testing
+
+For initial testing and development, use Azure Commercial which has the same setup process:
+
+```bash
+# Ensure you're using Azure Commercial cloud (default)
+az cloud set --name AzureCloud
+azd auth login
+
+# Deploy to commercial cloud for testing
+azd env new test-il2
+azd env set AZURE_LOCATION "eastus"
+azd env set AZURE_ADMIN_GROUP_OBJECT_ID "your-admin-group-id"
+azd up
+```
+
+---
 
 ## 👥 Role-Based Access Control Setup
 
