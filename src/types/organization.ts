@@ -23,7 +23,7 @@ export type OrganizationTier = 'Basic' | 'Standard' | 'Enterprise' | 'Government
 
 export type OrganizationStatus = 'Active' | 'Suspended' | 'PendingActivation' | 'Deprovisioning';
 
-export type NistRevision = 'Rev4' | 'Rev5';
+export type NistRevision = 'Rev4' | 'Rev5' | 'Rev6';
 
 export type SecurityClassification = 'Unclassified' | 'CUI' | 'Confidential' | 'Secret';
 

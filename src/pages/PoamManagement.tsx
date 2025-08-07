@@ -22,32 +22,30 @@ import {
 import { 
   AlertTriangle, 
   Search, 
-  Filter, 
   Plus, 
   Edit, 
   Calendar,
-  User,
-  Shield
+  User
 } from "lucide-react";
 
-// Mock POA&M data
+// Sample POAM data for demonstration
 const poamData = [
   {
     id: "POAM-001",
-    title: "Implement Multi-Factor Authentication for Admin Accounts",
-    description: "Administrative accounts lack MFA implementation for privileged access",
-    weakness: "AC-2: Account Management",
+    title: "Multi-Factor Authentication Implementation",
+    description: "Implement MFA for all user accounts to enhance authentication security",
+    weakness: "IA-2: Identification and Authentication",
     severity: "High",
-    status: "Open",
+    status: "In Progress",
     owner: "Sarah Johnson",
     scheduledCompletion: "2024-04-15",
     resourcesRequired: "$25,000",
-    milestones: ["Design approval", "Procurement", "Implementation", "Testing"],
+    milestones: ["Planning", "Procurement", "Implementation", "Testing"],
     isOverdue: false
   },
   {
-    id: "POAM-002", 
-    title: "Network Segmentation for Critical Systems",
+    id: "POAM-002",
+    title: "Network Segmentation Enhancement",
     description: "Critical systems are not properly isolated from general network traffic",
     weakness: "SC-7: Boundary Protection",
     severity: "High",
@@ -128,18 +126,18 @@ const poamData = [
 function getSeverityColor(severity: string) {
   switch (severity) {
     case "High": return { bg: "bg-destructive/10", text: "text-destructive", border: "border-destructive/20" };
-    case "Medium": return { bg: "bg-status-partial/10", text: "text-status-partial", border: "border-status-partial/20" };
-    case "Low": return { bg: "bg-status-compliant/10", text: "text-status-compliant", border: "border-status-compliant/20" };
-    default: return { bg: "bg-status-unknown/10", text: "text-status-unknown", border: "border-status-unknown/20" };
+    case "Medium": return { bg: "bg-yellow-100", text: "text-yellow-800", border: "border-yellow-200" };
+    case "Low": return { bg: "bg-green-100", text: "text-green-800", border: "border-green-200" };
+    default: return { bg: "bg-gray-100", text: "text-gray-800", border: "border-gray-200" };
   }
 }
 
 function getStatusColor(status: string) {
   switch (status) {
-    case "Completed": return { bg: "bg-status-compliant/10", text: "text-status-compliant", border: "border-status-compliant/20" };
-    case "In Progress": return { bg: "bg-status-partial/10", text: "text-status-partial", border: "border-status-partial/20" };
-    case "Open": return { bg: "bg-status-unknown/10", text: "text-status-unknown", border: "border-status-unknown/20" };
-    default: return { bg: "bg-muted", text: "text-muted-foreground", border: "border-muted" };
+    case "Completed": return { bg: "bg-green-100", text: "text-green-800", border: "border-green-200" };
+    case "In Progress": return { bg: "bg-blue-100", text: "text-blue-800", border: "border-blue-200" };
+    case "Open": return { bg: "bg-yellow-100", text: "text-yellow-800", border: "border-yellow-200" };
+    default: return { bg: "bg-gray-100", text: "text-gray-800", border: "border-gray-200" };
   }
 }
 
@@ -183,40 +181,40 @@ export default function PoamManagement() {
 
       {/* Summary Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card className="shadow-card">
+        <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-foreground">{totalPoams}</div>
+            <div className="text-2xl font-bold">{totalPoams}</div>
             <p className="text-sm text-muted-foreground">Total POA&Ms</p>
           </CardContent>
         </Card>
-        <Card className="shadow-card">
+        <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-status-unknown">{openPoams}</div>
+            <div className="text-2xl font-bold text-yellow-600">{openPoams}</div>
             <p className="text-sm text-muted-foreground">Open</p>
           </CardContent>
         </Card>
-        <Card className="shadow-card">
+        <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-status-partial">{inProgressPoams}</div>
+            <div className="text-2xl font-bold text-blue-600">{inProgressPoams}</div>
             <p className="text-sm text-muted-foreground">In Progress</p>
           </CardContent>
         </Card>
-        <Card className="shadow-card">
+        <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-status-compliant">{completedPoams}</div>
+            <div className="text-2xl font-bold text-green-600">{completedPoams}</div>
             <p className="text-sm text-muted-foreground">Completed</p>
           </CardContent>
         </Card>
-        <Card className="shadow-card">
+        <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-destructive">{overduePoams}</div>
+            <div className="text-2xl font-bold text-red-600">{overduePoams}</div>
             <p className="text-sm text-muted-foreground">Overdue</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Search and Filters */}
-      <Card className="shadow-card">
+      <Card>
         <CardHeader>
           <CardTitle>Search & Filter</CardTitle>
         </CardHeader>
@@ -260,7 +258,7 @@ export default function PoamManagement() {
       </Card>
 
       {/* POA&M Table */}
-      <Card className="shadow-card">
+      <Card>
         <CardHeader>
           <CardTitle>POA&M List</CardTitle>
           <CardDescription>
@@ -289,13 +287,13 @@ export default function PoamManagement() {
                 return (
                   <TableRow 
                     key={poam.id} 
-                    className={poam.isOverdue ? "bg-destructive/5 hover:bg-destructive/10" : ""}
+                    className={poam.isOverdue ? "bg-red-50 hover:bg-red-100" : ""}
                   >
                     <TableCell className="font-mono text-sm">{poam.id}</TableCell>
                     <TableCell className="font-medium">
                       {poam.title}
                       {poam.isOverdue && (
-                        <AlertTriangle className="inline ml-2 h-4 w-4 text-destructive" />
+                        <AlertTriangle className="inline ml-2 h-4 w-4 text-red-500" />
                       )}
                     </TableCell>
                     <TableCell className="text-sm">{poam.weakness}</TableCell>
@@ -324,7 +322,7 @@ export default function PoamManagement() {
                     <TableCell>
                       <div className="flex items-center space-x-2">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span className={`text-sm ${poam.isOverdue ? "text-destructive font-medium" : ""}`}>
+                        <span className={`text-sm ${poam.isOverdue ? "text-red-500 font-medium" : ""}`}>
                           {poam.scheduledCompletion}
                         </span>
                       </div>
@@ -353,7 +351,7 @@ export default function PoamManagement() {
                           <div className="space-y-6">
                             <div className="grid grid-cols-2 gap-4">
                               <div>
-                                <h4 className="font-semibold text-foreground mb-2">Severity</h4>
+                                <h4 className="font-semibold mb-2">Severity</h4>
                                 <Badge 
                                   variant="outline" 
                                   className={`${severityStyle.bg} ${severityStyle.text} ${severityStyle.border}`}
@@ -362,7 +360,7 @@ export default function PoamManagement() {
                                 </Badge>
                               </div>
                               <div>
-                                <h4 className="font-semibold text-foreground mb-2">Status</h4>
+                                <h4 className="font-semibold mb-2">Status</h4>
                                 <Badge 
                                   variant="outline" 
                                   className={`${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
@@ -372,99 +370,38 @@ export default function PoamManagement() {
                               </div>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-foreground mb-2">Description</h4>
+                              <h4 className="font-semibold mb-2">Description</h4>
                               <p className="text-sm text-muted-foreground">{poam.description}</p>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-foreground mb-2">Control Weakness</h4>
+                              <h4 className="font-semibold mb-2">Control Weakness</h4>
                               <Badge variant="secondary">{poam.weakness}</Badge>
                             </div>
                             <div className="grid grid-cols-3 gap-4">
                               <div>
-                                <h4 className="font-semibold text-foreground mb-2">Owner</h4>
+                                <h4 className="font-semibold mb-2">Owner</h4>
                                 <p className="text-sm text-muted-foreground">{poam.owner}</p>
                               </div>
                               <div>
-                                <h4 className="font-semibold text-foreground mb-2">Due Date</h4>
+                                <h4 className="font-semibold mb-2">Due Date</h4>
                                 <p className="text-sm text-muted-foreground">{poam.scheduledCompletion}</p>
                               </div>
                               <div>
-                                <h4 className="font-semibold text-foreground mb-2">Resources</h4>
+                                <h4 className="font-semibold mb-2">Resources</h4>
                                 <p className="text-sm text-muted-foreground">{poam.resourcesRequired}</p>
                               </div>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-foreground mb-2">Milestones</h4>
+                              <h4 className="font-semibold mb-2">Milestones</h4>
                               <div className="space-y-2">
                                 {poam.milestones.map((milestone, index) => (
                                   <div key={index} className="flex items-center space-x-3">
                                     <div className="w-2 h-2 rounded-full bg-primary"></div>
-                                    <span className="text-sm text-foreground">{milestone}</span>
+                                    <span className="text-sm">{milestone}</span>
                                   </div>
                                 ))}
                               </div>
                             </div>
-                             <div className="flex space-x-2">
-                               <Dialog>
-                                 <DialogTrigger asChild>
-                                   <Button variant="outline" size="sm">
-                                     <Edit className="w-4 h-4 mr-2" />
-                                     Edit POA&M
-                                   </Button>
-                                 </DialogTrigger>
-                                 <DialogContent>
-                                   <DialogHeader>
-                                     <DialogTitle>Edit POA&M</DialogTitle>
-                                     <DialogDescription>Modify POA&M details and milestones</DialogDescription>
-                                   </DialogHeader>
-                                   <div className="space-y-4">
-                                     <p className="text-sm text-muted-foreground">
-                                       POA&M editing functionality would be implemented here with form fields for:
-                                     </p>
-                                     <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-                                       <li>Title and description</li>
-                                       <li>Severity and status</li>
-                                       <li>Owner assignment</li>
-                                       <li>Due dates and milestones</li>
-                                       <li>Resource requirements</li>
-                                     </ul>
-                                   </div>
-                                 </DialogContent>
-                               </Dialog>
-                               <Dialog>
-                                 <DialogTrigger asChild>
-                                   <Button variant="default" size="sm">
-                                     Update Status
-                                   </Button>
-                                 </DialogTrigger>
-                                 <DialogContent>
-                                   <DialogHeader>
-                                     <DialogTitle>Update Status</DialogTitle>
-                                     <DialogDescription>Change POA&M status and add progress notes</DialogDescription>
-                                   </DialogHeader>
-                                   <div className="space-y-4">
-                                     <div>
-                                       <h4 className="font-semibold mb-2">Current Status</h4>
-                                       <Badge 
-                                         variant="outline" 
-                                         className={`${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
-                                       >
-                                         {poam.status}
-                                       </Badge>
-                                     </div>
-                                     <p className="text-sm text-muted-foreground">
-                                       Status update functionality would include:
-                                     </p>
-                                     <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
-                                       <li>Status dropdown selection</li>
-                                       <li>Progress notes textarea</li>
-                                       <li>Milestone completion tracking</li>
-                                       <li>File attachment support</li>
-                                     </ul>
-                                   </div>
-                                 </DialogContent>
-                               </Dialog>
-                             </div>
                           </div>
                         </DialogContent>
                       </Dialog>

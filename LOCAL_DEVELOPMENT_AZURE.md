@@ -1,17 +1,26 @@
-# 🔐 Azure Entra ID Development Guide
+# � Local Development with Azure Integration
 
-This guide focuses specifically on setting up and testing the cATO Dashboard with **Azure Entra ID authentication** and **multi-subscription data import**. Perfect for production-like testing with real Azure authentication and data.
+> **⚠️ This guide is for LOCAL DEVELOPMENT only, not for deploying to Azure**  
+> **🚀 To deploy to Azure, see the [Production Deployment Guide](./DEPLOYMENT_GUIDE.md)**
 
-## 🎯 What This Guide Covers
+This guide shows how to run the cATO Dashboard **locally on your computer** while connecting to **real Azure services** for authentication and data. This is perfect for:
 
-✅ **Azure Entra ID Authentication** - Real Azure AD login  
-✅ **Multi-Subscription Data Export** - Import from all your subscriptions  
-✅ **Role-Based Access Control** - Test with real Azure roles  
-✅ **Production-Like Environment** - Mirrors your actual deployment  
+- Testing with real Azure Entra ID authentication
+- Developing with actual Azure data
+- Validating before production deployment
+- Multi-subscription data integration testing
+
+## 🎯 What This Setup Provides
+
+✅ **Local React app** running on `http://localhost:5173`  
+✅ **Real Azure Entra ID login** (not simulated)  
+✅ **Live Azure Cosmos DB data** (emulator or real)  
+✅ **Actual Azure roles and permissions** testing  
+✅ **Multi-subscription data import** capabilities  
 
 ## Prerequisites
 
-- **Azure Account** with permissions to create App Registrations
+- **Azure Account** with App Registration permissions
 - **Azure CLI** installed and working
 - **Node.js** (18+ recommended)
 - **Azure Cosmos DB Emulator** or real Azure CosmosDB
@@ -421,8 +430,23 @@ You're now ready to deploy to Azure with confidence!
 1. **Test thoroughly** with different user roles
 2. **Validate** all imported data appears correctly  
 3. **Document** any custom role mappings needed
-4. **Deploy** to Azure using `azd up`
+4. **Deploy** to Azure using the [Production Deployment Guide](./DEPLOYMENT_GUIDE.md)
 5. **Monitor** authentication and data flows in production
+
+## 🚀 Ready for Production Deployment?
+
+Once your local development environment is working correctly:
+
+- **[Production Deployment Guide](./DEPLOYMENT_GUIDE.md)** - Complete Azure deployment documentation
+- **[Quick Deployment Reference](./DEPLOYMENT.md)** - Fast deployment commands
+- **[CI/CD Setup Guide](./DEPLOYMENT_GUIDE.md#-cicd-pipeline-setup)** - Automated deployment pipelines
+
+The local testing ensures:
+- Authentication flows work correctly
+- Role-based access functions properly  
+- Data import/export processes are validated
+- Security configurations are tested
+- Multi-subscription support is verified
 
 ---
 

@@ -14,14 +14,14 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/SimpleAuthContext";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export function Header() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const { user, logout, hasRole } = useAuth();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     setMounted(true);
@@ -160,9 +160,7 @@ export function Header() {
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">{user?.displayName}</p>
                   <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
-                  {user?.jobTitle && (
-                    <p className="text-xs leading-none text-muted-foreground">{user.jobTitle}</p>
-                  )}
+                  <p className="text-xs leading-none text-muted-foreground">{user?.organizationId}</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />

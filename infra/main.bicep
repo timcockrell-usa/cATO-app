@@ -5,7 +5,7 @@ param environmentName string = 'dev'
 param location string = resourceGroup().location
 
 @description('The resource token to make resource names unique')
-param resourceToken string = toLower(uniqueString(subscription().id, environmentName, location))
+param resourceToken string = toLower(uniqueString(subscription().id, resourceGroup().id, location, environmentName))
 
 @description('The Azure Entra ID tenant ID')
 param tenantId string = tenant().tenantId
@@ -35,8 +35,8 @@ var resourceNames = {
 // Tags for resource organization and cost management
 var tags = {
   'azd-env-name': environmentName
-  'project': 'cato-dashboard'
-  'environment': environmentName
+  project: 'cato-dashboard'
+  environment: environmentName
   'cost-center': 'security-operations'
   'data-classification': 'cui'
 }
@@ -335,7 +335,7 @@ resource vulnerabilitiesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlData
 }
 
 // Static Web App for hosting the React application
-resource staticWebApp 'Microsoft.Web/staticSites@2023-01-01' = {
+resource staticWebApp 'Microsoft.Web/staticSites@2024-04-01' = {
   name: resourceNames.staticWebApp
   location: location
   tags: tags
@@ -352,10 +352,27 @@ resource staticWebApp 'Microsoft.Web/staticSites@2023-01-01' = {
   properties: {
     buildProperties: {
       skipGithubActionWorkflowGeneration: true
+      appLocation: '.'
+      outputLocation: 'dist'
     }
     stagingEnvironmentPolicy: 'Enabled'
     allowConfigFileUpdates: true
     enterpriseGradeCdnStatus: 'Enabled'
+    publicNetworkAccess: 'Enabled' // Should be 'Disabled' in production with private endpoints
+  }
+}
+
+// Static Web App configuration for authentication and environment variables
+resource staticWebAppConfig 'Microsoft.Web/staticSites/config@2024-04-01' = {
+  parent: staticWebApp
+  name: 'appsettings'
+  properties: {
+    AZURE_COSMOS_ENDPOINT: cosmosAccount.properties.documentEndpoint
+    AZURE_COSMOS_DATABASE_NAME: cosmosDatabase.name
+    AZURE_KEY_VAULT_ENDPOINT: keyVault.properties.vaultUri
+    AZURE_MANAGED_IDENTITY_CLIENT_ID: managedIdentity.properties.clientId
+    APPLICATIONINSIGHTS_CONNECTION_STRING: appInsights.properties.ConnectionString
+    AZURE_LOG_ANALYTICS_WORKSPACE_ID: logAnalytics.properties.customerId
   }
 }
 
@@ -390,6 +407,17 @@ resource logAnalyticsContributorRole 'Microsoft.Authorization/roleAssignments@20
   }
 }
 
+// Admin group access to Key Vault (for managing secrets)
+resource adminKeyVaultAdministratorRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: keyVault
+  name: guid(keyVault.id, adminGroupObjectId, '00482a5a-887f-4fb3-b363-3b7fe8e74483')
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483') // Key Vault Administrator
+    principalId: adminGroupObjectId
+    principalType: 'Group'
+  }
+}
+
 // Store configuration in Key Vault
 resource cosmosConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   parent: keyVault
@@ -410,6 +438,7 @@ resource appInsightsConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@20
 }
 
 // Outputs for use by the application and other resources
+output RESOURCE_GROUP_ID string = resourceGroup().id
 output AZURE_COSMOS_ENDPOINT string = cosmosAccount.properties.documentEndpoint
 output AZURE_COSMOS_DATABASE_NAME string = cosmosDatabase.name
 output AZURE_KEY_VAULT_ENDPOINT string = keyVault.properties.vaultUri

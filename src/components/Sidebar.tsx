@@ -6,15 +6,19 @@ import {
   Target, 
   Workflow, 
   AlertTriangle, 
-  Download 
+  Download,
+  Activity,
+  ArrowUpCircle
 } from "lucide-react";
 
 const navigation = [
-  { name: "Executive Dashboard", href: "/", icon: BarChart3 },
-  { name: "NIST 800-53", href: "/nist", icon: Shield },
-  { name: "Zero Trust", href: "/zta", icon: Target },
+  { name: "Executive Dashboard", href: "/dashboard", icon: BarChart3 },
+  { name: "NIST 800-53 Controls", href: "/nist", icon: Shield },
+  { name: "Zero Trust Architecture", href: "/zta", icon: Target },
   { name: "Execution Enablers", href: "/execution", icon: Workflow },
-  { name: "POA&M", href: "/poam", icon: AlertTriangle },
+  { name: "POA&M Management", href: "/poam", icon: AlertTriangle },
+  { name: "Continuous Monitoring", href: "/monitoring", icon: Activity },
+  { name: "Framework Upgrade", href: "/framework-upgrade", icon: ArrowUpCircle },
   { name: "Export Package", href: "/export", icon: Download },
 ];
 

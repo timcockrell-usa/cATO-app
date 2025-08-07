@@ -1,7 +1,5 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { LocalLogin } from './LocalLogin';
-import { isLocalAuthMode } from '../config/localAuth';
+import { useAuth } from '../contexts/SimpleAuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Shield, AlertTriangle, Loader2 } from 'lucide-react';
@@ -18,7 +16,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRoles = [],
   fallback,
 }) => {
-  const { isLoading, isAuthenticated, user, login, error, hasAnyRole } = useAuth();
+  const { isLoading, isAuthenticated, user, login, error } = useAuth();
 
   // Show loading state
   if (isLoading) {
@@ -38,35 +36,16 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Show login page if not authenticated
   if (!isAuthenticated) {
-    // Check if we're in local auth mode
-    const useLocalAuth = isLocalAuthMode();
-    
-    if (useLocalAuth) {
-      // Show local login form
-      return (
-        <LocalLogin 
-          onLogin={async (loginResult) => {
-            // Store the local user ID for persistence
-            localStorage.setItem('localUserId', loginResult.account.homeAccountId);
-            // The AuthContext will handle the state update
-            window.location.reload();
-          }}
-          error={error || undefined}
-        />
-      );
-    }
-
-    // Show Azure AD login form
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <Shield className="h-6 w-6 text-primary" />
+            <div className="mx-auto mb-4 p-3 bg-red-100 dark:bg-red-900/20 rounded-full w-fit">
+              <Shield className="h-6 w-6 text-red-600 dark:text-red-400" />
             </div>
-            <CardTitle className="text-2xl">USAFRICOM cATO Dashboard</CardTitle>
+            <CardTitle className="text-xl">Authentication Required</CardTitle>
             <CardDescription>
-              Continuous Authority to Operate Management System
+              You need to be logged in to access this page
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -76,74 +55,57 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground text-center">
-                Sign in with your DoD credentials to access the cATO Dashboard
-              </p>
-            </div>
-            
-            <Button onClick={login} className="w-full h-12" size="lg">
-              <Shield className="mr-2 h-4 w-4" />
-              Sign In with Azure AD
+            <Button 
+              onClick={login} 
+              className="w-full"
+              size="lg"
+            >
+              Login to Continue
             </Button>
-            
-            <div className="text-xs text-muted-foreground text-center space-y-2">
-              <p>
-                This system is restricted to authorized DoD personnel only.
-                Unauthorized access is prohibited.
-              </p>
-              <p>
-                By accessing this system, you consent to monitoring and auditing
-                of your activities.
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  // Check role-based access if required roles are specified
-  if (requiredRoles.length > 0 && !hasAnyRole(requiredRoles as any)) {
-    return (
-      fallback || (
-        <div className="min-h-screen flex items-center justify-center bg-background p-4">
+  // Simple role check for SimpleAuthContext (optional)
+  if (requiredRoles.length > 0 && user) {
+    const hasRequiredRole = requiredRoles.some(role => 
+      user.roles?.includes(role) || user.isAdmin
+    );
+    
+    if (!hasRequiredRole) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
-                <AlertTriangle className="h-6 w-6 text-destructive" />
+              <div className="mx-auto mb-4 p-3 bg-yellow-100 dark:bg-yellow-900/20 rounded-full w-fit">
+                <AlertTriangle className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
               </div>
               <CardTitle className="text-xl">Access Denied</CardTitle>
               <CardDescription>
-                You don't have the required permissions to access this resource.
+                You don't have the required permissions to access this page
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-sm text-muted-foreground">
-                <p><strong>Current User:</strong> {user?.displayName}</p>
-                <p><strong>Current Roles:</strong> {user?.roles.join(', ')}</p>
-                <p><strong>Required Roles:</strong> {requiredRoles.join(' or ')}</p>
-              </div>
-              <div className="text-xs text-muted-foreground">
-                If you believe you should have access to this resource, please contact
-                your system administrator or security team.
-              </div>
+            <CardContent>
+              <p className="text-sm text-muted-foreground text-center">
+                Required roles: {requiredRoles.join(', ')}
+              </p>
             </CardContent>
           </Card>
         </div>
-      )
-    );
+      );
+    }
   }
 
-  // Render children if authenticated and authorized
+  // User is authenticated and has required roles
   return <>{children}</>;
 };
 
-// Higher-order component for role-based access
+// Higher-order component for role-based access (simplified for SimpleAuthContext)
 export const withRoleProtection = (
   WrappedComponent: React.ComponentType<any>,
-  requiredRoles: string[] = []
+  requiredRoles: string[]
 ) => {
   return (props: any) => (
     <ProtectedRoute requiredRoles={requiredRoles}>
@@ -151,3 +113,5 @@ export const withRoleProtection = (
     </ProtectedRoute>
   );
 };
+
+export default ProtectedRoute;
