@@ -48,45 +48,21 @@ The cATO (Continuous Authority to Operate) Dashboard is a comprehensive security
 - Appropriate clearance level for target deployment environment
 - DoD Impact Level 2 (IL2) or Impact Level 5 (IL5) authorization if required---
 
-## 🚀 Deployment Options
+## 🚀 Deployment into Existing Infrastructure
 
-### Option 1: Azure Developer CLI (Recommended)
+This guide is specifically for deploying the cATO Dashboard into your existing Azure infrastructure:
 
-This is the easiest method that handles everything automatically.
+- **Resource Group**: ampe-eastus-dev-rg
+- **VNet**: ampe-eus-dev-vnet (10.8.11.0/24)
+- **Subscription**: 930a247f-b4fa-4f1b-ad73-6a03cf1d0f4e
+- **Region**: East US
 
-### Option 2: Direct Bicep Deployment
-
-If you prefer to deploy just the infrastructure using Azure Cloud Shell or have an existing resource group:
-
-```bash
-# In Azure Cloud Shell or local Azure CLI
-
-# 1. Clone the repository (if not already done)
-git clone https://github.com/timcockrell-usa/cATO-app.git
-cd cATO-app
-
-# 2. Set your variables
-RESOURCE_GROUP="your-existing-resource-group"
-LOCATION="eastus"
-ADMIN_GROUP_ID="your-admin-group-object-id"  # See explanation below
-
-# 3. Deploy the Bicep template
-az deployment group create \
-  --resource-group $RESOURCE_GROUP \
-  --template-file infra/main.bicep \
-  --parameters environmentName=prod \
-  --parameters location=$LOCATION \
-  --parameters adminGroupObjectId=$ADMIN_GROUP_ID
-```
-
-### Option 3: Deploy into Existing Resource Group & VNet
-
-If you already have a resource group and VNet deployed (like your ampe-eastus-dev-rg setup):
+### Deployment Process
 
 ```bash
 # In Azure Cloud Shell or local Azure CLI
 
-# 1. Clone the repository (if not already done)
+# 1. Clone the repository
 git clone https://github.com/timcockrell-usa/cATO-app.git
 cd cATO-app
 
@@ -97,11 +73,12 @@ SUBSCRIPTION_ID="930a247f-b4fa-4f1b-ad73-6a03cf1d0f4e"
 VNET_NAME="ampe-eus-dev-vnet"
 ADMIN_GROUP_ID="your-admin-group-object-id"  # Get this from the section below
 
-# 3. Verify your existing resources
-az network vnet show --resource-group $RESOURCE_GROUP --name $VNET_NAME
+# 3. Verify your existing resources and set subscription
 az account set --subscription $SUBSCRIPTION_ID
+az network vnet show --resource-group $RESOURCE_GROUP --name $VNET_NAME
+az group show --name $RESOURCE_GROUP
 
-# 4. Deploy the Bicep template into existing resource group
+# 4. Deploy the Bicep template into your existing resource group
 az deployment group create \
   --resource-group $RESOURCE_GROUP \
   --template-file infra/main.bicep \
@@ -110,7 +87,7 @@ az deployment group create \
   --parameters adminGroupObjectId=$ADMIN_GROUP_ID
 ```
 
-> **Note**: The Bicep template will create new resources (Static Web App, Cosmos DB, Key Vault, etc.) in your existing resource group. It won't modify your existing VNet but will be ready for private endpoint integration if needed later.
+> **Note**: This deployment will create new resources (Static Web App, Cosmos DB, Key Vault, etc.) in your existing resource group. It won't modify your existing VNet but will be ready for private endpoint integration if needed later.
 
 ### What is the Admin Group?
 
@@ -135,7 +112,7 @@ az ad group show --group "cATO Dashboard Admins" --query id -o tsv
 
 ---
 
-## 🚀 Quick Start Deployment
+## 🚀 Step-by-Step Deployment
 
 ### Step 1: Clone and Setup Repository
 
@@ -148,60 +125,88 @@ cd cATO-app
 npm install
 ```
 
-### Step 2: Azure Authentication
+### Step 2: Azure Authentication and Setup
 
 ```bash
 # Login to Azure CLI
 az login
 
-# Set your subscription (for existing infrastructure)
+# Set your subscription to your existing environment
 az account set --subscription "930a247f-b4fa-4f1b-ad73-6a03cf1d0f4e"
 
 # Verify you're in the right subscription and can access your resource group
 az group show --name "ampe-eastus-dev-rg"
-
-# Login to Azure Developer CLI (if using azd method)
-azd auth login
+az network vnet show --resource-group "ampe-eastus-dev-rg" --name "ampe-eus-dev-vnet"
 
 # Verify your subscription
 az account show
 ```
 
-### Step 3: Configure Environment Variables
+### Step 3: Get Admin Group Object ID
 
 ```bash
-# Get your Azure Entra ID admin group object ID
-az ad group show --group "Your-Admin-Group-Name" --query objectId -o tsv
+# List existing groups to find your admin group
+az ad group list --display-name "*admin*" --query "[].{DisplayName:displayName, ObjectId:id}" -o table
 
-# Set required environment variables for deployment
-azd env set AZURE_ADMIN_GROUP_OBJECT_ID "your-admin-group-object-id"
+# OR create a new admin group specifically for cATO Dashboard
+az ad group create --display-name "cATO Dashboard Admins" --mail-nickname "cato-admins"
+
+# Add yourself to the group
+MY_USER_ID=$(az ad signed-in-user show --query id -o tsv)
+az ad group member add --group "cATO Dashboard Admins" --member-id $MY_USER_ID
+
+# Get the group object ID for deployment (save this value)
+az ad group show --group "cATO Dashboard Admins" --query id -o tsv
 ```
 
-### Step 4: Deploy Infrastructure and Application
+### Step 4: Deploy Infrastructure
 
 ```bash
-# Initialize azd environment (first time only)
-azd init
+# Set your environment variables
+RESOURCE_GROUP="ampe-eastus-dev-rg"
+LOCATION="eastus"
+ADMIN_GROUP_ID="your-admin-group-object-id"  # Use the ID from Step 3
 
-# Deploy everything with one command
-azd up
+# Deploy the Bicep template into your existing resource group
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file infra/main.bicep \
+  --parameters environmentName=dev \
+  --parameters location=$LOCATION \
+  --parameters adminGroupObjectId=$ADMIN_GROUP_ID
 ```
 
-This will:
-1. Create Azure resources using Bicep
-2. Build the React application
-3. Deploy to Azure Static Web Apps
-4. Configure managed identity permissions
-5. Set up monitoring and logging
+This deployment will create in your existing `ampe-eastus-dev-rg` resource group:
+1. Azure Static Web App for the React frontend
+2. Azure Cosmos DB (serverless) for compliance data
+3. Azure Key Vault for secure secrets management
+4. Application Insights for monitoring
+5. Log Analytics workspace for centralized logging
+6. User-Assigned Managed Identity for secure service connections
 
-### Step 5: Configure Azure Entra ID Application
+### Step 5: Deploy the Application
+
+After the infrastructure is deployed, deploy the React application:
+
+```bash
+# Build the application
+npm run build
+
+# Get the Static Web App name from your deployment
+STATIC_APP_NAME=$(az staticwebapp list --resource-group "ampe-eastus-dev-rg" --query "[0].name" -o tsv)
+
+# Deploy the built application
+az staticwebapp environment set --name $STATIC_APP_NAME --environment-name default --source ./dist
+```
+
+### Step 6: Configure Azure Entra ID Application
 
 After deployment, you'll need to set up authentication:
 
 1. **Go to Azure Portal** → Azure Entra ID → App registrations
-2. **Create new registration** or configure existing:
+2. **Create new registration**:
    ```
-   Name: cATO Dashboard Production
+   Name: cATO Dashboard Development
    Account types: Single tenant
    Redirect URI: https://[your-static-web-app-url]
    ```
@@ -211,71 +216,7 @@ After deployment, you'll need to set up authentication:
    - Set logout URL
 4. **Set up API permissions**:
    - Microsoft Graph: `User.Read`, `User.ReadBasic.All`
-   - Add custom scopes if needed
-5. **Configure app roles** (see detailed section below)
-
----
-
-## 🔧 Environment-Specific Deployments
-
-### Development Environment
-
-```bash
-# Deploy to development subscription
-azd env new dev
-azd env set AZURE_LOCATION "eastus"
-azd env set AZURE_ADMIN_GROUP_OBJECT_ID "your-dev-group-id"
-azd up
-```
-
-### Production Environment
-
-```bash
-# Deploy to production subscription  
-azd env new prod
-azd env set AZURE_LOCATION "eastus"
-azd env set AZURE_ADMIN_GROUP_OBJECT_ID "your-prod-group-id"
-
-# Enable production security settings
-azd env set ENABLE_PRIVATE_ENDPOINTS "true"
-azd env set RESTRICT_PUBLIC_ACCESS "true"
-azd up
-```
-
-### Azure Government (IL5)
-
-```bash
-# Set Azure Government cloud
-az cloud set --name AzureUSGovernment
-azd auth login
-
-# Deploy to gov cloud
-azd env new il5-prod
-azd env set AZURE_LOCATION "usgovvirginia"
-azd up
-```
-
-> **Note**: Azure Government deployment uses the same Bicep templates and process as Azure Commercial, but connects to the Azure Government cloud endpoints. The main differences are:
-> - Different cloud endpoints (`.us` domains)
-> - Limited region availability (usgovvirginia, usgovtexas, etc.)
-> - Enhanced compliance features for government workloads
-> - Same resource types and configurations as Commercial
-
-### Azure Commercial (IL2) - Recommended for Testing
-
-For initial testing and development, use Azure Commercial which has the same setup process:
-
-```bash
-# Ensure you're using Azure Commercial cloud (default)
-az cloud set --name AzureCloud
-azd auth login
-
-# Deploy to commercial cloud for testing
-azd env new test-il2
-azd env set AZURE_LOCATION "eastus"
-azd env set AZURE_ADMIN_GROUP_OBJECT_ID "your-admin-group-id"
-azd up
-```
+5. **Configure app roles** (see Role-Based Access Control section below)
 
 ---
 
