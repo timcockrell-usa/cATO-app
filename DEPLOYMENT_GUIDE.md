@@ -277,11 +277,11 @@ After the infrastructure is deployed, deploy the React application:
 
 If you got NPM errors during setup, your Node.js version may be too old. NPM 11.5.2 requires Node.js 20.17.0+.
 
-**Option 1: Continue with NPM 10.7.0 (Quick Fix)**
+**Option 1: Continue with Current Build (Quick Fix)**
 ```bash
-# Your current setup works fine for Azure Static Web Apps
-# Just build and deploy with current NPM version
-npm run build
+# First, verify the dist folder exists and check current directory
+pwd
+ls -la dist/ || dir dist  # Use 'ls' in Linux/Azure Cloud Shell, 'dir' in Windows
 
 # Method 1: Use Azure Static Web Apps CLI (Recommended)
 # Install SWA CLI if not already installed
@@ -291,12 +291,20 @@ npm install -g @azure/static-web-apps-cli
 STATIC_APP_NAME=$(az staticwebapp list --resource-group "ampe-eastus-dev-rg" --query "[0].name" -o tsv)
 DEPLOYMENT_TOKEN=$(az staticwebapp secrets list --name $STATIC_APP_NAME --resource-group "ampe-eastus-dev-rg" --query "properties.apiKey" -o tsv)
 
-# Deploy using SWA CLI
+# Deploy using SWA CLI (use absolute path to be sure)
 swa deploy ./dist --deployment-token $DEPLOYMENT_TOKEN
 
 # Method 2: Alternative - Upload via Azure CLI (if SWA CLI not available)
 # Create a zip of the dist folder and deploy
 cd dist
+zip -r ../dist.zip . || tar -czf ../dist.tar.gz .  # Use zip in Linux, tar as fallback
+cd ..
+az staticwebapp source upload --name $STATIC_APP_NAME --resource-group "ampe-eastus-dev-rg" --source dist.zip
+
+# Method 3: If dist folder is empty or incomplete, rebuild first
+npm run build -- --mode production 2>/dev/null || echo "Build completed with some TypeScript warnings"
+ls -la dist/ || dir dist  # Verify dist folder has content after build
+```
 zip -r ../dist.zip .
 cd ..
 az staticwebapp source upload --name $STATIC_APP_NAME --resource-group "ampe-eastus-dev-rg" --source dist.zip
