@@ -284,9 +284,14 @@ Since `npm run build` fails due to TypeScript errors and the `dist` folder isn't
 cd ~/cATO-app
 pwd
 
-# 2. Set up azd environment (one-time setup)
+# 2. Initialize azd for existing project (NOT template)
 azd auth login  # If not already logged in
-azd init --template .  # Initialize from current directory
+azd init  # Initialize WITHOUT --template flag (this creates azd config for existing project)
+
+# When prompted:
+# - "What would you like to do with these files?" → Select "Continue with this directory"
+# - "Environment name:" → Type "dev" 
+# - The project already has azure.yaml so it will use that configuration
 
 # 3. Set required environment variables
 azd env set AZURE_LOCATION "eastus2"
@@ -298,7 +303,7 @@ ADMIN_GROUP_ID=$(az ad group show --group "cATO Dashboard Admins" --query id -o 
 azd env set AZURE_ADMIN_GROUP_OBJECT_ID "$ADMIN_GROUP_ID"
 
 # 5. Deploy everything (infrastructure + application)
-azd up --environment dev
+azd up
 
 # This command will:
 # - Deploy the Bicep infrastructure to your existing resource group
