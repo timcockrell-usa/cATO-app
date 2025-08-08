@@ -283,11 +283,23 @@ If you got NPM errors during setup, your Node.js version may be too old. NPM 11.
 # Just build and deploy with current NPM version
 npm run build
 
-# Get the Static Web App name from your deployment
-STATIC_APP_NAME=$(az staticwebapp list --resource-group "ampe-eastus-dev-rg" --query "[0].name" -o tsv)
+# Method 1: Use Azure Static Web Apps CLI (Recommended)
+# Install SWA CLI if not already installed
+npm install -g @azure/static-web-apps-cli
 
-# Deploy the built application  
-az staticwebapp environment set --name $STATIC_APP_NAME --environment-name default --source ./dist
+# Get the Static Web App name and deployment token
+STATIC_APP_NAME=$(az staticwebapp list --resource-group "ampe-eastus-dev-rg" --query "[0].name" -o tsv)
+DEPLOYMENT_TOKEN=$(az staticwebapp secrets list --name $STATIC_APP_NAME --resource-group "ampe-eastus-dev-rg" --query "properties.apiKey" -o tsv)
+
+# Deploy using SWA CLI
+swa deploy ./dist --deployment-token $DEPLOYMENT_TOKEN
+
+# Method 2: Alternative - Upload via Azure CLI (if SWA CLI not available)
+# Create a zip of the dist folder and deploy
+cd dist
+zip -r ../dist.zip .
+cd ..
+az staticwebapp source upload --name $STATIC_APP_NAME --resource-group "ampe-eastus-dev-rg" --source dist.zip
 ```
 
 **Option 2: Upgrade Node.js for NPM 11.5.2 (Recommended)**
