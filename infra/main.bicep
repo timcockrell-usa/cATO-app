@@ -4,14 +4,23 @@ param environmentName string = 'dev'
 @description('The primary Azure region for deployment')
 param location string = resourceGroup().location
 
-@description('The resource token to make resource names unique')
-param resourceToken string = toLower(uniqueString(subscription().id, resourceGroup().id, location, environmentName))
+@description('The resource token to make resource names unique. Leave empty to auto-generate, or provide custom value to avoid conflicts.')
+param resourceToken string = ''
+
+@description('Deployment suffix to avoid conflicts (optional)')
+param deploymentSuffix string = ''
 
 @description('The Azure Entra ID tenant ID')
 param tenantId string = tenant().tenantId
 
 @description('The object ID of the Azure Entra ID group for administrators')
 param adminGroupObjectId string
+
+// Generate a unique resource token if not provided
+// This approach allows for custom tokens to avoid conflicts
+var baseToken = toLower(uniqueString(subscription().id, resourceGroup().id, location, environmentName))
+var suffixedToken = !empty(deploymentSuffix) ? toLower(uniqueString(baseToken, deploymentSuffix)) : baseToken
+var finalResourceToken = !empty(resourceToken) ? resourceToken : suffixedToken
 
 // Core naming conventions
 var abbrs = {
@@ -24,12 +33,12 @@ var abbrs = {
 }
 
 var resourceNames = {
-  cosmosAccount: '${abbrs.cosmosDBAccounts}${resourceToken}'
-  staticWebApp: '${abbrs.staticSites}${resourceToken}'
-  managedIdentity: '${abbrs.managedIdentity}${resourceToken}'
-  keyVault: '${abbrs.keyVault}${resourceToken}'
-  logAnalytics: '${abbrs.logAnalyticsWorkspace}${resourceToken}'
-  appInsights: '${abbrs.applicationInsights}${resourceToken}'
+  cosmosAccount: '${abbrs.cosmosDBAccounts}${finalResourceToken}'
+  staticWebApp: '${abbrs.staticSites}${finalResourceToken}'
+  managedIdentity: '${abbrs.managedIdentity}${finalResourceToken}'
+  keyVault: '${abbrs.keyVault}${finalResourceToken}'
+  logAnalytics: '${abbrs.logAnalyticsWorkspace}${finalResourceToken}'
+  appInsights: '${abbrs.applicationInsights}${finalResourceToken}'
 }
 
 // Tags for resource organization and cost management

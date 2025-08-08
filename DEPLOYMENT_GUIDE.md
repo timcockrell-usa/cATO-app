@@ -30,9 +30,73 @@ The cATO (Continuous Authority to Operate) Dashboard is a comprehensive security
 
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) v2.50+
 - [Azure Developer CLI (azd)](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd) v1.0+
-- [Node.js](https://nodejs.org/) v18+
+- [Node.js](https://nodejs.org/) v18.17.0+ (LTS recommended)
+- [NPM](https://www.npmjs.com/) v11.5.2+ (for security and performance)
 - [Git](https://git-scm.com/) v2.30+
 - PowerShell 7+ (Windows) or Bash (Linux/macOS)
+
+### Node.js and NPM Setup
+
+**Recommended versions for Azure Static Web Apps:**
+```bash
+# Check current versions
+node --version  # Should be v18.17.0 or higher
+npm --version   # Should be v11.5.2 or higher
+
+# Upgrade NPM if needed
+npm install -g npm@11.5.2
+
+# For Node.js version management, use:
+# - nvm (Linux/macOS): nvm install 18.19.0 && nvm use 18.19.0
+# - nvm-windows (Windows): nvm install 18.19.0 && nvm use 18.19.0
+```
+
+## 🚀 Quick Setup
+
+### For Linux/macOS:
+```bash
+# Make the script executable
+chmod +x setup-npm.sh
+
+# Run the setup script
+./setup-npm.sh
+```
+
+### For Windows PowerShell:
+```powershell
+# Set execution policy (if needed)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Run the setup script
+.\setup-npm.ps1
+```
+
+### For Manual Setup:
+```bash
+# 1. Upgrade NPM to 11.5.2
+npm install -g npm@11.5.2
+
+# 2. Clean previous installation
+rm -rf node_modules package-lock.json
+npm cache clean --force
+
+# 3. Install dependencies
+npm install
+
+# 4. Run validation
+npm run type-check
+npm run build
+```
+
+These setup scripts will:
+- ✅ Verify Node.js version (18.17.0+)
+- ✅ Upgrade NPM to 11.5.2
+- ✅ Clean previous installations
+- ✅ Install all dependencies
+- ✅ Run TypeScript type checking
+- ✅ Build the application
+
+**Validation Script:** Run `./validate-setup.ps1` (Windows) or `./validate-setup.sh` (Linux/macOS) to verify your setup.
 
 ### Azure Requirements
 
@@ -399,6 +463,51 @@ az staticwebapp show --name "your-static-app" --resource-group "your-rg"
 
 ### Common Deployment Issues
 
+**Issue**: `Cannot update Static Web App: A create or update operation is currently in progress`
+
+This error occurs when:
+1. A previous deployment was interrupted
+2. A Static Web App deletion didn't complete fully  
+3. Azure has a background operation still running
+
+**Solutions:**
+
+```bash
+# Option 1: Wait 10-15 minutes for Azure operations to complete, then retry
+
+# Option 2A: Deploy with different environment name to generate new resource names
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file infra/main.bicep \
+  --parameters environmentName=dev2 \
+  --parameters location=$LOCATION \
+  --parameters adminGroupObjectId=$ADMIN_GROUP_ID
+
+# Option 2B: Deploy with deployment suffix to force new names
+DEPLOYMENT_SUFFIX=$(date +%s)  # Use timestamp
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file infra/main.bicep \
+  --parameters environmentName=dev \
+  --parameters location=$LOCATION \
+  --parameters adminGroupObjectId=$ADMIN_GROUP_ID \
+  --parameters deploymentSuffix=$DEPLOYMENT_SUFFIX
+
+# Option 2C: Deploy with custom resource token
+CUSTOM_TOKEN=$(openssl rand -hex 6 | head -c 13)  # Generate random 13-char token
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file infra/main.bicep \
+  --parameters environmentName=dev \
+  --parameters location=$LOCATION \
+  --parameters adminGroupObjectId=$ADMIN_GROUP_ID \
+  --parameters resourceToken=$CUSTOM_TOKEN
+
+# Option 3: Clean up with bash script and wait
+./cleanup-deployment.sh
+# Wait 10-15 minutes, then retry deployment
+```
+
 **Issue**: `LocationNotAvailableForResourceType` for Azure Static Web Apps
 
 ```bash
@@ -428,17 +537,59 @@ az account clear
 az login
 ```
 
-**Issue**: Cleanup script not working - `unrecognized arguments: --yes`
+**Issue**: Cleanup script not working - Azure CLI errors or hanging
 
 ```bash
-# Problem: Azure CLI syntax has changed
-# OLD (broken): az resource delete --yes
-# NEW (fixed): az resource delete --force
+# Problem: Azure CLI may be corrupted or have module issues
+# Solution: Use the improved bash cleanup script with better error handling
 
-# Solution: Use the updated cleanup scripts
-./cleanup-deployment.sh     # For Linux/macOS/WSL
-# OR
-.\cleanup-deployment.ps1    # For Windows PowerShell (recommended)
+# For Linux/macOS/WSL - Enhanced bash script
+chmod +x cleanup-deployment.sh
+./cleanup-deployment.sh
+
+# The improved script includes:
+# - Better Azure CLI error detection
+# - Robust resource discovery using table format
+# - Fallback mechanisms for corrupted Azure CLI
+# - Proper handling of special resources (Key Vault, Cosmos DB)
+```
+
+**Issue**: NPM build errors - missing dependencies or TypeScript errors
+
+```bash
+# Problem: Server-side dependencies or outdated NPM version
+# Solution: Use NPM 11.5.2 and ensure frontend-only build
+
+# Step 1: Update NPM to latest version
+npm install -g npm@11.5.2
+
+# Step 2: Clean install dependencies
+rm -rf node_modules package-lock.json
+npm cache clean --force
+npm install
+
+# Step 3: Check for TypeScript errors
+npm run type-check
+
+# Step 4: Build for production
+npm run build
+
+# If you see express, puppeteer, or archiver errors:
+# These are server-side dependencies that should be moved to Azure Functions
+# The frontend build has been configured to work without them
+```
+
+**Issue**: Module import errors or missing types
+
+```bash
+# Check if all devDependencies are installed
+npm install --save-dev @types/express @types/archiver @types/marked
+
+# Verify TypeScript configuration
+npm run type-check
+
+# Clean build
+npm run build
 ```
 
 **Issue**: `AZURE_ADMIN_GROUP_OBJECT_ID not found`

@@ -31,6 +31,18 @@ echo -e "   • Your existing resource group"
 echo -e "   • Any other existing infrastructure"
 echo ""
 
+# Check if Azure CLI is working
+if ! command -v az &> /dev/null; then
+    echo -e "${RED}❌ Azure CLI not found. Please install Azure CLI first.${NC}"
+    exit 1
+fi
+
+# Test Azure CLI functionality
+if ! az account show > /dev/null 2>&1; then
+    echo -e "${RED}❌ Azure CLI not logged in. Please run 'az login' first.${NC}"
+    exit 1
+fi
+
 # Confirmation prompt
 read -p "Are you sure you want to proceed? (yes/no): " confirm
 if [[ $confirm != "yes" ]]; then
@@ -83,29 +95,31 @@ delete_resource() {
 discover_cato_resources() {
     echo -e "${BLUE}🔍 Discovering cATO Dashboard resources...${NC}"
     
-    # Get all resources in the resource group
-    local all_resources=$(az resource list --resource-group "$RESOURCE_GROUP" --query "[].{name:name, type:type}" -o tsv)
+    # Get all resources in the resource group using simple table format
+    echo -e "${BLUE}   Querying Azure for resources...${NC}"
     
-    # Find Cosmos DB resources (cosmos-*)
-    COSMOS_ACCOUNTS=($(echo "$all_resources" | awk '$2=="Microsoft.DocumentDB/databaseAccounts" {print $1}' | grep "^cosmos-"))
+    # Create temporary file for resource list
+    local temp_file=$(mktemp)
     
-    # Find Static Web Apps (stapp-*)
-    STATIC_WEB_APPS=($(echo "$all_resources" | awk '$2=="Microsoft.Web/staticSites" {print $1}' | grep "^stapp-"))
+    if ! az resource list --resource-group "$RESOURCE_GROUP" --output table > "$temp_file" 2>/dev/null; then
+        echo -e "${RED}❌ Failed to query Azure resources. Check your Azure CLI installation.${NC}"
+        rm -f "$temp_file"
+        exit 1
+    fi
     
-    # Find Managed Identities (id-*)
-    MANAGED_IDENTITIES=($(echo "$all_resources" | awk '$2=="Microsoft.ManagedIdentity/userAssignedIdentities" {print $1}' | grep "^id-"))
+    # Find cATO resources by name patterns
+    COSMOS_ACCOUNTS=($(grep "cosmos-" "$temp_file" | grep "Microsoft.DocumentDB/databaseAccounts" | awk '{print $1}' || true))
+    STATIC_WEB_APPS=($(grep "stapp-" "$temp_file" | grep "Microsoft.Web/staticSites" | awk '{print $1}' || true))
+    MANAGED_IDENTITIES=($(grep "id-" "$temp_file" | grep "Microsoft.ManagedIdentity/userAssignedIdentities" | awk '{print $1}' || true))
+    KEY_VAULTS=($(grep "kv-" "$temp_file" | grep "Microsoft.KeyVault/vaults" | awk '{print $1}' || true))
+    LOG_ANALYTICS=($(grep "log-" "$temp_file" | grep "Microsoft.OperationalInsights/workspaces" | awk '{print $1}' || true))
+    APP_INSIGHTS=($(grep "appi-" "$temp_file" | grep "Microsoft.Insights/components" | awk '{print $1}' || true))
     
-    # Find Key Vaults (kv-*)
-    KEY_VAULTS=($(echo "$all_resources" | awk '$2=="Microsoft.KeyVault/vaults" {print $1}' | grep "^kv-"))
+    # Find Smart Detector Alert Rules (created automatically with App Insights)
+    SMART_DETECTORS=($(grep "Failure Anomalies" "$temp_file" | grep "microsoft.alertsmanagement/smartDetectorAlertRules" | awk '{print $1}' || true))
     
-    # Find Log Analytics (log-*)
-    LOG_ANALYTICS=($(echo "$all_resources" | awk '$2=="Microsoft.OperationalInsights/workspaces" {print $1}' | grep "^log-"))
-    
-    # Find Application Insights (appi-*)
-    APP_INSIGHTS=($(echo "$all_resources" | awk '$2=="Microsoft.Insights/components" {print $1}' | grep "^appi-"))
-    
-    # Find Smart Detector Alert Rules (these are auto-created with App Insights)
-    SMART_DETECTORS=($(echo "$all_resources" | awk '$2=="microsoft.alertsmanagement/smartDetectorAlertRules" {print $1}'))
+    # Clean up temp file
+    rm -f "$temp_file"
     
     echo -e "${GREEN}✅ Discovered cATO resources:${NC}"
     echo -e "   • Cosmos DB accounts: ${#COSMOS_ACCOUNTS[@]}"
