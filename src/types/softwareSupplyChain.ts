@@ -938,3 +938,92 @@ export interface ComplianceImprovementItem {
   estimatedTime: string;
   expectedBenefit: string;
 }
+
+// Missing type exports for SSC Monitoring Service
+export interface SSCConfiguration {
+  framework: SSCFramework;
+  maturityLevel: SSCMaturityLevel;
+  organizationId: string;
+  enabled: boolean;
+}
+
+export interface ComplianceReport {
+  id: string;
+  organizationId: string;
+  framework: SSCFramework;
+  generatedAt: Date;
+  reportData: any;
+}
+
+export interface ThreatIntelligence {
+  id: string;
+  source: string;
+  severity: VulnerabilitySeverity;
+  description: string;
+  indicators: string[];
+}
+
+export interface SecurityPolicy {
+  id: string;
+  name: string;
+  description: string;
+  rules: PolicyRule[];
+  enabled: boolean;
+}
+
+export interface PolicyRule {
+  id: string;
+  condition: string;
+  action: string;
+  severity: VulnerabilitySeverity;
+}
+
+export interface AuditTrail {
+  id: string;
+  action: string;
+  userId: string;
+  timestamp: Date;
+  details: any;
+}
+
+export interface VulnerabilityRiskAssessment {
+  vulnerabilityId: string;
+  riskScore: number;
+  impact: VulnerabilitySeverity;
+  likelihood: 'High' | 'Medium' | 'Low';
+  mitigationRecommendations: string[];
+}
+
+export interface ComponentInventory {
+  components: SoftwareComponent[];
+  totalComponents: number;
+  lastUpdated: Date;
+  organizationId: string;
+}
+
+export interface PolicyViolation {
+  id: string;
+  policyId: string;
+  resourceId: string;
+  severity: VulnerabilitySeverity;
+  description: string;
+  detectedAt: Date;
+}
+
+export type PipelineStage = 'Build' | 'Test' | 'Security_Scan' | 'Deploy' | 'Monitor';
+
+export type ComplianceFramework = SSCFramework;
+
+export type VulnerabilityStatus = 'Open' | 'Fixed' | 'Accepted_Risk' | 'False_Positive' | 'Duplicate';
+
+export type AlertSeverity = VulnerabilitySeverity;
+
+// Re-export RiskLevel from executionEnablers
+export type { RiskLevel } from './executionEnablers';
+
+// Chart data type for dashboard
+export interface ChartData {
+  name: string;
+  value: number;
+  color?: string;
+}

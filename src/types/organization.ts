@@ -3,6 +3,9 @@
 
 import { UserRole } from '../config/authConfig';
 
+// Re-export UserRole for other modules
+export type { UserRole };
+
 export interface Organization {
   id: string;
   name: string;

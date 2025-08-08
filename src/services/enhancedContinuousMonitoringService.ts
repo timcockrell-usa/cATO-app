@@ -176,10 +176,10 @@ class EnhancedContinuousMonitoringService {
       // Schedule the next sync job
       await this.scheduleNextSync(config.tenantId);
       
-      return resource as SyncConfiguration;
+      return resource as unknown as SyncConfiguration;
     } catch (error) {
       console.error('Failed to configure sync schedule:', error);
-      throw new Error(`Configuration failed: ${error}`);
+      throw new Error(`Configuration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

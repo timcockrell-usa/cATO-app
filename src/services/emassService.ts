@@ -951,7 +951,7 @@ export class EmassIntegrationService implements EmassService {
       formData.append('file', artifact.file);
     } else {
       // Convert Uint8Array to Blob
-      const blob = new Blob([artifact.file], { type: artifact.mimeType });
+      const blob = new Blob([new Uint8Array(artifact.file)], { type: artifact.mimeType });
       formData.append('file', blob, artifact.filename);
     }
     

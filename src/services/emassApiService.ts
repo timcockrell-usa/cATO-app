@@ -350,14 +350,24 @@ class EMassApiService {
       estimatedCost: 0,
       milestones: [],
       progress: {
+        overallPercentage: 0,
+        milestoneProgress: {},
         lastUpdated: now,
+        updatedBy: 'system',
         blockers: [],
         risks: []
       },
       riskAssessment: {
+        currentRiskLevel: 'Medium' as const,
+        residualRiskLevel: 'Low' as const,
         riskScore: 0,
+        likelihood: 'Medium' as const,
+        impact: 'Medium' as const,
         riskFactors: [],
-        mitigatingFactors: []
+        mitigatingFactors: [],
+        assessedBy: 'system',
+        assessedDate: now,
+        nextReviewDate: new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000) // 90 days from now
       },
       businessImpact: {
         operationalImpact: {
@@ -386,9 +396,10 @@ class EMassApiService {
         businessProcesses: []
       },
       remediationPlan: {
-        approach: 'Proactive',
+        approach: 'Fix' as const,
         steps: [],
         timeline: {
+          phases: [],
           criticalPath: [],
           bufferTime: 0,
           contingencyTime: 0
@@ -415,18 +426,25 @@ class EMassApiService {
         fieldMappings: []
       },
       workflow: {
-        currentState: 'InProgress',
-        stages: [],
-        approvals: []
+        currentState: {
+          name: 'InProgress',
+          description: 'Item is currently in progress',
+          allowedTransitions: ['Review', 'Complete'],
+          requiredApprovals: [],
+          autoTransitions: []
+        },
+        history: [],
+        approvals: [],
+        notifications: []
       },
       attachments: [],
       evidenceLinks: [],
       history: [{
+        id: `history-${Date.now()}`,
         timestamp: now,
-        action: 'Creation',
-        user: 'emass-sync',
-        details: 'Synchronized from eMASS system',
-        changeDescription: 'Initial creation from eMASS'
+        userId: 'emass-sync',
+        action: 'Created' as const,
+        description: 'Synchronized from eMASS system'
       }]
     };
   }

@@ -542,7 +542,21 @@ class EnhancedCosmosDBService {
     return revision === 'Rev4' ? '4' : '5';
   }
 
-  private convertToOrgRevisionFormat(revision: '4' | '5'): NistRevision {
+  private convertToOrgRevisionFormat(revision: NistRevision): 'Rev4' | 'Rev5' {
+    switch (revision) {
+      case 'Rev4':
+        return 'Rev4';
+      case 'Rev5':
+        return 'Rev5';
+      case 'Rev6':
+        // For now, treat Rev6 as Rev5 since gap analysis doesn't support Rev6 yet
+        return 'Rev5';
+      default:
+        throw new Error(`Unsupported revision: ${revision}`);
+    }
+  }
+
+  private convertShortToNistRevision(revision: '4' | '5'): NistRevision {
     return revision === '4' ? 'Rev4' : 'Rev5';
   }
 
@@ -574,7 +588,7 @@ class EnhancedCosmosDBService {
         timestamp: new Date().toISOString(),
         details: {
           newRevision: revision,
-          previousRevision: this.convertToOrgRevisionFormat(previousRevision)
+          previousRevision: this.convertShortToNistRevision(previousRevision)
         }
       });
 
@@ -668,7 +682,7 @@ class EnhancedCosmosDBService {
       }
 
       const currentTenantRevision = tenant.nistRevision;
-      const currentRevision = this.convertToOrgRevisionFormat(currentTenantRevision);
+      const currentRevision = this.convertShortToNistRevision(currentTenantRevision);
       
       if (currentRevision === targetRevision) {
         throw new Error(`Organization is already using ${targetRevision}`);
@@ -686,7 +700,7 @@ class EnhancedCosmosDBService {
       // Categorize controls based on mappings
       const gapAnalysis: NISTRevisionGapAnalysis = {
         tenantId,
-        currentRevision,
+        currentRevision: this.convertToOrgRevisionFormat(currentRevision),
         targetRevision,
         analysisDate: new Date().toISOString(),
         totalCurrentControls: currentControls.length,
@@ -835,7 +849,7 @@ class EnhancedCosmosDBService {
       }
 
       const currentTenantRevision = tenant.nistRevision;
-      const currentRevision = this.convertToOrgRevisionFormat(currentTenantRevision);
+      const currentRevision = this.convertShortToNistRevision(currentTenantRevision);
       
       if (currentRevision === targetRevision) {
         throw new Error(`Organization is already using ${targetRevision}`);
@@ -847,7 +861,7 @@ class EnhancedCosmosDBService {
         id: upgradeId,
         upgradeId,
         tenantId,
-        fromRevision: currentRevision,
+        fromRevision: this.convertToOrgRevisionFormat(currentRevision),
         toRevision: targetRevision,
         initiatedBy,
         initiatedAt: new Date().toISOString(),

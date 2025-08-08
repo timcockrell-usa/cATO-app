@@ -1,5 +1,17 @@
 /**
- * Enhanced Continuous Monitoring Service
+ * Enhanced Contiinterface SyncJob {
+  id: string;
+  tenantId: string;
+  cloudProvider: 'azure' | 'aws' | 'gcp' | 'oracle';
+  startTime: string;
+  endTime?: string;
+  status: 'running' | 'success' | 'failed';
+  recordsIngested?: number;
+  syncDuration?: number;
+  lastSuccessfulSync?: string;
+  errorMessage?: string;
+  jobId?: string;
+  metadata?: Record<string, any>;ing Service
  * Implements Azure Functions Timer Trigger pattern for automated data ingestion
  * and comprehensive sync status tracking for multi-cloud environments
  */
@@ -14,6 +26,7 @@ const multiEnvironmentService = new MultiEnvironmentService(null);
 // Cosmos DB configuration with secure authentication
 const cosmosConfig = {
   endpoint: import.meta.env.VITE_COSMOS_DB_ENDPOINT || 'https://your-cosmos-account.documents.azure.com:443/',
+  key: import.meta.env.VITE_COSMOS_DB_KEY || '',
   databaseId: import.meta.env.VITE_COSMOS_DB_NAME || 'cato-dashboard',
 };
 
@@ -27,7 +40,7 @@ export interface SyncStatus {
   startTime: string;
   endTime?: string;
   status: 'running' | 'success' | 'failed';
-  recordsIngested: number;
+  recordsIngested?: number;
   syncDuration?: number;
   lastSuccessfulSync?: string;
   errorMessage?: string;

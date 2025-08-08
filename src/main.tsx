@@ -1,7 +1,10 @@
 import { createRoot } from 'react-dom/client'
 import { ThemeProvider } from 'next-themes'
-import App from './App.tsx'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom/client'
+import App from './App'
 import './index.css'
+import ErrorBoundary from './components/ErrorBoundary'
 
 console.log('main.tsx loading');
 
