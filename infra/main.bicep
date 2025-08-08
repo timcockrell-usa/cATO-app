@@ -347,7 +347,9 @@ resource vulnerabilitiesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlData
 resource staticWebApp 'Microsoft.Web/staticSites@2024-04-01' = {
   name: resourceNames.staticWebApp
   location: location
-  tags: tags
+  tags: union(tags, {
+    'azd-service-name': 'web'
+  })
   sku: {
     name: 'Standard'
     tier: 'Standard'
