@@ -40,15 +40,15 @@ The cATO (Continuous Authority to Operate) Dashboard is a comprehensive security
 **Recommended versions for Azure Static Web Apps:**
 ```bash
 # Check current versions
-node --version  # Should be v18.17.0 or higher
+node --version  # Should be v18.17.0 or higher (v22.18.0 recommended)
 npm --version   # Should be v11.5.2 or higher
 
-# Upgrade NPM if needed
+# Upgrade NPM if needed (requires Node.js 20.17.0+ for NPM 11.5.2)
 npm install -g npm@11.5.2
 
 # For Node.js version management, use:
-# - nvm (Linux/macOS): nvm install 18.19.0 && nvm use 18.19.0
-# - nvm-windows (Windows): nvm install 18.19.0 && nvm use 18.19.0
+# - nvm (Linux/macOS): nvm install 22.18.0 && nvm use 22.18.0
+# - nvm-windows (Windows): nvm install 22.18.0 && nvm use 22.18.0
 ```
 
 ## 🚀 Quick Setup
@@ -273,15 +273,39 @@ This deployment will create in your existing `ampe-eastus-dev-rg` resource group
 
 After the infrastructure is deployed, deploy the React application:
 
+**⚠️ Important: NPM Version Fix**
+
+If you got NPM errors during setup, your Node.js version may be too old. NPM 11.5.2 requires Node.js 20.17.0+.
+
+**Option 1: Continue with NPM 10.7.0 (Quick Fix)**
 ```bash
-# Build the application
+# Your current setup works fine for Azure Static Web Apps
+# Just build and deploy with current NPM version
 npm run build
 
 # Get the Static Web App name from your deployment
 STATIC_APP_NAME=$(az staticwebapp list --resource-group "ampe-eastus-dev-rg" --query "[0].name" -o tsv)
 
-# Deploy the built application
+# Deploy the built application  
 az staticwebapp environment set --name $STATIC_APP_NAME --environment-name default --source ./dist
+```
+
+**Option 2: Upgrade Node.js for NPM 11.5.2 (Recommended)**
+```bash
+# Check your current Node version
+node --version  # If less than v20.17.0, upgrade Node.js first
+
+# Using nvm (if available) - Recommended Node.js v22.18.0
+nvm install 22.18.0
+nvm use 22.18.0
+
+# Then run the NPM upgrade
+npm install -g npm@11.5.2
+
+# Clean install and build
+rm -rf node_modules package-lock.json
+npm install
+npm run build
 ```
 
 ### Step 6: Configure Azure Entra ID Application

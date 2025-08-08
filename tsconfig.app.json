@@ -26,5 +26,13 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "src/**/*-backup.ts",
+    "src/**/*-backup.tsx",
+    "src/**/*-new.ts",
+    "src/**/*-new.tsx",
+    "node_modules",
+    "dist"
+  ]
 }

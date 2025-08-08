@@ -6,7 +6,10 @@
 
 import { CosmosClient, Container } from '@azure/cosmos';
 import { DefaultAzureCredential } from '@azure/identity';
-import { multiEnvironmentService } from './multiEnvironmentService';
+import { MultiEnvironmentService } from './multiEnvironmentService';
+
+// Create an instance of the service - will be properly initialized with cosmos client
+const multiEnvironmentService = new MultiEnvironmentService(null);
 
 // Cosmos DB configuration with secure authentication
 const cosmosConfig = {
@@ -98,7 +101,7 @@ export interface SyncStatus {
   cloudProvider: 'azure' | 'aws' | 'gcp' | 'oracle';
   startTime: string;
   endTime?: string;
-  status: 'in_progress' | 'success' | 'failed';
+  status: 'running' | 'success' | 'failed';
   recordsIngested?: number;
   errorMessage?: string;
   lastSuccessfulSync?: string;
@@ -243,7 +246,7 @@ class ContinuousMonitoringService {
       tenantId,
       cloudProvider: provider,
       startTime,
-      status: 'in_progress',
+      status: 'running',
       createdAt: startTime,
       updatedAt: startTime
     };
@@ -306,7 +309,7 @@ class ContinuousMonitoringService {
   private async syncAzureData(tenantId: string): Promise<number> {
     try {
       // Use existing dummyMultiEnvironmentService to sync Azure data
-      const azureData = await dummyMultiEnvironmentService.getConsolidatedDashboard(tenantId);
+      const azureData = await multiEnvironmentService.getConsolidatedDashboard(tenantId);
       // Process and store the data
       return azureData ? 1 : 0;
     } catch (error) {
@@ -321,7 +324,7 @@ class ContinuousMonitoringService {
   private async syncAWSData(tenantId: string): Promise<number> {
     try {
       // Use existing dummyMultiEnvironmentService to sync AWS data
-      const awsData = await dummyMultiEnvironmentService.getConsolidatedDashboard(tenantId);
+      const awsData = await multiEnvironmentService.getConsolidatedDashboard(tenantId);
       // Process and store the data
       return awsData ? 1 : 0;
     } catch (error) {
@@ -336,7 +339,7 @@ class ContinuousMonitoringService {
   private async syncGCPData(tenantId: string): Promise<number> {
     try {
       // Use existing dummyMultiEnvironmentService to sync GCP data
-      const gcpData = await dummyMultiEnvironmentService.getConsolidatedDashboard(tenantId);
+      const gcpData = await multiEnvironmentService.getConsolidatedDashboard(tenantId);
       // Process and store the data
       return gcpData ? 1 : 0;
     } catch (error) {
@@ -351,7 +354,7 @@ class ContinuousMonitoringService {
   private async syncOracleData(tenantId: string): Promise<number> {
     try {
       // Use existing dummyMultiEnvironmentService to sync Oracle data
-      const oracleData = await dummyMultiEnvironmentService.getConsolidatedDashboard(tenantId);
+      const oracleData = await multiEnvironmentService.getConsolidatedDashboard(tenantId);
       // Process and store the data
       return oracleData ? 1 : 0;
     } catch (error) {
