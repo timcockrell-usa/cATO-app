@@ -16,6 +16,9 @@ param tenantId string = tenant().tenantId
 @description('The object ID of the Azure Entra ID group for administrators')
 param adminGroupObjectId string
 
+@description('Whether to apply Static Web App app settings in this deployment. Set to false on the first run if you hit a provisioning Conflict, then redeploy with true after the site reaches Succeeded.')
+param applyAppSettings bool = true
+
 // Generate a unique resource token if not provided
 // This approach allows for custom tokens to avoid conflicts
 var baseToken = toLower(uniqueString(subscription().id, resourceGroup().id, location, environmentName))
@@ -374,17 +377,18 @@ resource staticWebApp 'Microsoft.Web/staticSites@2024-04-01' = {
 }
 
 // Static Web App configuration for authentication and environment variables
+// NOTE: Conditional app settings resource: manual toggle not supported via @if decorator (invalid). If applyAppSettings is false, deploy empty settings object to avoid conflict, then redeploy with true.
 resource staticWebAppConfig 'Microsoft.Web/staticSites/config@2024-04-01' = {
   parent: staticWebApp
   name: 'appsettings'
-  properties: {
+  properties: applyAppSettings ? {
     AZURE_COSMOS_ENDPOINT: cosmosAccount.properties.documentEndpoint
     AZURE_COSMOS_DATABASE_NAME: cosmosDatabase.name
     AZURE_KEY_VAULT_ENDPOINT: keyVault.properties.vaultUri
     AZURE_MANAGED_IDENTITY_CLIENT_ID: managedIdentity.properties.clientId
     APPLICATIONINSIGHTS_CONNECTION_STRING: appInsights.properties.ConnectionString
     AZURE_LOG_ANALYTICS_WORKSPACE_ID: logAnalytics.properties.customerId
-  }
+  } : {}
 }
 
 // RBAC assignments for the managed identity

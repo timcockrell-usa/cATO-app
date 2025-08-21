@@ -134,6 +134,7 @@ This guide is specifically for deploying the cATO Dashboard into your existing A
 
 ```bash
 # In Azure Cloud Shell (Bash) or local Azure CLI
+# If you experienced a Static Web App config Conflict previously, start with applyAppSettings=false
 
 # 1. Clone the repository
 git clone https://github.com/timcockrell-usa/cATO-app.git
@@ -141,28 +142,32 @@ cd cATO-app
 
 # 2. Set your existing environment variables
 RESOURCE_GROUP="ampe-eastus-dev-rg"
-LOCATION="eastus2"  # IMPORTANT: Use eastus2, not eastus (Static Web Apps not available in eastus)
+LOCATION="eastus2"
 SUBSCRIPTION_ID="930a247f-b4fa-4f1b-ad73-6a03cf1d0f4e"
 VNET_NAME="ampe-eus-dev-vnet"
-ADMIN_GROUP_ID="your-admin-group-object-id"  # Get this from the section below
+ADMIN_GROUP_ID="your-admin-group-object-id"
 
-# 3. Verify your existing resources and set subscription
-az account set --subscription $SUBSCRIPTION_ID
-az network vnet show --resource-group $RESOURCE_GROUP --name $VNET_NAME
-az group show --name $RESOURCE_GROUP
-
-# 4a. Try Azure CLI deployment first
+# 3. Deploy infra WITHOUT app settings first if race condition occurs
 az deployment group create \
   --resource-group $RESOURCE_GROUP \
   --template-file infra/main.bicep \
   --parameters environmentName=dev \
   --parameters location=$LOCATION \
-  --parameters adminGroupObjectId=$ADMIN_GROUP_ID
+  --parameters adminGroupObjectId=$ADMIN_GROUP_ID \
+  --parameters applyAppSettings=false
 
-# 4b. If Azure CLI fails, use Azure PowerShell instead:
-# Connect-AzAccount
-# Set-Location "infra"
-# New-AzResourceGroupDeployment -ResourceGroupName $RESOURCE_GROUP -TemplateFile "main.json" -environmentName "dev" -location $LOCATION -adminGroupObjectId $ADMIN_GROUP_ID
+# 4. Wait for Static Web App to reach Succeeded
+az staticwebapp show --name $(az staticwebapp list --resource-group $RESOURCE_GROUP --query "[0].name" -o tsv) \
+  --resource-group $RESOURCE_GROUP --query properties.provisioningState -o tsv
+
+# 5. Re-run deployment to apply settings
+az deployment group create \
+  --resource-group $RESOURCE_GROUP \
+  --template-file infra/main.bicep \
+  --parameters environmentName=dev \
+  --parameters location=$LOCATION \
+  --parameters adminGroupObjectId=$ADMIN_GROUP_ID \
+  --parameters applyAppSettings=true
 ```
 
 > **Important VNet Information**: This deployment **does NOT create or modify your existing VNet**. The Bicep template creates application resources with public endpoints by default. Your existing `ampe-eus-dev-vnet` (10.8.11.0/24) will remain completely untouched. For production, you can later add private endpoints to connect these resources to your existing VNet.
@@ -539,48 +544,26 @@ az staticwebapp show --name "your-static-app" --resource-group "your-rg"
 
 **Issue**: `Cannot update Static Web App: A create or update operation is currently in progress`
 
-This error occurs when:
-1. A previous deployment was interrupted
-2. A Static Web App deletion didn't complete fully  
-3. Azure has a background operation still running
-
-**Solutions:**
+Added mitigation using `applyAppSettings` parameter:
 
 ```bash
-# Option 1: Wait 10-15 minutes for Azure operations to complete, then retry
-
-# Option 2A: Deploy with different environment name to generate new resource names
+# First pass (avoid appsettings race)
 az deployment group create \
   --resource-group $RESOURCE_GROUP \
   --template-file infra/main.bicep \
-  --parameters environmentName=dev2 \
-  --parameters location=$LOCATION \
-  --parameters adminGroupObjectId=$ADMIN_GROUP_ID
+  --parameters environmentName=dev location=$LOCATION adminGroupObjectId=$ADMIN_GROUP_ID applyAppSettings=false
 
-# Option 2B: Deploy with deployment suffix to force new names
-DEPLOYMENT_SUFFIX=$(date +%s)  # Use timestamp
+# Wait until provisioning state is Succeeded
+az staticwebapp show --name $STATIC_APP_NAME --resource-group $RESOURCE_GROUP --query properties.provisioningState -o tsv
+
+# Second pass (apply settings)
 az deployment group create \
   --resource-group $RESOURCE_GROUP \
   --template-file infra/main.bicep \
-  --parameters environmentName=dev \
-  --parameters location=$LOCATION \
-  --parameters adminGroupObjectId=$ADMIN_GROUP_ID \
-  --parameters deploymentSuffix=$DEPLOYMENT_SUFFIX
-
-# Option 2C: Deploy with custom resource token
-CUSTOM_TOKEN=$(openssl rand -hex 6 | head -c 13)  # Generate random 13-char token
-az deployment group create \
-  --resource-group $RESOURCE_GROUP \
-  --template-file infra/main.bicep \
-  --parameters environmentName=dev \
-  --parameters location=$LOCATION \
-  --parameters adminGroupObjectId=$ADMIN_GROUP_ID \
-  --parameters resourceToken=$CUSTOM_TOKEN
-
-# Option 3: Clean up with bash script and wait
-./cleanup-deployment.sh
-# Wait 10-15 minutes, then retry deployment
+  --parameters environmentName=dev location=$LOCATION adminGroupObjectId=$ADMIN_GROUP_ID applyAppSettings=true
 ```
+
+Explanation: Static Web App can briefly lock config during initial creation. Suppressing app settings on first run avoids the 59348 Conflict; second run applies them once resource is ready.
 
 **Issue**: `LocationNotAvailableForResourceType` for Azure Static Web Apps
 
