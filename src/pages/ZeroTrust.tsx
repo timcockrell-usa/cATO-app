@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Target, Eye, CheckCircle, Clock, XCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Target, Eye, CheckCircle, Clock, XCircle, Filter, X, ArrowLeft } from "lucide-react";
+import { useNavigationContext, filterUtils } from '@/services/navigationService';
+import { useNavigate } from 'react-router-dom';
 
 // ZTA Pillars with activities
 const ztaPillars = [
@@ -155,8 +158,41 @@ function getStatusColor(status: string) {
 }
 
 export default function ZeroTrust() {
+  const navigate = useNavigate();
+  const { getContext, clearContext } = useNavigationContext();
   const [selectedActivity, setSelectedActivity] = useState<any>(null);
+  const [navigationFilter, setNavigationFilter] = useState<any>(null);
+  const [selectedPillar, setSelectedPillar] = useState<string>("");
+
+  // Handle navigation context on component mount
+  useEffect(() => {
+    const context = getContext();
+    if (context) {
+      setNavigationFilter(context);
+      
+      // Apply filter based on navigation context
+      if (context.filterType === 'pillar') {
+        setSelectedPillar(context.filterValue.toLowerCase());
+      }
+    }
+  }, [getContext]);
+
+  // Clear navigation filter
+  const clearNavigationFilter = () => {
+    setNavigationFilter(null);
+    setSelectedPillar("");
+    clearContext();
+  };
+
   const overallMaturity = Math.round(ztaPillars.reduce((sum, pillar) => sum + pillar.maturity, 0) / ztaPillars.length);
+
+  // Filter pillars based on navigation context
+  const getFilteredPillars = () => {
+    if (selectedPillar) {
+      return ztaPillars.filter(pillar => pillar.id === selectedPillar);
+    }
+    return ztaPillars;
+  };
 
   return (
     <div className="space-y-6">
@@ -167,12 +203,49 @@ export default function ZeroTrust() {
           <p className="text-muted-foreground">DoD ZTA maturity assessment across seven pillars</p>
         </div>
         <div className="flex items-center space-x-4">
+          {navigationFilter && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center space-x-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Dashboard</span>
+            </Button>
+          )}
           <Badge variant="outline" className="bg-zta-advanced/10 text-zta-advanced border-zta-advanced/20">
             <Target className="w-3 h-3 mr-1" />
             {overallMaturity}% Maturity
           </Badge>
         </div>
       </div>
+
+      {/* Navigation Filter Alert */}
+      {navigationFilter && (
+        <Alert className="border-green-200 bg-green-50">
+          <Filter className="h-4 w-4 text-green-600" />
+          <AlertDescription className="flex items-center justify-between">
+            <span>
+              Filtered by <strong>{navigationFilter.filterType}</strong>: {navigationFilter.filterValue}
+              {navigationFilter.sourceChart && (
+                <span className="text-sm text-muted-foreground ml-2">
+                  (from {navigationFilter.sourceChart})
+                </span>
+              )}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearNavigationFilter}
+              className="h-6 px-2 text-green-600 hover:text-green-800"
+            >
+              <X className="w-3 h-3 mr-1" />
+              Clear Filter
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Maturity Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -193,7 +266,7 @@ export default function ZeroTrust() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-7 gap-2">
-              {ztaPillars.map((pillar) => (
+              {getFilteredPillars().map((pillar) => (
                 <div key={pillar.id} className="text-center">
                   <div className="text-lg font-bold text-foreground">{pillar.maturity}%</div>
                   <div className="text-xs text-muted-foreground">{pillar.name}</div>
@@ -214,13 +287,13 @@ export default function ZeroTrust() {
         <CardContent className="pt-0">
           <Tabs defaultValue="identity" className="w-full">
             <TabsList className="grid w-full grid-cols-7">
-              {ztaPillars.map((pillar) => (
+              {getFilteredPillars().map((pillar) => (
                 <TabsTrigger key={pillar.id} value={pillar.id} className="text-xs">
                   {pillar.name}
                 </TabsTrigger>
               ))}
             </TabsList>
-            {ztaPillars.map((pillar) => (
+            {getFilteredPillars().map((pillar) => (
               <TabsContent key={pillar.id} value={pillar.id} className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>

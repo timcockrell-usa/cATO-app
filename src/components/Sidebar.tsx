@@ -58,7 +58,7 @@ export function Sidebar() {
         <div className="p-4 border-t border-border">
           <div className="text-xs text-muted-foreground">
             <p>Last Updated: {new Date().toLocaleTimeString()}</p>
-            <p className="mt-1">Classification: IL5</p>
+            <p className="mt-1">Classification: IL2</p>
           </div>
         </div>
       </div>

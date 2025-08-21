@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { NotificationsButton } from "@/components/NotificationsButton";
+import { ClassificationBadges } from "@/components/ClassificationBadges";
 import { useAuth } from "../contexts/SimpleAuthContext";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -74,9 +76,7 @@ export function Header() {
               <p className="text-sm text-muted-foreground">Continuous Authority to Operate</p>
             </div>
           </div>
-          <Badge variant="outline" className="bg-status-compliant/10 text-status-compliant border-status-compliant/20">
-            IL5 ACTIVE
-          </Badge>
+          <ClassificationBadges />
         </div>
 
         {/* Search Bar */}
@@ -91,18 +91,8 @@ export function Header() {
         </div>
         
         <div className="flex items-center space-x-3">
-          {/* Classification Badge */}
-          <Badge variant="outline" className="bg-status-partial/10 text-status-partial border-status-partial/20">
-            CUI
-          </Badge>
-
           {/* Notifications */}
-          <Button variant="ghost" size="sm" className="relative">
-            <Bell className="h-5 w-5" />
-            <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs bg-destructive">
-              3
-            </Badge>
-          </Button>
+          <NotificationsButton />
 
           {/* Settings Dialog */}
           <Dialog>

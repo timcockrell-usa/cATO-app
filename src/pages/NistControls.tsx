@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Shield, Eye, FileText, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Shield, Eye, FileText, AlertTriangle, Filter, X, ArrowLeft } from "lucide-react";
+import { useNavigationContext, filterUtils } from '@/services/navigationService';
+import { useNavigate } from 'react-router-dom';
 
 // Mock NIST control families data
 const controlFamilies = [
@@ -144,7 +147,67 @@ function getCompliancePercentage(family: any) {
 }
 
 export default function NistControls() {
-  const [selectedFamily, setSelectedFamily] = useState<any>(null);
+  const navigate = useNavigate();
+  const { getContext, clearContext } = useNavigationContext();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [selectedFamily, setSelectedFamily] = useState<string>("");
+  const [navigationFilter, setNavigationFilter] = useState<any>(null);
+
+  // Handle navigation context on component mount
+  useEffect(() => {
+    const context = getContext();
+    if (context) {
+      setNavigationFilter(context);
+      
+      // Apply filter based on navigation context
+      if (context.filterType === 'status') {
+        setStatusFilter(context.filterValue);
+      } else if (context.filterType === 'family') {
+        setSelectedFamily(context.filterValue);
+      }
+    }
+  }, [getContext]);
+
+  // Clear navigation filter
+  const clearNavigationFilter = () => {
+    setNavigationFilter(null);
+    setStatusFilter("");
+    setSelectedFamily("");
+    clearContext();
+  };
+
+  // Filter controls based on search term and status
+  const getFilteredControls = (family: any) => {
+    return family.controls.filter((control: any) => {
+      const matchesSearch = control.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           control.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           control.implementation.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = statusFilter === "" || control.status === statusFilter;
+      
+      return matchesSearch && matchesStatus;
+    });
+  };
+
+  // Filter families based on selection and navigation context
+  const getFilteredFamilies = () => {
+    let families = controlFamilies;
+    
+    if (selectedFamily) {
+      families = families.filter(family => family.id === selectedFamily);
+    }
+    
+    // Apply navigation filter if present
+    if (navigationFilter && navigationFilter.filterType === 'status') {
+      families = families.map(family => ({
+        ...family,
+        controls: family.controls.filter((control: any) => control.status === navigationFilter.filterValue)
+      })).filter(family => family.controls.length > 0);
+    }
+    
+    return families;
+  };
 
   return (
     <div className="space-y-6">
@@ -155,12 +218,49 @@ export default function NistControls() {
           <p className="text-muted-foreground">Security and privacy control implementation status</p>
         </div>
         <div className="flex items-center space-x-2">
+          {navigationFilter && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center space-x-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Dashboard</span>
+            </Button>
+          )}
           <Button variant="outline" size="sm">
             <FileText className="w-4 h-4 mr-2" />
             Export Report
           </Button>
         </div>
       </div>
+
+      {/* Navigation Filter Alert */}
+      {navigationFilter && (
+        <Alert className="border-blue-200 bg-blue-50">
+          <Filter className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="flex items-center justify-between">
+            <span>
+              Filtered by <strong>{navigationFilter.filterType}</strong>: {navigationFilter.filterValue}
+              {navigationFilter.sourceChart && (
+                <span className="text-sm text-muted-foreground ml-2">
+                  (from {navigationFilter.sourceChart})
+                </span>
+              )}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearNavigationFilter}
+              className="h-6 px-2 text-blue-600 hover:text-blue-800"
+            >
+              <X className="w-3 h-3 mr-1" />
+              Clear Filter
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -240,7 +340,7 @@ export default function NistControls() {
                     variant="outline" 
                     size="sm" 
                     className="w-full"
-                    onClick={() => setSelectedFamily(family)}
+                    onClick={() => setSelectedFamily(family.id)}
                   >
                     <Eye className="w-4 h-4 mr-2" />
                     View Controls

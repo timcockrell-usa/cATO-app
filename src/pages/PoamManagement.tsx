@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Table, 
   TableBody, 
@@ -25,8 +27,15 @@ import {
   Plus, 
   Edit, 
   Calendar,
-  User
+  User,
+  Upload,
+  Filter,
+  X,
+  ArrowLeft
 } from "lucide-react";
+import { POAMImport } from "@/components/POAMImport";
+import { useNavigationContext, filterUtils } from '@/services/navigationService';
+import { useNavigate } from 'react-router-dom';
 
 // Sample POAM data for demonstration
 const poamData = [
@@ -142,10 +151,44 @@ function getStatusColor(status: string) {
 }
 
 export default function PoamManagement() {
+  const navigate = useNavigate();
+  const { getContext, clearContext } = useNavigationContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSeverity, setSelectedSeverity] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedPoam, setSelectedPoam] = useState<any>(null);
+  const [navigationFilter, setNavigationFilter] = useState<any>(null);
+
+  // Handle navigation context on component mount
+  useEffect(() => {
+    const context = getContext();
+    if (context) {
+      setNavigationFilter(context);
+      
+      // Apply filter based on navigation context
+      if (context.filterType === 'risk') {
+        // Map risk levels to severity
+        const severityMap: Record<string, string> = {
+          'High': 'High',
+          'Medium': 'Medium',
+          'Low': 'Low'
+        };
+        if (severityMap[context.filterValue]) {
+          setSelectedSeverity(severityMap[context.filterValue]);
+        }
+      } else if (context.filterType === 'status') {
+        setSelectedStatus(context.filterValue);
+      }
+    }
+  }, [getContext]);
+
+  // Clear navigation filter
+  const clearNavigationFilter = () => {
+    setNavigationFilter(null);
+    setSelectedSeverity("all");
+    setSelectedStatus("all");
+    clearContext();
+  };
 
   const filteredPoams = poamData.filter(poam => {
     const matchesSearch = poam.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -172,12 +215,49 @@ export default function PoamManagement() {
           <p className="text-muted-foreground">Plan of Action and Milestones tracking and management</p>
         </div>
         <div className="flex items-center space-x-2">
+          {navigationFilter && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center space-x-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Dashboard</span>
+            </Button>
+          )}
           <Button variant="outline" size="sm">
             <Plus className="w-4 h-4 mr-2" />
             New POA&M
           </Button>
         </div>
       </div>
+
+      {/* Navigation Filter Alert */}
+      {navigationFilter && (
+        <Alert className="border-red-200 bg-red-50">
+          <Filter className="h-4 w-4 text-red-600" />
+          <AlertDescription className="flex items-center justify-between">
+            <span>
+              Filtered by <strong>{navigationFilter.filterType}</strong>: {navigationFilter.filterValue}
+              {navigationFilter.sourceChart && (
+                <span className="text-sm text-muted-foreground ml-2">
+                  (from {navigationFilter.sourceChart})
+                </span>
+              )}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearNavigationFilter}
+              className="h-6 px-2 text-red-600 hover:text-red-800"
+            >
+              <X className="w-3 h-3 mr-1" />
+              Clear Filter
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Summary Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -212,6 +292,18 @@ export default function PoamManagement() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Main Content Tabs */}
+      <Tabs defaultValue="manage" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="manage">Manage POA&Ms</TabsTrigger>
+          <TabsTrigger value="import">
+            <Upload className="w-4 h-4 mr-2" />
+            Import POA&Ms
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="manage" className="space-y-6">
 
       {/* Search and Filters */}
       <Card>
@@ -413,6 +505,12 @@ export default function PoamManagement() {
           </Table>
         </CardContent>
       </Card>
+        </TabsContent>
+        
+        <TabsContent value="import" className="space-y-6">
+          <POAMImport />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
