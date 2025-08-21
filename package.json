@@ -13,7 +13,7 @@
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "validate-setup": "node scripts/validate-setup.js",
-    "migrate-data": "node scripts/migrate-full-data.cjs",
+    "migrate-data": "node scripts/working-migration.cjs",
     "test-cosmos": "node scripts/test-cosmos-connection.cjs",
     "export-azure-data": "node scripts/export-azure-data.cjs",
     "import-azure-data": "node scripts/simple-import-azure.cjs",
