@@ -1,10 +1,16 @@
 import { CosmosClient } from '@azure/cosmos';
-import { nistControlsFromCSV } from '../src/data/nistControlsEnhanced.js';
-import { ztaActivitiesFromCSV } from '../src/data/ztaActivitiesEnhanced.js';
+import { createRequire } from 'module';
 import * as dotenv from 'dotenv';
 
 // Load environment variables from .env.local
 dotenv.config({ path: '.env.local' });
+
+// Create require function to import CommonJS modules
+const require = createRequire(import.meta.url);
+
+// Import the data using CommonJS require
+const { nistControlsFromCSV } = require('../src/data/nistControlsEnhanced.js');
+const { ztaActivitiesFromCSV } = require('../src/data/ztaActivitiesEnhanced.js');
 
 const cosmosConfig = {
   endpoint: process.env.AZURE_COSMOS_ENDPOINT || process.env.VITE_COSMOS_DB_ENDPOINT,

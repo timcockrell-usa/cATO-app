@@ -480,10 +480,32 @@ for i in {1..6}; do uuidgen; done
 
 ### Initial Data Setup
 
+Before running data migration, you need to configure your environment variables. Create a `.env.local` file in your project root:
+
 ```bash
-# Set environment variables for data migration
-export AZURE_COSMOS_ENDPOINT="https://your-cosmos-account.documents.azure.com:443/"
-export AZURE_COSMOS_DATABASE_NAME="cato-dashboard"
+# Create environment configuration file
+cat > .env.local << EOF
+# Azure Cosmos DB Configuration
+AZURE_COSMOS_ENDPOINT="https://your-cosmos-account-name.documents.azure.com:443/"
+AZURE_COSMOS_KEY="your-cosmos-primary-key"
+AZURE_COSMOS_DATABASE_NAME="cato-dashboard"
+
+# Alternative naming (for backward compatibility)
+VITE_COSMOS_DB_ENDPOINT="https://your-cosmos-account-name.documents.azure.com:443/"
+VITE_COSMOS_DB_KEY="your-cosmos-primary-key"
+VITE_COSMOS_DB_NAME="cato-dashboard"
+EOF
+
+# Get your Cosmos DB connection details from Azure
+RESOURCE_GROUP="ampe-eastus-dev-rg"
+COSMOS_ACCOUNT=$(az cosmosdb list --resource-group $RESOURCE_GROUP --query "[0].name" -o tsv)
+COSMOS_ENDPOINT=$(az cosmosdb show --name $COSMOS_ACCOUNT --resource-group $RESOURCE_GROUP --query "documentEndpoint" -o tsv)
+COSMOS_KEY=$(az cosmosdb keys list --name $COSMOS_ACCOUNT --resource-group $RESOURCE_GROUP --query "primaryMasterKey" -o tsv)
+
+echo "Your Cosmos DB details:"
+echo "Endpoint: $COSMOS_ENDPOINT"
+echo "Account: $COSMOS_ACCOUNT"
+echo "Key: [HIDDEN - check Azure portal]"
 
 # Run initial data migration
 npm run migrate-data
@@ -495,28 +517,40 @@ npm run validate-setup
 ### Import from Existing eMASS System
 
 ```bash
-# Configure eMASS integration
-export EMASS_API_ENDPOINT="your-emass-endpoint"
-export EMASS_API_KEY="your-api-key"
+# Add eMASS configuration to your .env.local file
+cat >> .env.local << EOF
 
-# Import eMASS data
+# eMASS Integration (optional)
+EMASS_API_ENDPOINT="your-emass-endpoint"
+EMASS_API_KEY="your-api-key"
+EOF
+
+# Import eMASS data (if you have eMASS integration)
 npm run import-emass-data
 
 # Verify import results
-npm run validate-emass-import
+npm run validate-setup
 ```
 
 ### Azure Resource Data Import
 
 ```bash
-# Import from all Azure subscriptions
+# Export data from your current Azure subscription
+npm run export-azure-data
+
+# Export from all Azure subscriptions (if you have multiple)
 npm run export-azure-data -- --all
 
-# Import the exported data
+# Export from a specific subscription
+npm run export-azure-data -- --subscription="subscription-name-or-id"
+
+# Import the exported data to Cosmos DB
 npm run import-azure-data
 
-# Restart application to see imported data
-azd restart
+# Verify the import was successful
+npm run validate-setup
+
+# Note: No need to restart - the application will automatically pick up the new data
 ```
 
 ---
