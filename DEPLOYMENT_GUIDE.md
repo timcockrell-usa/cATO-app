@@ -390,38 +390,89 @@ After deployment, you'll need to set up authentication:
 
 Configure these roles in your Azure Entra ID app registration:
 
-| Role | Description | Access Level |
-|------|-------------|--------------|
-| **SystemAdmin** | Full system administration | Complete access |
-| **AO** | Authorizing Official | Security decisions, approvals |
-| **ComplianceOfficer** | Compliance management | Compliance tracking, reports |
-| **SecurityAnalyst** | Security analysis | NIST controls, ZTA activities |
-| **Auditor** | Audit and review | Read-only audit access |
-| **Viewer** | Basic access | Dashboard viewing only |
+| Display Name | Value | Description | Allowed Member Types | Enabled |
+|--------------|-------|-------------|----------------------|---------|
+| System Administrator | SystemAdmin | Full system access for administrators | Users/Groups | true |
+| Authorizing Official | AO | Approves risk decisions and ATO packages | Users/Groups | true |
+| Compliance Officer | ComplianceOfficer | Manages compliance evidence and reports | Users/Groups | true |
+| Security Analyst | SecurityAnalyst | Performs control assessments & ZTA activity tracking | Users/Groups | true |
+| Auditor | Auditor | Read-only audit review across controls & POA&M | Users/Groups | true |
+| Viewer | Viewer | Basic dashboard read access only | Users/Groups | true |
 
 ### Creating App Roles
 
-1. **Go to** Azure Portal → App registrations → Your app → App roles
-2. **Click** "Create app role" for each role:
+1. Go to Azure Portal → Entra ID → App registrations → (Your App) → App roles → Create app role
+2. Repeat for each row in the table above.
+3. Use the fields exactly as listed (Value must match code expectations).
 
-**Example: System Administrator Role**
-
+Quick JSON array (advanced: bulk edit manifest):
 ```json
-{
-  "displayName": "System Administrator",
-  "description": "Full system access for administrators",
-  "value": "SystemAdmin",
-  "allowedMemberTypes": ["User", "Group"],
-  "isEnabled": true
-}
+"appRoles": [
+  {
+    "allowedMemberTypes": ["User", "Group"],
+    "description": "Full system access for administrators",
+    "displayName": "System Administrator",
+    "id": "<GUID-REPLACE-1>",
+    "isEnabled": true,
+    "value": "SystemAdmin"
+  },
+  {
+    "allowedMemberTypes": ["User", "Group"],
+    "description": "Approves risk decisions and ATO packages",
+    "displayName": "Authorizing Official",
+    "id": "<GUID-REPLACE-2>",
+    "isEnabled": true,
+    "value": "AO"
+  },
+  {
+    "allowedMemberTypes": ["User", "Group"],
+    "description": "Manages compliance evidence and reports",
+    "displayName": "Compliance Officer",
+    "id": "<GUID-REPLACE-3>",
+    "isEnabled": true,
+    "value": "ComplianceOfficer"
+  },
+  {
+    "allowedMemberTypes": ["User", "Group"],
+    "description": "Performs control assessments & ZTA activity tracking",
+    "displayName": "Security Analyst",
+    "id": "<GUID-REPLACE-4>",
+    "isEnabled": true,
+    "value": "SecurityAnalyst"
+  },
+  {
+    "allowedMemberTypes": ["User", "Group"],
+    "description": "Read-only audit review across controls & POA&M",
+    "displayName": "Auditor",
+    "id": "<GUID-REPLACE-5>",
+    "isEnabled": true,
+    "value": "Auditor"
+  },
+  {
+    "allowedMemberTypes": ["User", "Group"],
+    "description": "Basic dashboard read access only",
+    "displayName": "Viewer",
+    "id": "<GUID-REPLACE-6>",
+    "isEnabled": true,
+    "value": "Viewer"
+  }
+]
+```
+
+Generate unique GUIDs (PowerShell):
+```powershell
+1..6 | ForEach-Object { [guid]::NewGuid() }
+```
+Or Bash:
+```bash
+for i in {1..6}; do uuidgen; done
 ```
 
 ### Assigning Users to Roles
 
-1. **Go to** Enterprise applications → Your app → Users and groups
-2. **Click** "Add user/group"
-3. **Select** users/groups and assign appropriate roles
-4. **Save** assignments
+1. Enterprise applications → Your app → Users and groups → Add user/group
+2. Select the user or group → Select a role → Assign
+3. User must re-authenticate to receive new role claims.
 
 ---
 
