@@ -97,8 +97,16 @@ async function importFromSourceCosmosDB() {
   const sourceDatabase = sourceClient.database(config.sourceDatabaseName);
   const targetDatabase = targetClient.database(config.targetDatabaseName);
 
-  // Ensure target database exists
-  await targetClient.databases.createIfNotExists({ id: config.targetDatabaseName });
+  // Check if target database exists (don't try to create it)
+  try {
+    await targetDatabase.read();
+    console.log(`✅ Using existing target database: ${config.targetDatabaseName}`);
+  } catch (error) {
+    if (error.code === 404) {
+      throw new Error(`Target database '${config.targetDatabaseName}' does not exist. Please create it first using Azure Portal or run: npm run migrate-data`);
+    }
+    throw error;
+  }
 
   const containers = ['nist-controls', 'zta-activities', 'poam-items', 'vulnerabilities'];
   
@@ -155,7 +163,17 @@ async function importAzureResources() {
   const resourceClient = new ResourceManagementClient(credential, config.sourceSubscriptionId);
   
   const targetDatabase = targetClient.database(config.targetDatabaseName);
-  await targetClient.databases.createIfNotExists({ id: config.targetDatabaseName });
+  
+  // Check if target database exists (don't try to create it)
+  try {
+    await targetDatabase.read();
+    console.log(`✅ Using existing target database: ${config.targetDatabaseName}`);
+  } catch (error) {
+    if (error.code === 404) {
+      throw new Error(`Target database '${config.targetDatabaseName}' does not exist. Please create it first using Azure Portal or run: npm run migrate-data`);
+    }
+    throw error;
+  }
 
   // Create container for Azure resources
   await targetDatabase.containers.createIfNotExists({
@@ -212,7 +230,17 @@ async function createSampleAzureData() {
   console.log('📊 Creating sample Azure-based data...');
   
   const targetDatabase = targetClient.database(config.targetDatabaseName);
-  await targetClient.databases.createIfNotExists({ id: config.targetDatabaseName });
+  
+  // Check if target database exists (don't try to create it)
+  try {
+    await targetDatabase.read();
+    console.log(`✅ Using existing target database: ${config.targetDatabaseName}`);
+  } catch (error) {
+    if (error.code === 404) {
+      throw new Error(`Target database '${config.targetDatabaseName}' does not exist. Please create it first using Azure Portal or run: npm run migrate-data`);
+    }
+    throw error;
+  }
 
   // Create sample Azure resources
   await targetDatabase.containers.createIfNotExists({

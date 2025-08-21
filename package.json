@@ -16,7 +16,7 @@
     "migrate-data": "node scripts/migrate-full-data.cjs",
     "test-cosmos": "node scripts/test-cosmos-connection.cjs",
     "export-azure-data": "node scripts/export-azure-data.cjs",
-    "import-azure-data": "node scripts/import-azure-data.cjs",
+    "import-azure-data": "node scripts/simple-import-azure.cjs",
     "local-setup": "echo 'Setting up local development...' && npm install && echo 'Copy .env.local.example to .env.local and configure your values'",
     "setup": "echo 'Use Azure CLI deployment - see DEPLOYMENT_GUIDE.md'",
     "deploy": "echo 'Use Azure CLI deployment - see DEPLOYMENT_GUIDE.md'",
