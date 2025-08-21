@@ -1,5 +1,5 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "vite-react_shadcn_ts",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -15,8 +15,8 @@
     "validate-setup": "node scripts/validate-setup.js",
     "migrate-data": "node scripts/migrate-full-data.cjs",
     "test-cosmos": "node scripts/test-cosmos-connection.cjs",
-    "export-azure-data": "node scripts/export-azure-data.js",
-    "import-azure-data": "node scripts/import-azure-data.js",
+    "export-azure-data": "node scripts/export-azure-data.cjs",
+    "import-azure-data": "node scripts/import-azure-data.cjs",
     "local-setup": "echo 'Setting up local development...' && npm install && echo 'Copy .env.local.example to .env.local and configure your values'",
     "setup": "echo 'Use Azure CLI deployment - see DEPLOYMENT_GUIDE.md'",
     "deploy": "echo 'Use Azure CLI deployment - see DEPLOYMENT_GUIDE.md'",
