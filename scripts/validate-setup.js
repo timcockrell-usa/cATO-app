@@ -27,12 +27,13 @@ if (majorVersion >= 18) {
 // Check 2: .env.local file exists
 console.log('\n2️⃣ Checking environment configuration...');
 const envLocalPath = join(projectRoot, '.env.local');
+let envVars = {};
+
 if (fs.existsSync(envLocalPath)) {
   console.log('   ✅ .env.local file exists');
   
   // Parse .env.local
   const envContent = fs.readFileSync(envLocalPath, 'utf8');
-  const envVars = {};
   envContent.split('\n').forEach(line => {
     line = line.trim();
     if (line && !line.startsWith('#') && line.includes('=')) {
@@ -127,18 +128,38 @@ if (fs.existsSync(packageJsonPath)) {
   hasErrors = true;
 }
 
-// Check 4: Cosmos DB Emulator (if using localhost)
-console.log('\n4️⃣ Checking Cosmos DB Emulator...');
-const envLocalExists = fs.existsSync(envLocalPath);
-let usingEmulator = false;
+// Check 4: Cosmos DB Configuration
+console.log('\n4️⃣ Checking Cosmos DB configuration...');
 
-if (envLocalExists) {
-  const envContent = fs.readFileSync(envLocalPath, 'utf8');
-  usingEmulator = envContent.includes('https://localhost:8081');
-}
+// Check if using Azure Cosmos DB or local emulator
+const cosmosEndpoint = envVars.VITE_COSMOS_DB_ENDPOINT || envVars.AZURE_COSMOS_ENDPOINT;
+const usingEmulator = cosmosEndpoint && cosmosEndpoint.includes('localhost:8081');
+const usingAzureCosmosDB = cosmosEndpoint && !cosmosEndpoint.includes('localhost');
 
-if (usingEmulator) {
-  console.log('   🔍 Detected Cosmos DB Emulator configuration');
+if (usingAzureCosmosDB) {
+  console.log('   ✅ Using Azure Cosmos DB (production configuration)');
+  
+  // Check if endpoint looks valid
+  if (cosmosEndpoint.includes('documents.azure.com')) {
+    console.log('   ✅ Azure Cosmos DB endpoint format is valid');
+  } else if (cosmosEndpoint.includes('your-cosmos-account-name')) {
+    console.log('   ❌ Azure Cosmos DB endpoint needs to be updated with real values');
+    hasErrors = true;
+  } else {
+    console.log('   ❓ Azure Cosmos DB endpoint format may be invalid');
+  }
+  
+  // Check if key is configured
+  const cosmosKey = envVars.VITE_COSMOS_DB_KEY || envVars.AZURE_COSMOS_KEY;
+  if (cosmosKey && !cosmosKey.includes('your-cosmos-primary-key')) {
+    console.log('   ✅ Azure Cosmos DB key is configured');
+  } else {
+    console.log('   ❌ Azure Cosmos DB key needs to be updated with real values');
+    hasErrors = true;
+  }
+  
+} else if (usingEmulator) {
+  console.log('   🔍 Using Cosmos DB Emulator (local development)');
   
   // Test emulator connection
   const options = {
@@ -172,7 +193,9 @@ if (usingEmulator) {
 
   req.end();
 } else {
-  console.log('   ℹ️  Using Azure Cosmos DB (not local emulator)');
+  console.log('   ❌ No Cosmos DB configuration detected');
+  console.log('   💡 Configure either Azure Cosmos DB or local emulator in .env.local');
+  hasErrors = true;
 }
 
 // Check 5: Required files
@@ -201,19 +224,46 @@ console.log('='.repeat(50));
 if (hasErrors) {
   console.log('❌ Issues found! Please fix the problems above before starting development.');
   console.log('\n🔧 Quick fixes:');
-  console.log('   1. Copy .env.local.example to .env.local');
-  console.log('   2. Edit .env.local with your Azure App Registration details');
-  console.log('   3. Run: npm install');
-  console.log('   4. Start Cosmos DB Emulator');
-  console.log('   5. Run: npm run migrate-data');
-  console.log('   6. Run: npm run dev');
+  
+  // Check if using Azure Cosmos DB or local emulator
+  const usingAzureCosmosDB = envVars.VITE_COSMOS_DB_ENDPOINT && 
+    !envVars.VITE_COSMOS_DB_ENDPOINT.includes('localhost');
+  
+  if (usingAzureCosmosDB) {
+    console.log('   📊 Azure Cosmos DB Configuration:');
+    console.log('   1. ✅ Update .env.local with your Azure Cosmos DB details (already configured)');
+    console.log('   2. Test connection: npm run test-cosmos');
+    console.log('   3. Run data migration: npm run migrate-data');
+  } else {
+    console.log('   📊 Local Development Setup:');
+    console.log('   1. Copy .env.local.example to .env.local');
+    console.log('   2. Start Cosmos DB Emulator');
+    console.log('   3. Run: npm run migrate-data');
+  }
+  
+  console.log('   🔐 Azure Authentication:');
+  console.log('   4. Create Azure App Registration (see DEPLOYMENT_GUIDE.md)');
+  console.log('   5. Update VITE_AZURE_CLIENT_ID and VITE_AZURE_AUTHORITY in .env.local');
+  console.log('   6. Run: npm install (if needed)');
+  console.log('   7. Run: npm run dev');
   process.exit(1);
 } else {
   console.log('✅ All checks passed! You\'re ready for local development.');
   console.log('\n🚀 Next steps:');
-  console.log('   1. npm run migrate-data');
-  console.log('   2. npm run dev');
-  console.log('   3. Open http://localhost:5173');
+  
+  // Check if using Azure Cosmos DB or local emulator
+  const usingAzureCosmosDB = envVars.VITE_COSMOS_DB_ENDPOINT && 
+    !envVars.VITE_COSMOS_DB_ENDPOINT.includes('localhost');
+  
+  if (usingAzureCosmosDB) {
+    console.log('   1. Test Azure Cosmos DB: npm run test-cosmos');
+    console.log('   2. Run data migration: npm run migrate-data');
+  } else {
+    console.log('   1. Run data migration: npm run migrate-data');
+  }
+  
+  console.log('   3. Start development: npm run dev');
+  console.log('   4. Open http://localhost:5173');
 }
 
 console.log('\n📖 For detailed setup instructions, see LOCAL_DEVELOPMENT.md');
