@@ -29,7 +29,7 @@ if (!cosmosConfig.endpoint || !cosmosConfig.key) {
   console.error('Current values:');
   console.error(`   AZURE_COSMOS_ENDPOINT: ${process.env.AZURE_COSMOS_ENDPOINT || 'NOT SET'}`);
   console.error(`   VITE_COSMOS_DB_ENDPOINT: ${process.env.VITE_COSMOS_DB_ENDPOINT || 'NOT SET'}`);
-  console.error(`   Keys: ${cosmosConfig.key ? '[SET]' : '[NOT SET]'}`);
+  console.error(`   Keys: ${(process.env.AZURE_COSMOS_KEY || process.env.VITE_COSMOS_DB_KEY) ? '[SET]' : '[NOT SET]'}`);
   process.exit(1);
 }
 

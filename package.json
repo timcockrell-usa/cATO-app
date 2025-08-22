@@ -15,6 +15,7 @@
     "validate-setup": "node scripts/validate-setup.js",
     "migrate-data": "node scripts/working-migration.cjs",
     "test-cosmos": "node scripts/test-cosmos-connection.cjs",
+    "check-cosmos": "node scripts/check-cosmos-db.cjs",
     "export-azure-data": "node scripts/export-azure-data.cjs",
     "import-azure-data": "node scripts/simple-import-azure.cjs",
     "import-poam-csv": "node scripts/import-poam-csv.cjs",
