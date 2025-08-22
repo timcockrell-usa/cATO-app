@@ -19,11 +19,13 @@ import { ClassificationBadges } from "@/components/ClassificationBadges";
 import { useAuth } from "../contexts/SimpleAuthContext";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function Header() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setMounted(true);
@@ -61,6 +63,14 @@ export function Header() {
     } catch (error) {
       console.error('Logout failed:', error);
     }
+  };
+
+  const handleProfile = () => {
+    navigate('/profile');
+  };
+
+  const handleSettings = () => {
+    navigate('/settings');
   };
 
   if (!mounted) return null;
@@ -170,12 +180,12 @@ export function Header() {
               
               <DropdownMenuSeparator />
               
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleProfile}>
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
               
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSettings}>
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </DropdownMenuItem>

@@ -8,7 +8,40 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Eye, FileText, AlertTriangle, Filter, X, ArrowLeft, Cloud, CloudSun } from "lucide-react";
 import { useNavigationContext, filterUtils } from '@/services/navigationService';
 import { useNavigate } from 'react-router-dom';
-import { nistControlsEnhanced, controlFamilies, getControlsByFamily, getComplianceStats } from '@/data/nistControlsEnhanced';
+import { nistControlsEnhanced, NISTControl } from '@/data/nistControlsEnhanced.ts';
+
+// Calculate control families from the actual data
+const controlFamilies: { [key: string]: string } = {
+  'AC': 'Access Control',
+  'AT': 'Awareness and Training',
+  'AU': 'Audit and Accountability',
+  'CA': 'Assessment, Authorization, and Monitoring',
+  'CM': 'Configuration Management',
+  'CP': 'Contingency Planning',
+  'IA': 'Identification and Authentication',
+  'IR': 'Incident Response',
+  'MA': 'Maintenance',
+  'MP': 'Media Protection',
+  'PE': 'Physical and Environmental Protection',
+  'PL': 'Planning',
+  'PM': 'Program Management',
+  'PS': 'Personnel Security',
+  'PT': 'PII Processing and Transparency',
+  'RA': 'Risk Assessment',
+  'SA': 'System and Services Acquisition',
+  'SC': 'System and Communications Protection',
+  'SI': 'System and Information Integrity',
+  'SR': 'Supply Chain Risk Management'
+};
+
+// Calculate overall metrics
+const overallMetrics = {
+  total: nistControlsEnhanced.length,
+  compliant: nistControlsEnhanced.filter(c => c.status === 'compliant').length,
+  partial: nistControlsEnhanced.filter(c => c.status === 'partial').length,
+  noncompliant: nistControlsEnhanced.filter(c => c.status === 'noncompliant').length,
+  compliancePercentage: Math.round((nistControlsEnhanced.filter(c => c.status === 'compliant').length / nistControlsEnhanced.length) * 100)
+};
 
 export default function NistControls() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,7 +57,7 @@ export default function NistControls() {
 
   // Calculate family statistics from real data
   const familyStats = Object.entries(controlFamilies).map(([code, name]) => {
-    const familyControls = getControlsByFamily(name);
+    const familyControls = nistControlsEnhanced.filter(c => c.controlFamily === name);
     return {
       id: code,
       name,
@@ -36,7 +69,7 @@ export default function NistControls() {
     };
   });
 
-  const stats = getComplianceStats();
+  const stats = overallMetrics;
 
   // Filter logic
   const getFilteredFamilies = () => {
@@ -192,9 +225,9 @@ export default function NistControls() {
             <div className="h-4 w-4 rounded-full bg-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{stats.nonCompliant}</div>
+            <div className="text-2xl font-bold text-red-600">{stats.noncompliant}</div>
             <p className="text-xs text-muted-foreground">
-              {Math.round((stats.nonCompliant / stats.total) * 100)}% non-compliant
+              {Math.round((stats.noncompliant / stats.total) * 100)}% non-compliant
             </p>
           </CardContent>
         </Card>
