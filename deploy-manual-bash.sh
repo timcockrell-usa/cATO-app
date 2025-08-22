@@ -52,6 +52,15 @@ echo "🚀 Uploading to Azure Static Web Apps..."
 echo "Note: This may take a few minutes..."
 echo ""
 
+# For Azure Static Web Apps, we need to extract files and upload the content
+echo "📁 Extracting deployment files..."
+rm -rf ./temp_deploy
+mkdir -p ./temp_deploy
+cd ./temp_deploy
+unzip -q ../deployment.zip
+cd ..
+
+# Use the correct Azure Static Web Apps deployment API
 RESPONSE=$(curl -s -w "%{http_code}" \
   -X POST \
   "https://$APP_NAME.scm.azurewebsites.net/api/zipdeploy" \
