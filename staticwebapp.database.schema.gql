@@ -1,0 +1,74 @@
+type NistControl @model {
+  id: ID! @primaryKey
+  controlFamily: String!
+  controlIdentifier: String!
+  controlName: String!
+  description: String!
+  discussion: String
+  azureImplementation: String!
+  implementation: String!
+  status: String!
+  lastAssessed: String!
+  assessedBy: String!
+  evidence: [String!]!
+  riskLevel: String!
+  lastUpdated: String!
+}
+
+type ZtaActivity @model {
+  id: ID! @primaryKey
+  name: String!
+  description: String!
+  category: String!
+  priority: String!
+  status: String!
+  azureImplementation: String!
+  progress: Int!
+  dueDate: String!
+  assignedTo: String!
+  evidence: [String!]!
+  relatedControls: [String!]!
+  lastUpdated: String!
+  pillar: String
+  outcome: String
+}
+
+type PoamItem @model {
+  id: ID! @primaryKey
+  title: String!
+  description: String!
+  severity: String!
+  status: String!
+  assignedTo: String!
+  dueDate: String!
+  controlId: String
+  findings: [String!]!
+  mitigationPlan: String!
+  evidence: [String!]!
+  lastUpdated: String!
+}
+
+type Vulnerability @model {
+  id: ID! @primaryKey
+  title: String!
+  description: String!
+  severity: String!
+  cvssScore: Float
+  affectedSystems: [String!]!
+  status: String!
+  discoveredDate: String!
+  remediationPlan: String
+  evidence: [String!]!
+  lastUpdated: String!
+}
+
+type ControlHistory @model {
+  id: ID! @primaryKey
+  controlId: String!
+  action: String!
+  previousValue: String
+  newValue: String
+  timestamp: String!
+  performedBy: String!
+  notes: String
+}
