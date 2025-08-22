@@ -152,7 +152,7 @@ export function POAMImport() {
 
   const downloadTemplate = () => {
     const templateCSV = `Control Vulnerability Description,POA&M Item ID,Controls / APs,Office/Org,Security Checks,Resources Required,Scheduled Completion Date,Status,Comments,Raw Severity,Severity,Impact,Impact Description,Residual Risk Level,Recommendations
-"Sample vulnerability description","POAM-001","AC-2,AC-3","IT Security Office","Monthly review","Security analyst","12/31/2024","Open","Initial assessment complete","High","High","High","Could allow unauthorized access","Medium","Implement additional access controls"`;
+"Your vulnerability description here","POAM-XXX","Control-ID","Your Office","Review requirements","Staff/tools needed","MM/DD/YYYY","Status","Comments","Severity","Severity","Impact","Impact description","Risk level","Recommendations"`;
     
     const blob = new Blob([templateCSV], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);

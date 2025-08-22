@@ -40,46 +40,16 @@ export function NotificationsButton() {
     
     setLoading(true);
     try {
-      // For now, use mock data - can be extended to use real service later
-      setNotifications(getMockNotifications());
+      // Notifications will be loaded from a proper service when implemented
+      // For now, start with empty array until backend service is ready
+      setNotifications([]);
     } catch (error) {
       console.error('Failed to load notifications:', error);
-      setNotifications(getMockNotifications());
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
   };
-
-  const getMockNotifications = (): Notification[] => [
-    {
-      id: '1',
-      title: 'POA&M Overdue',
-      message: 'AC-2 Account Management POA&M is 5 days overdue',
-      type: 'error',
-      isRead: false,
-      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-      source: 'POA&M Management',
-      actionUrl: '/poam-management'
-    },
-    {
-      id: '2',
-      title: 'Compliance Score Updated',
-      message: 'Your NIST 800-53 compliance score improved to 87%',
-      type: 'success',
-      isRead: false,
-      createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-      source: 'Compliance Dashboard'
-    },
-    {
-      id: '3',
-      title: 'Azure Resources Sync',
-      message: 'Successfully synchronized 45 Azure resources',
-      type: 'info',
-      isRead: true,
-      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-      source: 'Cloud Integration'
-    }
-  ];
 
   const markAsRead = async (notificationId: string) => {
     try {

@@ -33,39 +33,17 @@ import {
 } from 'recharts';
 import { chartClickHandlers } from '@/services/navigationService';
 
-// Mock data for dashboard
-const complianceData = [
-  { name: "Compliant", value: 142, color: "#16a34a" },
-  { name: "Partial", value: 38, color: "#f59e0b" },
-  { name: "Non-Compliant", value: 12, color: "#dc2626" },
-  { name: "Unknown", value: 8, color: "#6b7280" }
-];
-
-const ztaMaturityData = [
-  { pillar: "Identity", traditional: 65, advanced: 45, optimal: 25 },
-  { pillar: "Device", traditional: 70, advanced: 55, optimal: 30 },
-  { pillar: "Network", traditional: 80, advanced: 40, optimal: 20 },
-  { pillar: "App/Workload", traditional: 75, advanced: 50, optimal: 35 },
-  { pillar: "Data", traditional: 60, advanced: 45, optimal: 40 },
-  { pillar: "Visibility", traditional: 85, advanced: 60, optimal: 45 },
-  { pillar: "Analytics", traditional: 55, advanced: 35, optimal: 25 }
-];
-
-const riskTrendData = [
-  { month: "Jan", high: 15, medium: 32, low: 8 },
-  { month: "Feb", high: 12, medium: 28, low: 6 },
-  { month: "Mar", high: 8, medium: 25, low: 4 },
-  { month: "Apr", high: 6, medium: 22, low: 3 },
-  { month: "May", high: 4, medium: 18, low: 2 },
-  { month: "Jun", high: 3, medium: 15, low: 1 }
-];
+// Dashboard data will be loaded from Cosmos DB and calculated from real data
+const complianceData: any[] = [];
+const ztaMaturityData: any[] = [];
+const riskTrendData: any[] = [];
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const overallCompliance = 85.2;
-  const ztaMaturity = 72.5;
-  const activePoams = 23;
-  const criticalRisks = 3;
+  const overallCompliance = 0;
+  const ztaMaturity = 0;
+  const activePoams = 0;
+  const criticalRisks = 0;
 
   // Custom tooltip for clickable charts
   const CustomTooltip = ({ active, payload, label }: any) => {

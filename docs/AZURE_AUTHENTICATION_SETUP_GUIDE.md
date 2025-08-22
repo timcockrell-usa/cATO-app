@@ -1,52 +1,172 @@
-# Azure Authentication Setup Guide
+# Azure Entra ID Setup Guide
 
-## Overview
-
-This guide provides step-by-step instructions for setting up Azure Authentication for the cATO Command Center application. This includes configuring Azure Active Directory (Azure AD), application registration, and integrating authentication into your application deployment.
+This guide provides step-by-step instructions for setting up Azure Entra ID authentication for the cATO Dashboard.
 
 ## Prerequisites
 
-- **Azure Subscription**: Active Azure subscription with appropriate permissions
-- **Azure CLI**: Installed and configured on your local machine
-- **Administrative Access**: Azure AD Global Administrator or Application Administrator role
-- **Development Environment**: Access to the cATO application codebase
+- Azure subscription with administrative access
+- Azure Entra ID (formerly Azure AD) tenant
+- Global Administrator or Application Administrator role
+- Deployed cATO application or local development environment
 
-## Table of Contents
+## Step 1: Create App Registration
 
-1. [Azure Active Directory Setup](#azure-active-directory-setup)
-2. [Application Registration](#application-registration)
-3. [Configure Authentication Settings](#configure-authentication-settings)
-4. [Environment Configuration](#environment-configuration)
-5. [Azure Static Web Apps Integration](#azure-static-web-apps-integration)
-6. [Testing Authentication](#testing-authentication)
-7. [Troubleshooting](#troubleshooting)
-8. [Security Best Practices](#security-best-practices)
+1. **Access Azure Portal**:
+   - Navigate to [Azure Portal](https://portal.azure.com)
+   - Go to **Azure Active Directory** → **App registrations**
 
----
+2. **Create New Registration**:
+   - Click **+ New registration**
+   - Fill in the details:
+     ```
+     Name: cATO Dashboard
+     Supported account types: Accounts in this organizational directory only
+     Redirect URI: 
+       - Type: Single-page application (SPA)
+       - URI: https://your-app-domain.azurestaticapps.net/.auth/login/aad/callback
+     ```
+   - Click **Register**
 
-## Azure Active Directory Setup
+3. **Note Important Values**:
+   - **Application (client) ID**: Copy this value
+   - **Directory (tenant) ID**: Copy this value
 
-### Step 1: Access Azure Portal
+## Step 2: Configure Authentication
 
-1. Navigate to [Azure Portal](https://portal.azure.com)
-2. Sign in with your Azure administrator account
-3. Navigate to **Azure Active Directory** from the left menu
+1. **Authentication Settings**:
+   - Go to **Authentication** in your app registration
+   - Under **Implicit grant and hybrid flows**, enable:
+     - ✅ Access tokens
+     - ✅ ID tokens
 
-### Step 2: Verify Directory Configuration
+2. **Add Redirect URIs**:
+   ```
+   # For production
+   https://your-app-domain.azurestaticapps.net/.auth/login/aad/callback
+   
+   # For local development
+   http://localhost:5173/.auth/login/aad/callback
+   ```
 
-1. In Azure AD, go to **Overview**
-2. Note your **Tenant ID** (you'll need this later)
-3. Verify the **Domain name** for your organization
+## Step 3: Configure API Permissions
 
----
+1. **Add Permissions**:
+   - Go to **API permissions**
+   - Click **+ Add a permission**
+   - Select **Microsoft Graph**
+   - Add these delegated permissions:
+     - `User.Read`
+     - `User.ReadBasic.All`
+     - `Directory.Read.All` (admin consent required)
 
-## Application Registration
+2. **Grant Admin Consent**:
+   - Click **Grant admin consent for [Your Organization]**
+   - Confirm the consent
 
-### Step 1: Create App Registration
+## Step 4: Configure Application Settings
 
-1. In Azure AD, navigate to **App registrations**
-2. Click **+ New registration**
-3. Fill in the registration details:
+### For Azure Static Web Apps
+
+1. **Navigate to Configuration**:
+   - Go to your Static Web App in Azure Portal
+   - Click **Authentication** → **Add identity provider**
+
+2. **Add Azure Active Directory**:
+   ```
+   Identity provider: Azure Active Directory
+   App registration type: Provide app registration details
+   Client ID: [Your Application ID from Step 1]
+   Client secret: [Leave empty for SPA]
+   Issuer URL: https://login.microsoftonline.com/[Your Tenant ID]/v2.0
+   Allowed token audiences: [Your Application ID]
+   ```
+
+### For Local Development
+
+Update your `.env.local` file:
+
+```env
+# Azure Entra ID Configuration
+AZURE_CLIENT_ID=your-application-client-id
+AZURE_TENANT_ID=your-tenant-id
+AZURE_AUTHORITY=https://login.microsoftonline.com/your-tenant-id
+
+# Optional: For specific authentication flows
+AZURE_REDIRECT_URI=http://localhost:5173/.auth/login/aad/callback
+```
+
+## Step 5: Configure User Roles (Optional)
+
+1. **Create App Roles**:
+   - In your app registration, go to **App roles**
+   - Create roles for your application:
+     ```json
+     {
+       "displayName": "System Administrator",
+       "id": "unique-guid-1",
+       "isEnabled": true,
+       "description": "Full system access",
+       "value": "SystemAdmin",
+       "allowedMemberTypes": ["User"]
+     }
+     ```
+
+2. **Assign Users to Roles**:
+   - Go to **Enterprise applications**
+   - Find your app and click on it
+   - Go to **Users and groups**
+   - Assign users to appropriate roles
+
+## Step 6: Test Authentication
+
+1. **Local Testing**:
+   ```bash
+   # Start your local development server
+   npm run dev
+   
+   # Navigate to http://localhost:5173
+   # Try logging in with your Azure credentials
+   ```
+
+2. **Production Testing**:
+   - Navigate to your deployed application
+   - Click the login button
+   - Authenticate with your Azure credentials
+   - Verify you can access the dashboard
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Redirect URI Mismatch**:
+   - Ensure redirect URIs in app registration match your application URLs
+   - Check for trailing slashes and HTTPS requirements
+
+2. **Permissions Issues**:
+   - Verify admin consent has been granted
+   - Check user assignments in Enterprise applications
+
+3. **Token Issues**:
+   - Ensure implicit grant is enabled for tokens
+   - Verify audience configuration
+
+4. **Local Development Issues**:
+   - Check that environment variables are correctly set
+   - Ensure you're using the correct tenant and client IDs
+
+### Additional Configuration
+
+For advanced scenarios:
+- **Multi-tenant support**: Change to "Accounts in any organizational directory"
+- **Custom domains**: Update redirect URIs for custom domains
+- **API access**: Configure additional API permissions as needed
+
+## Security Best Practices
+
+1. **Use least privilege**: Only assign necessary permissions
+2. **Regular reviews**: Periodically review user assignments and permissions
+3. **Monitor access**: Use Azure AD logs to monitor authentication events
+4. **Secure secrets**: Never expose client secrets in frontend code
 
 ```yaml
 Application Registration:

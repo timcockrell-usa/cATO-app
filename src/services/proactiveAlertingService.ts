@@ -603,27 +603,27 @@ class ProactiveAlertingService {
   private async generateReportData(config: ReportConfig, tenantId: string): Promise<{ reportData: any; recordCount: number }> {
     console.log(`Generating report data for ${config.reportType}`);
     
-    // Simulate data collection based on report type
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // TODO: Implement actual data collection from Cosmos DB
+    // For now, return empty data structure until backend integration is complete
     
-    const mockData = {
+    const reportData = {
       compliance: {
-        overallScore: Math.floor(Math.random() * 30) + 70,
-        frameworks: ['NIST', 'FedRAMP', 'SOX'],
-        controls: Math.floor(Math.random() * 200) + 300
+        overallScore: 0,
+        frameworks: ['NIST', 'FedRAMP'],
+        controls: 0
       },
       poams: {
-        total: Math.floor(Math.random() * 50) + 25,
-        open: Math.floor(Math.random() * 30) + 15,
-        overdue: Math.floor(Math.random() * 10) + 2
+        total: 0,
+        open: 0,
+        overdue: 0
       },
-      cloudProviders: config.filters.cloudProviders || ['azure', 'aws', 'gcp'],
+      cloudProviders: config.filters.cloudProviders || [],
       dateRange: config.filters.dateRange
     };
 
     return {
-      reportData: mockData,
-      recordCount: mockData.poams.total + mockData.compliance.controls
+      reportData: reportData,
+      recordCount: reportData.poams.total + reportData.compliance.controls
     };
   }
 
