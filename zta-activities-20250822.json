@@ -1,0 +1,179 @@
+[
+  {
+    "id": "USER-1.1.1",
+    "pillar": "User",
+    "capabilityId": "1.1",
+    "capabilityName": "User Inventory",
+    "activityId": "1.1.1",
+    "activityName": "Maintain comprehensive user inventory",
+    "description": "Maintain an accurate, complete, and up-to-date inventory of all users in the enterprise.",
+    "azureImplementation": "Azure AD provides comprehensive user directory with automated provisioning and de-provisioning capabilities.",
+    "status": "implemented",
+    "implementation": "Azure AD user management",
+    "lastAssessed": "2024-12-01",
+    "assessedBy": "Security Analyst",
+    "evidence": [
+      "Azure AD user reports",
+      "Automated provisioning logs"
+    ],
+    "riskLevel": "low",
+    "_rid": "45QoAK0P8F8BAAAAAAAAAA==",
+    "_self": "dbs/45QoAA==/colls/45QoAK0P8F8=/docs/45QoAK0P8F8BAAAAAAAAAA==/",
+    "_etag": "\"4f010064-0000-0200-0000-68a84adb0000\"",
+    "_attachments": "attachments/",
+    "_ts": 1755859675
+  },
+  {
+    "id": "USER-1.2.1",
+    "pillar": "User",
+    "capabilityId": "1.2",
+    "capabilityName": "User Authentication",
+    "activityId": "1.2.1",
+    "activityName": "Implement strong authentication mechanisms",
+    "description": "Implement multi-factor authentication and strong authentication policies.",
+    "azureImplementation": "Azure AD MFA and Conditional Access enforce strong authentication.",
+    "status": "implemented",
+    "implementation": "Azure AD MFA and Conditional Access",
+    "lastAssessed": "2024-12-01",
+    "assessedBy": "Security Analyst",
+    "evidence": [
+      "MFA configuration",
+      "Conditional Access policies"
+    ],
+    "riskLevel": "low",
+    "_rid": "45QoAK0P8F8CAAAAAAAAAA==",
+    "_self": "dbs/45QoAA==/colls/45QoAK0P8F8=/docs/45QoAK0P8F8CAAAAAAAAAA==/",
+    "_etag": "\"1701497e-0000-0200-0000-68a70f710000\"",
+    "_attachments": "attachments/",
+    "_ts": 1755778929
+  },
+  {
+    "id": "DEVICE-2.1.1",
+    "pillar": "Device",
+    "capabilityId": "2.1",
+    "capabilityName": "Device Inventory",
+    "activityId": "2.1.1",
+    "activityName": "Maintain comprehensive device inventory",
+    "description": "Maintain an accurate inventory of all devices with access to enterprise resources.",
+    "azureImplementation": "Microsoft Intune provides comprehensive device management and inventory.",
+    "status": "partial",
+    "implementation": "Intune device enrollment",
+    "lastAssessed": "2024-12-01",
+    "assessedBy": "System Administrator",
+    "evidence": [
+      "Intune device reports"
+    ],
+    "riskLevel": "medium",
+    "_rid": "45QoAK0P8F8DAAAAAAAAAA==",
+    "_self": "dbs/45QoAA==/colls/45QoAK0P8F8=/docs/45QoAK0P8F8DAAAAAAAAAA==/",
+    "_etag": "\"1701517e-0000-0200-0000-68a70f710000\"",
+    "_attachments": "attachments/",
+    "_ts": 1755778929
+  },
+  {
+    "id": "NETWORK-3.1.1",
+    "pillar": "Network",
+    "capabilityId": "3.1",
+    "capabilityName": "Network Segmentation",
+    "activityId": "3.1.1",
+    "activityName": "Implement network micro-segmentation",
+    "description": "Implement network micro-segmentation to limit lateral movement.",
+    "azureImplementation": "Azure Virtual Networks with NSGs and Application Security Groups.",
+    "status": "implemented",
+    "implementation": "Azure VNet segmentation",
+    "lastAssessed": "2024-12-01",
+    "assessedBy": "Network Administrator",
+    "evidence": [
+      "VNet configuration",
+      "NSG rules"
+    ],
+    "riskLevel": "low",
+    "_rid": "45QoAK0P8F8EAAAAAAAAAA==",
+    "_self": "dbs/45QoAA==/colls/45QoAK0P8F8=/docs/45QoAK0P8F8EAAAAAAAAAA==/",
+    "_etag": "\"1701547e-0000-0200-0000-68a70f710000\"",
+    "_attachments": "attachments/",
+    "_ts": 1755778929
+  },
+  {
+    "id": "zta-1",
+    "name": "Identity Verification and Authentication",
+    "description": "Implement multi-factor authentication and continuous identity verification.",
+    "category": "Identity",
+    "priority": "high",
+    "status": "in-progress",
+    "azureImplementation": "Azure AD with MFA and Conditional Access",
+    "progress": 75,
+    "dueDate": "2024-12-31",
+    "assignedTo": "Identity Team",
+    "evidence": [
+      "MFA deployment metrics",
+      "Conditional access policies"
+    ],
+    "_rid": "45QoAK0P8F8FAAAAAAAAAA==",
+    "_self": "dbs/45QoAA==/colls/45QoAK0P8F8=/docs/45QoAK0P8F8FAAAAAAAAAA==/",
+    "_etag": "\"51013a1e-0000-0200-0000-68a856c20000\"",
+    "_attachments": "attachments/",
+    "_ts": 1755862722
+  },
+  {
+    "id": "zta-2",
+    "name": "Network Microsegmentation",
+    "description": "Implement network microsegmentation to limit lateral movement.",
+    "category": "Network",
+    "priority": "high",
+    "status": "planned",
+    "azureImplementation": "Azure Virtual Networks with NSGs and Azure Firewall",
+    "progress": 25,
+    "dueDate": "2025-03-31",
+    "assignedTo": "Network Team",
+    "evidence": [
+      "Network segmentation design"
+    ],
+    "_rid": "45QoAK0P8F8GAAAAAAAAAA==",
+    "_self": "dbs/45QoAA==/colls/45QoAK0P8F8=/docs/45QoAK0P8F8GAAAAAAAAAA==/",
+    "_etag": "\"5101401e-0000-0200-0000-68a856c20000\"",
+    "_attachments": "attachments/",
+    "_ts": 1755862722
+  },
+  {
+    "id": "zta-3",
+    "name": "Device Trust and Compliance",
+    "description": "Establish device trust and compliance verification.",
+    "category": "Device",
+    "priority": "medium",
+    "status": "in-progress",
+    "azureImplementation": "Microsoft Intune device compliance policies",
+    "progress": 60,
+    "dueDate": "2025-01-31",
+    "assignedTo": "Device Management Team",
+    "evidence": [
+      "Intune compliance reports"
+    ],
+    "_rid": "45QoAK0P8F8HAAAAAAAAAA==",
+    "_self": "dbs/45QoAA==/colls/45QoAK0P8F8=/docs/45QoAK0P8F8HAAAAAAAAAA==/",
+    "_etag": "\"5101451e-0000-0200-0000-68a856c20000\"",
+    "_attachments": "attachments/",
+    "_ts": 1755862722
+  },
+  {
+    "id": "zta-4",
+    "name": "Data Classification and Protection",
+    "description": "Classify and protect data based on sensitivity and access patterns.",
+    "category": "Data",
+    "priority": "high",
+    "status": "in-progress",
+    "azureImplementation": "Microsoft Purview and Azure Information Protection",
+    "progress": 40,
+    "dueDate": "2025-02-28",
+    "assignedTo": "Data Protection Team",
+    "evidence": [
+      "Data classification policies",
+      "Protection metrics"
+    ],
+    "_rid": "45QoAK0P8F8IAAAAAAAAAA==",
+    "_self": "dbs/45QoAA==/colls/45QoAK0P8F8=/docs/45QoAK0P8F8IAAAAAAAAAA==/",
+    "_etag": "\"5101491e-0000-0200-0000-68a856c20000\"",
+    "_attachments": "attachments/",
+    "_ts": 1755862722
+  }
+]

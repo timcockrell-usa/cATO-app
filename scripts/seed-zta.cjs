@@ -344,9 +344,9 @@ async function main() {
       process.exit(1);
     }
 
-    // Load environment variables from .env file if it exists
+    // Load environment variables from .env.local file if it exists
     try {
-      require('dotenv').config();
+      require('dotenv').config({ path: '.env.local' });
     } catch {
       // dotenv not available, continue without it
       log('dotenv not available, using environment variables directly', 'info');
