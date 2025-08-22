@@ -5,426 +5,460 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, Eye, FileText, AlertTriangle, Filter, X, ArrowLeft } from "lucide-react";
+import { Shield, Eye, FileText, AlertTriangle, Filter, X, ArrowLeft, Cloud, CloudSun } from "lucide-react";
 import { useNavigationContext, filterUtils } from '@/services/navigationService';
 import { useNavigate } from 'react-router-dom';
-
-// Mock NIST control families data
-const controlFamilies = [
-  {
-    id: "AC",
-    name: "Access Control",
-    total: 25,
-    compliant: 20,
-    partial: 3,
-    noncompliant: 2,
-      controls: [
-        { 
-          id: "AC-1", 
-          name: "Policy and Procedures", 
-          status: "compliant", 
-          implementation: "Azure AD policies implemented",
-          description: "The organization develops, documents, and disseminates access control policy and procedures.",
-          remediation: "1. Review and update access control policies annually\n2. Ensure procedures are documented and communicated\n3. Implement regular policy compliance reviews\n4. Update procedures based on system changes"
-        },
-        { 
-          id: "AC-2", 
-          name: "Account Management", 
-          status: "compliant", 
-          implementation: "Automated via Azure AD",
-          description: "The organization manages system accounts, group memberships, and associated privileges.",
-          remediation: "1. Implement automated account provisioning\n2. Regular access reviews and certifications\n3. Establish account lifecycle management\n4. Monitor privileged account usage"
-        },
-        { 
-          id: "AC-3", 
-          name: "Access Enforcement", 
-          status: "partial", 
-          implementation: "RBAC partially implemented",
-          description: "The system enforces approved authorizations for logical access to information and system resources.",
-          remediation: "1. Complete RBAC implementation across all systems\n2. Implement attribute-based access control (ABAC)\n3. Regular authorization reviews\n4. Deploy advanced access analytics"
-        },
-        { 
-          id: "AC-4", 
-          name: "Information Flow Enforcement", 
-          status: "noncompliant", 
-          implementation: "Network segmentation needed",
-          description: "The system controls information flows within the system and between interconnected systems.",
-          remediation: "1. Implement network micro-segmentation\n2. Deploy data flow monitoring tools\n3. Establish information flow policies\n4. Regular network topology reviews"
-        },
-        { 
-          id: "AC-5", 
-          name: "Separation of Duties", 
-          status: "compliant", 
-          implementation: "Privileged Identity Management",
-          description: "The organization separates duties of individuals to prevent malevolent activity.",
-          remediation: "1. Regular segregation of duties reviews\n2. Implement dual-person controls for critical operations\n3. Monitor for conflicts of interest\n4. Automate duty separation enforcement"
-        }
-      ]
-  },
-  {
-    id: "AU",
-    name: "Audit and Accountability", 
-    total: 16,
-    compliant: 14,
-    partial: 2,
-    noncompliant: 0,
-    controls: [
-      { id: "AU-1", name: "Policy and Procedures", status: "compliant", implementation: "Audit policies documented" },
-      { id: "AU-2", name: "Event Logging", status: "compliant", implementation: "Azure Monitor + Sentinel" },
-      { id: "AU-3", name: "Content of Audit Records", status: "partial", implementation: "Some fields missing" },
-      { id: "AU-4", name: "Audit Log Storage Capacity", status: "compliant", implementation: "Log Analytics workspace" }
-    ]
-  },
-  {
-    id: "CA",
-    name: "Assessment, Authorization, and Monitoring",
-    total: 9,
-    compliant: 7,
-    partial: 1,
-    noncompliant: 1,
-    controls: [
-      { id: "CA-1", name: "Policy and Procedures", status: "compliant", implementation: "Assessment policies in place" },
-      { id: "CA-2", name: "Control Assessments", status: "compliant", implementation: "Quarterly assessments" },
-      { id: "CA-3", name: "Information Exchange", status: "partial", implementation: "ISAs under review" },
-      { id: "CA-7", name: "Continuous Monitoring", status: "compliant", implementation: "Azure Security Center" }
-    ]
-  },
-  {
-    id: "CM",
-    name: "Configuration Management",
-    total: 14,
-    compliant: 10,
-    partial: 3,
-    noncompliant: 1,
-    controls: [
-      { id: "CM-1", name: "Policy and Procedures", status: "compliant", implementation: "CM policies established" },
-      { id: "CM-2", name: "Baseline Configuration", status: "compliant", implementation: "Azure Blueprints" },
-      { id: "CM-3", name: "Configuration Change Control", status: "partial", implementation: "Change board established" },
-      { id: "CM-6", name: "Configuration Settings", status: "compliant", implementation: "Security baselines applied" }
-    ]
-  },
-  {
-    id: "CP",
-    name: "Contingency Planning",
-    total: 13,
-    compliant: 9,
-    partial: 3, 
-    noncompliant: 1,
-    controls: [
-      { id: "CP-1", name: "Policy and Procedures", status: "compliant", implementation: "Contingency plan documented" },
-      { id: "CP-2", name: "Contingency Plan", status: "compliant", implementation: "Business continuity plan" },
-      { id: "CP-3", name: "Contingency Training", status: "partial", implementation: "Training program developing" },
-      { id: "CP-4", name: "Contingency Plan Testing", status: "compliant", implementation: "Annual DR tests" }
-    ]
-  },
-  {
-    id: "IA",
-    name: "Identification and Authentication",
-    total: 12,
-    compliant: 10,
-    partial: 2,
-    noncompliant: 0,
-    controls: [
-      { id: "IA-1", name: "Policy and Procedures", status: "compliant", implementation: "Identity management policies" },
-      { id: "IA-2", name: "Identification and Authentication", status: "compliant", implementation: "Azure AD with MFA" },
-      { id: "IA-3", name: "Device Identification", status: "partial", implementation: "Device registration in progress" },
-      { id: "IA-5", name: "Authenticator Management", status: "compliant", implementation: "Password policies enforced" }
-    ]
-  }
-];
-
-function getStatusColor(status: string) {
-  switch (status) {
-    case "compliant": return { bg: "bg-status-compliant/10", text: "text-status-compliant", border: "border-status-compliant/20" };
-    case "partial": return { bg: "bg-status-partial/10", text: "text-status-partial", border: "border-status-partial/20" };
-    case "noncompliant": return { bg: "bg-status-noncompliant/10", text: "text-status-noncompliant", border: "border-status-noncompliant/20" };
-    default: return { bg: "bg-status-unknown/10", text: "text-status-unknown", border: "border-status-unknown/20" };
-  }
-}
-
-function getCompliancePercentage(family: any) {
-  return Math.round((family.compliant / family.total) * 100);
-}
+import { nistControlsEnhanced, controlFamilies, getControlsByFamily, getComplianceStats } from '@/data/nistControlsEnhanced';
 
 export default function NistControls() {
-  const navigate = useNavigate();
-  const { getContext, clearContext } = useNavigationContext();
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
-  const [selectedFamily, setSelectedFamily] = useState<string>("");
-  const [navigationFilter, setNavigationFilter] = useState<any>(null);
+  const [selectedFamily, setSelectedFamily] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedControl, setSelectedControl] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { getContext, clearContext } = useNavigationContext();
+  const navigate = useNavigate();
 
-  // Handle navigation context on component mount
-  useEffect(() => {
-    const context = getContext();
-    if (context) {
-      setNavigationFilter(context);
-      
-      // Apply filter based on navigation context
-      if (context.filterType === 'status') {
-        setStatusFilter(context.filterValue);
-      } else if (context.filterType === 'family') {
-        setSelectedFamily(context.filterValue);
-      }
-    }
-  }, [getContext]);
+  // Get navigation context
+  const navigationContext = getContext();
 
-  // Clear navigation filter
-  const clearNavigationFilter = () => {
-    setNavigationFilter(null);
-    setStatusFilter("");
-    setSelectedFamily("");
-    clearContext();
-  };
+  // Calculate family statistics from real data
+  const familyStats = Object.entries(controlFamilies).map(([code, name]) => {
+    const familyControls = getControlsByFamily(name);
+    return {
+      id: code,
+      name,
+      total: familyControls.length,
+      compliant: familyControls.filter(c => c.status === 'compliant').length,
+      partial: familyControls.filter(c => c.status === 'partial').length,
+      noncompliant: familyControls.filter(c => c.status === 'noncompliant').length,
+      controls: familyControls
+    };
+  });
 
-  // Filter controls based on search term and status
-  const getFilteredControls = (family: any) => {
-    return family.controls.filter((control: any) => {
-      const matchesSearch = control.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           control.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           control.implementation.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesStatus = statusFilter === "" || control.status === statusFilter;
-      
-      return matchesSearch && matchesStatus;
-    });
-  };
+  const stats = getComplianceStats();
 
-  // Filter families based on selection and navigation context
+  // Filter logic
   const getFilteredFamilies = () => {
-    let families = controlFamilies;
-    
-    if (selectedFamily) {
-      families = families.filter(family => family.id === selectedFamily);
-    }
-    
-    // Apply navigation filter if present
-    if (navigationFilter && navigationFilter.filterType === 'status') {
-      families = families.map(family => ({
+    let filtered = familyStats;
+
+    // Apply navigation context filter
+    if (navigationContext?.filterType === 'family') {
+      filtered = filtered.filter(family => family.id === navigationContext.filterValue);
+    } else if (navigationContext?.filterType === 'status') {
+      filtered = filtered.map(family => ({
         ...family,
-        controls: family.controls.filter((control: any) => control.status === navigationFilter.filterValue)
+        controls: family.controls.filter(control => control.status === navigationContext.filterValue)
       })).filter(family => family.controls.length > 0);
     }
-    
-    return families;
+
+    // Apply local filters
+    if (selectedFamily) {
+      filtered = filtered.filter(family => family.id === selectedFamily);
+    }
+
+    if (searchTerm) {
+      filtered = filtered.map(family => ({
+        ...family,
+        controls: family.controls.filter(control =>
+          control.controlName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          control.controlIdentifier.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          control.description.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      })).filter(family => family.controls.length > 0);
+    }
+
+    if (selectedStatus) {
+      filtered = filtered.map(family => ({
+        ...family,
+        controls: family.controls.filter(control => control.status === selectedStatus)
+      })).filter(family => family.controls.length > 0);
+    }
+
+    return filtered;
+  };
+
+  const filteredFamilies = getFilteredFamilies();
+  const hasActiveFilters = searchTerm || selectedFamily || selectedStatus || navigationContext;
+
+  const handleBackToDashboard = () => {
+    clearContext();
+    navigate('/dashboard');
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "compliant": return "bg-green-100 text-green-800 border-green-200";
+      case "partial": return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "noncompliant": return "bg-red-100 text-red-800 border-red-200";
+      default: return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const getRiskColor = (risk) => {
+    switch (risk) {
+      case "low": return "bg-green-100 text-green-800";
+      case "medium": return "bg-yellow-100 text-yellow-800";
+      case "high": return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const handleControlClick = (control) => {
+    setSelectedControl(control);
+    setIsDialogOpen(true);
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* Header with navigation context alert */}
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">NIST 800-53 Rev 5 Controls</h1>
-          <p className="text-muted-foreground">Security and privacy control implementation status</p>
+          <h1 className="text-3xl font-bold tracking-tight">NIST 800-53 Controls</h1>
+          <p className="text-muted-foreground">
+            Comprehensive security control framework ({stats.total} controls total)
+          </p>
         </div>
-        <div className="flex items-center space-x-2">
-          {navigationFilter && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/dashboard')}
-              className="flex items-center space-x-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Dashboard</span>
-            </Button>
-          )}
-          <Button variant="outline" size="sm">
-            <FileText className="w-4 h-4 mr-2" />
-            Export Report
+        {navigationContext && (
+          <Button
+            onClick={handleBackToDashboard}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Dashboard
           </Button>
-        </div>
+        )}
       </div>
 
-      {/* Navigation Filter Alert */}
-      {navigationFilter && (
+      {/* Navigation context alert */}
+      {navigationContext && (
         <Alert className="border-blue-200 bg-blue-50">
-          <Filter className="h-4 w-4 text-blue-600" />
+          <Filter className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
             <span>
-              Filtered by <strong>{navigationFilter.filterType}</strong>: {navigationFilter.filterValue}
-              {navigationFilter.sourceChart && (
-                <span className="text-sm text-muted-foreground ml-2">
-                  (from {navigationFilter.sourceChart})
-                </span>
-              )}
+              Showing controls filtered by: <strong>{navigationContext.filterType}: {navigationContext.filterValue}</strong>
             </span>
             <Button
               variant="ghost"
               size="sm"
-              onClick={clearNavigationFilter}
-              className="h-6 px-2 text-blue-600 hover:text-blue-800"
+              onClick={clearContext}
+              className="h-6 w-6 p-0"
             >
-              <X className="w-3 h-3 mr-1" />
-              Clear Filter
+              <X className="h-4 w-4" />
             </Button>
           </AlertDescription>
         </Alert>
       )}
 
-      {/* Summary Stats */}
+      {/* Overall Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="shadow-card">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-status-compliant">
-              {controlFamilies.reduce((sum, family) => sum + family.compliant, 0)}
-            </div>
-            <p className="text-sm text-muted-foreground">Compliant Controls</p>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Controls</CardTitle>
+            <Shield className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total}</div>
           </CardContent>
         </Card>
-        <Card className="shadow-card">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-status-partial">
-              {controlFamilies.reduce((sum, family) => sum + family.partial, 0)}
-            </div>
-            <p className="text-sm text-muted-foreground">Partially Implemented</p>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Compliant</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{stats.compliant}</div>
+            <p className="text-xs text-muted-foreground">
+              {stats.compliancePercentage}% compliance
+            </p>
           </CardContent>
         </Card>
-        <Card className="shadow-card">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-status-noncompliant">
-              {controlFamilies.reduce((sum, family) => sum + family.noncompliant, 0)}
-            </div>
-            <p className="text-sm text-muted-foreground">Non-Compliant</p>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Partial</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-yellow-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">{stats.partial}</div>
+            <p className="text-xs text-muted-foreground">
+              {Math.round((stats.partial / stats.total) * 100)}% partial
+            </p>
           </CardContent>
         </Card>
-        <Card className="shadow-card">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-foreground">
-              {controlFamilies.reduce((sum, family) => sum + family.total, 0)}
-            </div>
-            <p className="text-sm text-muted-foreground">Total Controls</p>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Non-Compliant</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-red-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">{stats.nonCompliant}</div>
+            <p className="text-xs text-muted-foreground">
+              {Math.round((stats.nonCompliant / stats.total) * 100)}% non-compliant
+            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Control Families Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {controlFamilies.map((family) => (
-          <Card key={family.id} className="shadow-card hover:shadow-elevated transition-all duration-300">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg flex items-center">
-                  <Shield className="w-5 h-5 mr-2 text-primary" />
-                  {family.id}
-                </CardTitle>
-                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                  {getCompliancePercentage(family)}%
-                </Badge>
-              </div>
-              <CardDescription className="text-sm font-medium">
-                {family.name}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Progress value={getCompliancePercentage(family)} className="h-2" />
-              
-              <div className="grid grid-cols-3 gap-2 text-sm">
-                <div className="text-center">
-                  <div className="font-semibold text-status-compliant">{family.compliant}</div>
-                  <div className="text-xs text-muted-foreground">Compliant</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold text-status-partial">{family.partial}</div>
-                  <div className="text-xs text-muted-foreground">Partial</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold text-status-noncompliant">{family.noncompliant}</div>
-                  <div className="text-xs text-muted-foreground">Non-Compliant</div>
-                </div>
-              </div>
+      {/* Filter Controls */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Filter Controls
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Search</label>
+              <input
+                type="text"
+                placeholder="Search controls..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block">Control Family</label>
+              <select
+                value={selectedFamily}
+                onChange={(e) => setSelectedFamily(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Families</option>
+                {Object.entries(controlFamilies).map(([code, name]) => (
+                  <option key={code} value={code}>{code} - {name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block">Status</label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Statuses</option>
+                <option value="compliant">Compliant</option>
+                <option value="partial">Partial</option>
+                <option value="noncompliant">Non-Compliant</option>
+                <option value="not-assessed">Not Assessed</option>
+              </select>
+            </div>
+          </div>
+          {hasActiveFilters && (
+            <div className="mt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedFamily("");
+                  setSelectedStatus("");
+                  clearContext();
+                }}
+                className="flex items-center gap-2"
+              >
+                <X className="h-4 w-4" />
+                Clear All Filters
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full"
-                    onClick={() => setSelectedFamily(family.id)}
+      {/* Control Families */}
+      <div className="space-y-6">
+        {filteredFamilies.map((family) => (
+          <Card key={family.id}>
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    {family.id} - {family.name}
+                  </CardTitle>
+                  <CardDescription>
+                    {family.controls.length} control{family.controls.length !== 1 ? 's' : ''} in this family
+                  </CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Badge variant="outline" className="bg-green-50">
+                    {family.compliant} Compliant
+                  </Badge>
+                  <Badge variant="outline" className="bg-yellow-50">
+                    {family.partial} Partial
+                  </Badge>
+                  <Badge variant="outline" className="bg-red-50">
+                    {family.noncompliant} Non-Compliant
+                  </Badge>
+                </div>
+              </div>
+              <Progress 
+                value={(family.compliant / family.total) * 100} 
+                className="w-full"
+              />
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-3">
+                {family.controls.map((control) => (
+                  <div
+                    key={control.id}
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handleControlClick(control)}
                   >
-                    <Eye className="w-4 h-4 mr-2" />
-                    View Controls
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center">
-                      <Shield className="w-5 h-5 mr-2 text-primary" />
-                      {family.id} - {family.name}
-                    </DialogTitle>
-                    <DialogDescription>
-                      Detailed control implementation status and evidence
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    {family.controls.map((control) => {
-                      const statusStyle = getStatusColor(control.status);
-                      return (
-                        <Card key={control.id} className="shadow-card">
-                          <CardContent className="pt-4">
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center space-x-3 mb-2">
-                                  <code className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                                    {control.id}
-                                  </code>
-                                  <Badge 
-                                    variant="outline" 
-                                    className={`${statusStyle.bg} ${statusStyle.text} ${statusStyle.border}`}
-                                  >
-                                    {control.status.charAt(0).toUpperCase() + control.status.slice(1)}
-                                  </Badge>
-                                </div>
-                                <h4 className="font-medium text-foreground mb-1">{control.name}</h4>
-                                <p className="text-sm text-muted-foreground">{control.implementation}</p>
-                              </div>
-                              <div className="flex space-x-2">
-                                <Dialog>
-                                  <DialogTrigger asChild>
-                                    <Button variant="ghost" size="sm">
-                                      <FileText className="w-4 h-4" />
-                                    </Button>
-                                  </DialogTrigger>
-                                  <DialogContent className="max-w-2xl">
-                                    <DialogHeader>
-                                      <DialogTitle>{control.id} - {control.name}</DialogTitle>
-                                      <DialogDescription>Control description and remediation steps</DialogDescription>
-                                    </DialogHeader>
-                                    <div className="space-y-4">
-                                      <div>
-                                        <h4 className="font-semibold mb-2">Description</h4>
-                                        <p className="text-sm text-muted-foreground">{control.description}</p>
-                                      </div>
-                                      <div>
-                                        <h4 className="font-semibold mb-2">Current Implementation</h4>
-                                        <p className="text-sm text-muted-foreground">{control.implementation}</p>
-                                      </div>
-                                      <div>
-                                        <h4 className="font-semibold mb-2">Remediation Steps</h4>
-                                        <pre className="text-sm text-muted-foreground whitespace-pre-wrap">{control.remediation}</pre>
-                                      </div>
-                                    </div>
-                                  </DialogContent>
-                                </Dialog>
-                                {control.status === "noncompliant" && (
-                                  <Button variant="outline" size="sm">
-                                    <AlertTriangle className="w-4 h-4 mr-1" />
-                                    Request Exception
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <span className="font-medium text-sm">{control.controlIdentifier}</span>
+                        <span className="font-medium">{control.controlName}</span>
+                        <Badge 
+                          variant="outline" 
+                          className={getStatusColor(control.status)}
+                        >
+                          {control.status}
+                        </Badge>
+                        <Badge 
+                          variant="outline" 
+                          className={getRiskColor(control.riskLevel)}
+                        >
+                          {control.riskLevel} risk
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {control.description}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="sm">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                </DialogContent>
-              </Dialog>
+                ))}
+              </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Control Detail Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Shield className="h-5 w-5" />
+              {selectedControl?.controlIdentifier} - {selectedControl?.controlName}
+            </DialogTitle>
+            <DialogDescription>
+              Control Family: {selectedControl?.controlFamily}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedControl && (
+            <div className="space-y-6">
+              {/* Status and Risk */}
+              <div className="flex gap-4">
+                <Badge 
+                  variant="outline" 
+                  className={getStatusColor(selectedControl.status)}
+                >
+                  Status: {selectedControl.status}
+                </Badge>
+                <Badge 
+                  variant="outline" 
+                  className={getRiskColor(selectedControl.riskLevel)}
+                >
+                  Risk Level: {selectedControl.riskLevel}
+                </Badge>
+              </div>
+
+              {/* Control Description */}
+              <div>
+                <h4 className="font-semibold mb-2">Control Description</h4>
+                <p className="text-sm text-gray-700 whitespace-pre-line">
+                  {selectedControl.fullControlText || selectedControl.description}
+                </p>
+              </div>
+
+              {/* Discussion */}
+              {selectedControl.discussion && (
+                <div>
+                  <h4 className="font-semibold mb-2">Discussion</h4>
+                  <p className="text-sm text-gray-700 whitespace-pre-line">
+                    {selectedControl.discussion}
+                  </p>
+                </div>
+              )}
+
+              {/* Azure Implementation */}
+              <div>
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <Cloud className="h-4 w-4" />
+                  Azure Implementation
+                </h4>
+                <p className="text-sm text-gray-700 whitespace-pre-line">
+                  {selectedControl.azureImplementation || selectedControl.implementation}
+                </p>
+              </div>
+
+              {/* Azure Commercial Remediation */}
+              {selectedControl.azureCommercialRemediation && 
+               selectedControl.azureCommercialRemediation !== 'No specific remediation provided.' && (
+                <div>
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <CloudSun className="h-4 w-4 text-blue-500" />
+                    Azure Commercial Remediation
+                  </h4>
+                  <p className="text-sm text-gray-700 whitespace-pre-line bg-blue-50 p-3 rounded">
+                    {selectedControl.azureCommercialRemediation}
+                  </p>
+                </div>
+              )}
+
+              {/* Azure Government Remediation */}
+              {selectedControl.azureGovernmentRemediation && 
+               selectedControl.azureGovernmentRemediation !== 'Same as Azure Commercial unless specified.' && (
+                <div>
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-green-600" />
+                    Azure Government Remediation
+                  </h4>
+                  <p className="text-sm text-gray-700 whitespace-pre-line bg-green-50 p-3 rounded">
+                    {selectedControl.azureGovernmentRemediation}
+                  </p>
+                </div>
+              )}
+
+              {/* Related Controls */}
+              {selectedControl.relatedControls && selectedControl.relatedControls.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-2">Related Controls</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedControl.relatedControls.map((relatedId) => (
+                      <Badge key={relatedId} variant="outline" className="text-xs">
+                        {relatedId}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Assessment Information */}
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                <div>
+                  <h4 className="font-semibold mb-1">Last Assessed</h4>
+                  <p className="text-sm text-gray-600">{selectedControl.lastAssessed}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-1">Assessed By</h4>
+                  <p className="text-sm text-gray-600">{selectedControl.assessedBy}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
