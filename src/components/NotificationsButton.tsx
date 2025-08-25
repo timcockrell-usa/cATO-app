@@ -10,7 +10,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { notificationService } from "@/services/notificationService";
 import { useAuth } from "@/contexts/SimpleAuthContext";
 
 export interface Notification {
@@ -40,50 +39,69 @@ export function NotificationsButton() {
     
     setLoading(true);
     try {
-      // Generate some sample notifications for demonstration
-      const sampleNotifications: Notification[] = [
-        {
-          id: '1',
-          title: 'NIST Control Assessment Due',
-          message: 'AC-2 Account Management requires reassessment within 30 days',
-          type: 'warning',
-          isRead: false,
-          createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-          source: 'Compliance Engine',
-          actionUrl: '/nist'
-        },
-        {
-          id: '2',
-          title: 'Azure Policy Update',
-          message: 'New Azure policies have been imported and require review',
-          type: 'info',
-          isRead: false,
-          createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-          source: 'Azure Integration',
-          actionUrl: '/dashboard'
-        },
-        {
-          id: '3',
-          title: 'POAM Deadline Approaching',
-          message: 'Critical POAM item SC-7 due in 5 days',
-          type: 'error',
-          isRead: true,
-          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-          source: 'POAM Management',
-          actionUrl: '/poam'
-        },
-        {
-          id: '4',
-          title: 'Weekly Compliance Report',
-          message: 'Your weekly compliance summary is ready for review',
-          type: 'success',
-          isRead: true,
-          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-          source: 'Reporting Engine'
-        }
-      ];
+      // Load notifications from localStorage
+      const storedNotifications = localStorage.getItem('notifications');
       
-      setNotifications(sampleNotifications);
+      if (storedNotifications) {
+        const parsed = JSON.parse(storedNotifications);
+        const notifications = parsed.map((n: any) => ({
+          ...n,
+          createdAt: new Date(n.timestamp)
+        }));
+        setNotifications(notifications);
+      } else {
+        // Generate some sample notifications for demonstration
+        const sampleNotifications: Notification[] = [
+          {
+            id: '1',
+            title: 'NIST Control Assessment Due',
+            message: 'AC-2 Account Management requires reassessment within 30 days',
+            type: 'warning',
+            isRead: false,
+            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+            source: 'Compliance Engine',
+            actionUrl: '/nist'
+          },
+          {
+            id: '2',
+            title: 'Azure Policy Update',
+            message: 'New Azure policies have been imported and require review',
+            type: 'info',
+            isRead: false,
+            createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+            source: 'Azure Integration',
+            actionUrl: '/dashboard'
+          },
+          {
+            id: '3',
+            title: 'POAM Deadline Approaching',
+            message: 'Critical POAM item SC-7 due in 5 days',
+            type: 'error',
+            isRead: true,
+            createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+            source: 'POAM Management',
+            actionUrl: '/poam'
+          },
+          {
+            id: '4',
+            title: 'Weekly Compliance Report',
+            message: 'Your weekly compliance summary is ready for review',
+            type: 'success',
+            isRead: true,
+            createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+            source: 'Reporting Engine'
+          }
+        ];
+        
+        setNotifications(sampleNotifications);
+        
+        // Store in localStorage for future use
+        const formatted = sampleNotifications.map(n => ({
+          ...n,
+          timestamp: n.createdAt.toISOString()
+        }));
+        localStorage.setItem('notifications', JSON.stringify(formatted));
+      }
     } catch (error) {
       console.error('Failed to load notifications:', error);
       setNotifications([]);
@@ -94,14 +112,18 @@ export function NotificationsButton() {
 
   const markAsRead = async (notificationId: string) => {
     try {
-      setNotifications(prev => 
-        prev.map(n => n.id === notificationId ? { ...n, isRead: true } : n)
+      const updatedNotifications = notifications.map(n => 
+        n.id === notificationId ? { ...n, isRead: true } : n
       );
       
-      // TODO: Implement backend service call when available
-      // if (user?.organizationId) {
-      //   await notificationService.markNotificationAsRead(notificationId, user.organizationId);
-      // }
+      setNotifications(updatedNotifications);
+      
+      // Update localStorage
+      const formatted = updatedNotifications.map(n => ({
+        ...n,
+        timestamp: n.createdAt.toISOString()
+      }));
+      localStorage.setItem('notifications', JSON.stringify(formatted));
     } catch (error) {
       console.error('Failed to mark notification as read:', error);
     }
@@ -109,15 +131,15 @@ export function NotificationsButton() {
 
   const markAllAsRead = async () => {
     try {
-      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      const updatedNotifications = notifications.map(n => ({ ...n, isRead: true }));
+      setNotifications(updatedNotifications);
       
-      // TODO: Implement backend service call when available
-      // if (user?.organizationId) {
-      //   const unreadIds = notifications.filter(n => !n.isRead).map(n => n.id);
-      //   await Promise.all(
-      //     unreadIds.map(id => notificationService.markNotificationAsRead(id, user.organizationId!))
-      //   );
-      // }
+      // Update localStorage
+      const formatted = updatedNotifications.map(n => ({
+        ...n,
+        timestamp: n.createdAt.toISOString()
+      }));
+      localStorage.setItem('notifications', JSON.stringify(formatted));
     } catch (error) {
       console.error('Failed to mark all notifications as read:', error);
     }
@@ -125,6 +147,7 @@ export function NotificationsButton() {
 
   const clearAll = () => {
     setNotifications([]);
+    localStorage.removeItem('notifications');
   };
 
   const getIcon = (type: string) => {

@@ -62,12 +62,53 @@ export default function Settings() {
     setImporting(true);
     try {
       console.log('Importing POAM file:', file.name);
-      // Implementation for POAM import
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate import
-      alert('POAM file imported successfully!');
-    } catch (error) {
+      
+      // Validate file type
+      const validTypes = ['.xlsx', '.xls', '.csv'];
+      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+      
+      if (!validTypes.includes(fileExtension)) {
+        throw new Error('Invalid file type. Please upload Excel (.xlsx, .xls) or CSV files only.');
+      }
+
+      // Simulate file processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Create a mock imported POAM entry
+      const mockPoamEntry = {
+        id: `POAM-${Date.now()}`,
+        controlId: 'AC-2',
+        finding: 'Account management procedures need enhancement',
+        remediation: 'Implement automated account lifecycle management',
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        status: 'Open',
+        riskLevel: 'Medium',
+        source: 'Imported'
+      };
+
+      // Store in localStorage for demo
+      const existingPoams = JSON.parse(localStorage.getItem('cato_poam_items') || '[]');
+      existingPoams.push(mockPoamEntry);
+      localStorage.setItem('cato_poam_items', JSON.stringify(existingPoams));
+
+      // Create notification for successful import
+      const notification = {
+        id: `poam-import-${Date.now()}`,
+        title: 'POAM Import Successful',
+        message: `Successfully imported POAM items from ${file.name}`,
+        type: 'success' as const,
+        timestamp: new Date().toISOString(),
+        read: false
+      };
+
+      // Store notification
+      const existingNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+      localStorage.setItem('notifications', JSON.stringify([notification, ...existingNotifications]));
+
+      alert(`POAM file "${file.name}" imported successfully! Added 1 new POAM item.`);
+    } catch (error: any) {
       console.error('POAM import failed:', error);
-      alert('POAM import failed. Please check the file format.');
+      alert(`POAM import failed: ${error.message || 'Please check the file format.'}`);
     } finally {
       setImporting(false);
       // Reset file input

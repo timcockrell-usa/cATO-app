@@ -84,8 +84,8 @@ const Dashboard = () => {
       
       const status = statusMap[data.name];
       if (status) {
-        // Navigate to NIST controls page with status filter
-        navigate(`/nist?status=${status}`);
+        // Use navigation service to set context and navigate
+        chartClickHandlers.handleStatusChartClick(status, navigate);
       }
     }
   };
@@ -93,7 +93,7 @@ const Dashboard = () => {
   const handleZTAChartClick = (data: any) => {
     if (data?.pillar) {
       // Navigate to ZTA page with pillar filter
-      navigate(`/zta?pillar=${data.pillar.toLowerCase()}`);
+      chartClickHandlers.handleZTAChartClick(data.pillar.toLowerCase(), navigate);
     }
   };
 

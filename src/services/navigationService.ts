@@ -141,6 +141,32 @@ export const chartClickHandlers = {
   },
 
   /**
+   * Handle clicks on status charts from dashboard
+   */
+  handleStatusChartClick: (status: string, navigate: NavigateFunction) => {
+    const filter: NavigationFilter = {
+      filterType: 'status',
+      filterValue: status,
+      sourceChart: 'dashboard-status-chart'
+    };
+
+    navigationService.navigateToNistControls(navigate, filter);
+  },
+
+  /**
+   * Handle clicks on ZTA charts from dashboard
+   */
+  handleZTAChartClick: (pillar: string, navigate: NavigateFunction) => {
+    const filter: NavigationFilter = {
+      filterType: 'pillar',
+      filterValue: pillar,
+      sourceChart: 'dashboard-zta-chart'
+    };
+
+    navigationService.navigateToZeroTrust(navigate, filter);
+  },
+
+  /**
    * Handle clicks on Risk Trend bar chart
    */
   handleRiskTrendClick: (data: any, navigate: NavigateFunction) => {
