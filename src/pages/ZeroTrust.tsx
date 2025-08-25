@@ -27,13 +27,64 @@ const ztaPillars = [
           description: "Establish comprehensive identity governance framework with automated provisioning and lifecycle management.",
           remediation: "1. Implement automated identity provisioning\n2. Establish identity lifecycle management\n3. Deploy identity governance tools\n4. Regular identity audits and reviews"
         },
-        { id: "ID-T2", name: "Multi-Factor Authentication", status: "complete", mappedControls: ["IA-2", "IA-5"] },
-        { id: "ID-T3", name: "Privileged Access Management", status: "in-progress", mappedControls: ["AC-2", "AC-6"] }
+        { 
+          id: "ID-T2", 
+          name: "Multi-Factor Authentication", 
+          status: "complete", 
+          mappedControls: ["IA-2", "IA-5"],
+          description: "Deploy MFA across all systems and applications",
+          remediation: "1. Enable MFA for all user accounts\n2. Configure adaptive authentication policies\n3. Implement backup authentication methods"
+        },
+        { 
+          id: "ID-T3", 
+          name: "Privileged Access Management", 
+          status: "in-progress", 
+          mappedControls: ["AC-2", "AC-6"],
+          description: "Implement PAM solution for privileged account management",
+          remediation: "1. Deploy PAM solution\n2. Identify and onboard privileged accounts\n3. Implement just-in-time access\n4. Enable session recording"
+        },
+        { 
+          id: "ID-T4", 
+          name: "Single Sign-On Implementation", 
+          status: "complete", 
+          mappedControls: ["IA-2", "AC-2"],
+          description: "Deploy enterprise SSO solution with SAML/OIDC",
+          remediation: "1. Configure SSO provider\n2. Integrate applications\n3. Migrate user authentication"
+        }
       ],
       advanced: [
-        { id: "ID-A1", name: "Risk-Based Authentication", status: "in-progress", mappedControls: ["IA-8", "IA-9"] },
-        { id: "ID-A2", name: "Behavioral Analytics", status: "planned", mappedControls: ["AU-6", "SI-4"] },
-        { id: "ID-A3", name: "Zero Trust Identity Fabric", status: "planned", mappedControls: ["AC-3", "IA-2"] }
+        { 
+          id: "ID-A1", 
+          name: "Risk-Based Authentication", 
+          status: "in-progress", 
+          mappedControls: ["IA-8", "IA-9"],
+          description: "Implement adaptive authentication based on risk scoring",
+          remediation: "1. Deploy risk assessment engine\n2. Configure risk-based policies\n3. Integrate threat intelligence"
+        },
+        { 
+          id: "ID-A2", 
+          name: "Behavioral Analytics", 
+          status: "planned", 
+          mappedControls: ["AU-6", "SI-4"],
+          description: "Deploy user behavior analytics for anomaly detection",
+          remediation: "1. Implement UEBA solution\n2. Establish baseline behaviors\n3. Configure alerting thresholds"
+        },
+        { 
+          id: "ID-A3", 
+          name: "Zero Trust Identity Fabric", 
+          status: "planned", 
+          mappedControls: ["AC-3", "IA-2"],
+          description: "Build comprehensive identity fabric across all resources",
+          remediation: "1. Design identity architecture\n2. Implement policy engine\n3. Deploy distributed identity services"
+        },
+        { 
+          id: "ID-A4", 
+          name: "Passwordless Authentication", 
+          status: "not-started", 
+          mappedControls: ["IA-5", "IA-2"],
+          description: "Transition to passwordless authentication methods",
+          remediation: "1. Deploy FIDO2/WebAuthn\n2. Configure biometric authentication\n3. Implement certificate-based auth"
+        }
       ]
     }
   },

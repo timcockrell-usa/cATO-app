@@ -73,13 +73,44 @@ const Dashboard = () => {
   const activePoams = 23;
   const criticalRisks = 2;
 
+  // Handle chart clicks
+  const handleComplianceChartClick = (data: any) => {
+    if (data?.name) {
+      const statusMap: { [key: string]: string } = {
+        'Compliant': 'compliant',
+        'Partial': 'partial',
+        'Non-Compliant': 'noncompliant'
+      };
+      
+      const status = statusMap[data.name];
+      if (status) {
+        // Navigate to NIST controls page with status filter
+        navigate(`/nist?status=${status}`);
+      }
+    }
+  };
+
+  const handleZTAChartClick = (data: any) => {
+    if (data?.pillar) {
+      // Navigate to ZTA page with pillar filter
+      navigate(`/zta?pillar=${data.pillar.toLowerCase()}`);
+    }
+  };
+
+  const handleRiskTrendClick = (data: any) => {
+    if (data) {
+      // Navigate to risk management or POAM page
+      navigate('/poam');
+    }
+  };
+
   // Custom tooltip for clickable charts
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-3 border rounded-lg shadow-lg">
+        <div className="bg-white p-3 border rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-600">
           <p className="text-sm font-medium">{`${label || payload[0].name}`}</p>
-          <p className="text-sm text-blue-600">
+          <p className="text-sm text-blue-600 dark:text-blue-400">
             <MousePointer className="inline w-3 h-3 mr-1" />
             Click to view details
           </p>
@@ -267,7 +298,7 @@ const Dashboard = () => {
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
-                  onClick={(data) => chartClickHandlers.handleNistComplianceClick(data, navigate)}
+                  onClick={handleComplianceChartClick}
                   style={{ cursor: 'pointer' }}
                 >
                   {complianceData.map((entry, index) => (
@@ -304,21 +335,21 @@ const Dashboard = () => {
                   dataKey="high" 
                   stackId="a" 
                   fill="#dc2626" 
-                  onClick={(data) => chartClickHandlers.handleRiskTrendClick({ payload: { high: data } }, navigate)}
+                  onClick={handleRiskTrendClick}
                   style={{ cursor: 'pointer' }}
                 />
                 <Bar 
                   dataKey="medium" 
                   stackId="a" 
                   fill="#f59e0b"
-                  onClick={(data) => chartClickHandlers.handleRiskTrendClick({ payload: { medium: data } }, navigate)}
+                  onClick={handleRiskTrendClick}
                   style={{ cursor: 'pointer' }}
                 />
                 <Bar 
                   dataKey="low" 
                   stackId="a" 
                   fill="#16a34a"
-                  onClick={(data) => chartClickHandlers.handleRiskTrendClick({ payload: { low: data } }, navigate)}
+                  onClick={handleRiskTrendClick}
                   style={{ cursor: 'pointer' }}
                 />
               </BarChart>
@@ -343,7 +374,7 @@ const Dashboard = () => {
               <PolarAngleAxis 
                 dataKey="pillar" 
                 tick={{ fill: "black", fontSize: 12, cursor: 'pointer' }}
-                onClick={(data) => chartClickHandlers.handleZTAMaturityClick(data, navigate)}
+                onClick={handleZTAChartClick}
               />
               <PolarRadiusAxis
                 angle={90}
@@ -357,7 +388,7 @@ const Dashboard = () => {
                 fill="#ef4444" 
                 fillOpacity={0.2}
                 style={{ cursor: 'pointer' }}
-                onClick={(data) => chartClickHandlers.handleZTAMaturityClick(data, navigate)}
+                onClick={handleZTAChartClick}
               />
               <Radar 
                 name="Advanced" 
@@ -366,7 +397,7 @@ const Dashboard = () => {
                 fill="#3b82f6" 
                 fillOpacity={0.2}
                 style={{ cursor: 'pointer' }}
-                onClick={(data) => chartClickHandlers.handleZTAMaturityClick(data, navigate)}
+                onClick={handleZTAChartClick}
               />
               <Radar 
                 name="Optimal" 
@@ -375,7 +406,7 @@ const Dashboard = () => {
                 fill="#10b981" 
                 fillOpacity={0.2}
                 style={{ cursor: 'pointer' }}
-                onClick={(data) => chartClickHandlers.handleZTAMaturityClick(data, navigate)}
+                onClick={handleZTAChartClick}
               />
               <Tooltip content={<CustomTooltip />} />
             </RadarChart>

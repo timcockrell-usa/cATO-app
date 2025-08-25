@@ -40,9 +40,50 @@ export function NotificationsButton() {
     
     setLoading(true);
     try {
-      // Notifications will be loaded from a proper service when implemented
-      // For now, start with empty array until backend service is ready
-      setNotifications([]);
+      // Generate some sample notifications for demonstration
+      const sampleNotifications: Notification[] = [
+        {
+          id: '1',
+          title: 'NIST Control Assessment Due',
+          message: 'AC-2 Account Management requires reassessment within 30 days',
+          type: 'warning',
+          isRead: false,
+          createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+          source: 'Compliance Engine',
+          actionUrl: '/nist'
+        },
+        {
+          id: '2',
+          title: 'Azure Policy Update',
+          message: 'New Azure policies have been imported and require review',
+          type: 'info',
+          isRead: false,
+          createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+          source: 'Azure Integration',
+          actionUrl: '/dashboard'
+        },
+        {
+          id: '3',
+          title: 'POAM Deadline Approaching',
+          message: 'Critical POAM item SC-7 due in 5 days',
+          type: 'error',
+          isRead: true,
+          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+          source: 'POAM Management',
+          actionUrl: '/poam'
+        },
+        {
+          id: '4',
+          title: 'Weekly Compliance Report',
+          message: 'Your weekly compliance summary is ready for review',
+          type: 'success',
+          isRead: true,
+          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+          source: 'Reporting Engine'
+        }
+      ];
+      
+      setNotifications(sampleNotifications);
     } catch (error) {
       console.error('Failed to load notifications:', error);
       setNotifications([]);

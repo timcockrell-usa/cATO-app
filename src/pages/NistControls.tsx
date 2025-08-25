@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, Eye, FileText, AlertTriangle, Filter, X, ArrowLeft, Cloud, CloudSun } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Shield, Eye, FileText, AlertTriangle, Filter, X, ArrowLeft, Cloud, CloudSun, CheckCircle, AlertCircle, XCircle } from "lucide-react";
 import { useNavigationContext, filterUtils } from '@/services/navigationService';
 import { useNavigate } from 'react-router-dom';
 import { nistControlsEnhanced, NISTControl } from '@/data/nistControlsEnhanced.ts';
@@ -49,6 +51,8 @@ export default function NistControls() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedControl, setSelectedControl] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [statusModalType, setStatusModalType] = useState<'compliant' | 'partial' | 'noncompliant' | null>(null);
   const { getContext, clearContext } = useNavigationContext();
   const navigate = useNavigate();
 
@@ -195,7 +199,13 @@ export default function NistControls() {
             <div className="text-2xl font-bold">{stats.total}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card 
+          className="cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => {
+            setStatusModalType('compliant');
+            setStatusModalOpen(true);
+          }}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Compliant</CardTitle>
             <div className="h-4 w-4 rounded-full bg-green-500" />
@@ -207,7 +217,13 @@ export default function NistControls() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card 
+          className="cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => {
+            setStatusModalType('partial');
+            setStatusModalOpen(true);
+          }}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Partial</CardTitle>
             <div className="h-4 w-4 rounded-full bg-yellow-500" />
@@ -219,7 +235,13 @@ export default function NistControls() {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card 
+          className="cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => {
+            setStatusModalType('noncompliant');
+            setStatusModalOpen(true);
+          }}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Non-Compliant</CardTitle>
             <div className="h-4 w-4 rounded-full bg-red-500" />
@@ -317,13 +339,13 @@ export default function NistControls() {
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Badge variant="outline" className="bg-green-50">
+                  <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700">
                     {family.compliant} Compliant
                   </Badge>
-                  <Badge variant="outline" className="bg-yellow-50">
+                  <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-700">
                     {family.partial} Partial
                   </Badge>
-                  <Badge variant="outline" className="bg-red-50">
+                  <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-700">
                     {family.noncompliant} Non-Compliant
                   </Badge>
                 </div>
@@ -490,6 +512,84 @@ export default function NistControls() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Status Details Modal */}
+      <Dialog open={statusModalOpen} onOpenChange={setStatusModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {statusModalType === 'compliant' && (
+                <>
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  Compliant Controls ({nistControlsEnhanced.filter(c => c.status === 'compliant').length})
+                </>
+              )}
+              {statusModalType === 'partial' && (
+                <>
+                  <AlertCircle className="h-5 w-5 text-yellow-600" />
+                  Partially Compliant Controls ({nistControlsEnhanced.filter(c => c.status === 'partial').length})
+                </>
+              )}
+              {statusModalType === 'noncompliant' && (
+                <>
+                  <XCircle className="h-5 w-5 text-red-600" />
+                  Non-Compliant Controls ({nistControlsEnhanced.filter(c => c.status === 'noncompliant').length})
+                </>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              Detailed view of controls by compliance status
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="h-[500px]">
+            <div className="space-y-4">
+              {statusModalType && nistControlsEnhanced
+                .filter(control => control.status === statusModalType)
+                .map((control) => (
+                  <Card key={control.controlIdentifier} className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge variant="outline" className="text-xs">
+                            {control.controlIdentifier}
+                          </Badge>
+                          <Badge 
+                            variant={
+                              control.status === 'compliant' ? 'default' :
+                              control.status === 'partial' ? 'secondary' : 'destructive'
+                            }
+                            className="text-xs"
+                          >
+                            {control.status === 'compliant' ? 'Compliant' :
+                             control.status === 'partial' ? 'Partial' : 'Non-Compliant'}
+                          </Badge>
+                        </div>
+                        <h4 className="font-semibold text-sm mb-1">{control.controlName}</h4>
+                        <p className="text-sm text-muted-foreground line-clamp-2">{control.description}</p>
+                        <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                          <span>Family: {control.controlFamily}</span>
+                          <span>Last Assessed: {control.lastAssessed}</span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedControl(control);
+                          setIsDialogOpen(true);
+                          setStatusModalOpen(false);
+                        }}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        View Details
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+            </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </div>

@@ -15,6 +15,8 @@ import PoamManagement from "./pages/PoamManagement";
 import ExportPackage from "./pages/ExportPackage";
 import ContinuousMonitoring from "./pages/ContinuousMonitoring";
 import FrameworkUpgrade from "./pages/FrameworkUpgrade";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -100,6 +102,22 @@ const App = () => (
                 <ProtectedRoute>
                   <Layout>
                     <ExportPackage />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Profile />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Settings />
                   </Layout>
                 </ProtectedRoute>
               } />

@@ -23,14 +23,33 @@ export function ClassificationBadges() {
       setClassification(current);
     } catch (error) {
       console.error('Failed to load classification:', error);
-      // Use default
-      setClassification(classificationService['getDefaultClassification']());
+      // Use default - create a default classification object
+      setClassification({
+        impactLevel: 'IL2',
+        dataClassification: 'CUI',
+        fismaLevel: 'Moderate',
+        lastUpdated: new Date(),
+        source: 'manual'
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading || !classification) {
+  if (loading) {
+    return (
+      <>
+        <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200 animate-pulse">
+          Loading...
+        </Badge>
+        <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200 animate-pulse">
+          Loading...
+        </Badge>
+      </>
+    );
+  }
+
+  if (!classification) {
     return (
       <>
         <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
