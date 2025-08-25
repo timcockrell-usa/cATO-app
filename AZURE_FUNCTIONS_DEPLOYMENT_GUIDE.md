@@ -31,7 +31,7 @@ Choose one of the following deployment methods based on your preference and work
 ### Prerequisites for CLI Deployment
 - Azure CLI installed and authenticated
 - PowerShell or Bash terminal
-- Node.js 18+ installed locally
+- Node.js 20+ installed locally
 - Azure Functions Core Tools v4
 
 ### Step 1: Create Azure Function App
@@ -54,7 +54,7 @@ az functionapp create `
   --resource-group $resourceGroupName `
   --consumption-plan-location $location `
   --runtime node `
-  --runtime-version 18 `
+  --runtime-version 20 `
   --functions-version 4 `
   --name $functionAppName `
   --storage-account $storageAccountName
@@ -67,7 +67,7 @@ az functionapp config appsettings set `
   --name $functionAppName `
   --resource-group $resourceGroupName `
   --settings `
-    "WEBSITE_NODE_DEFAULT_VERSION=18" `
+    "WEBSITE_NODE_DEFAULT_VERSION=20" `
     "FUNCTIONS_EXTENSION_VERSION=~4" `
     "AzureWebJobsFeatureFlags=EnableWorkerIndexing"
 ```
@@ -213,12 +213,17 @@ Invoke-RestMethod -Uri $functionUrl -Method POST
    - **Function App Name**: Enter unique name (e.g., `func-cato-datasync-portal`)
    - **Publish**: Code
    - **Runtime Stack**: Node.js
-   - **Version**: 18 LTS
+   - **Version**: 20 LTS
    - **Region**: Choose appropriate region (e.g., East US)
 
 4. **Configure Hosting**
-   - **Operating System**: Windows (recommended)
-   - **Plan Type**: Consumption (Serverless)
+   - **Operating System**: Linux (recommended for cost efficiency)
+   - **Plan Type**: Premium (recommended) or Consumption
+   - **If Consumption Plan**: Memory allocation options
+     - ❌ **512MB**: Too small for compliance processing
+     - ✅ **2048MB (2GB)**: **Recommended for cATO** - optimal balance
+     - ⚠️ **4096MB (4GB)**: Expensive, only for very large datasets
+   - **If Premium Plan**: Instance Size: EP1 (1 vCore, 3.5GB RAM) - optimal for cATO workloads
    - **Storage Account**: Create new or use existing
 
 5. **Review and Create**
@@ -234,7 +239,7 @@ Invoke-RestMethod -Uri $functionUrl -Method POST
 2. **Configure Application Settings**
    - In the Function App menu, select **"Configuration"**
    - Under **"Application settings"**, add the following:
-     - `WEBSITE_NODE_DEFAULT_VERSION`: `18`
+     - `WEBSITE_NODE_DEFAULT_VERSION`: `20`
      - `FUNCTIONS_EXTENSION_VERSION`: `~4`
      - `AzureWebJobsFeatureFlags`: `EnableWorkerIndexing`
    - Click **"Save"** to apply settings
@@ -400,6 +405,56 @@ Invoke-RestMethod -Uri $functionUrl -Method POST
 3. **Log Streaming**
    - Use **"Log stream"** for real-time log viewing
    - Access from Function App → **"Log stream"**
+
+---
+
+## 🎯 **Instance Sizing for cATO Application**
+
+### **Recommended Configuration (Updated for 2025):**
+- **Runtime**: Node.js 20 LTS (latest stable, 18 LTS deprecated)
+- **Plan**: Premium EP1 
+- **Instance Details**:
+  - **vCores**: 1
+  - **Memory**: 3.5GB
+  - **Storage**: 250GB
+  - **Monthly Cost**: ~$73
+
+### **Why EP1 is Optimal for cATO:**
+- **Compliance Data Processing**: Handles NIST control synchronization efficiently
+- **Scheduled Tasks**: Reliable execution of 6-hour compliance syncs
+- **Security Features**: Enhanced isolation for government workloads
+- **Performance**: No cold starts affecting compliance reporting
+
+### **Sizing Options Comparison:**
+
+| Scenario | Plan | Instance | vCores | Memory | Monthly Cost | Use Case |
+|----------|------|----------|--------|--------|--------------|----------|
+| **Development** | Consumption | Pay-per-use | Shared | 1.5GB | $0-20 | Testing & development |
+| **Production** ⭐ | Premium EP1 | Dedicated | 1 | 3.5GB | ~$73 | **Recommended for cATO** |
+| **High Volume** | Premium EP2 | Dedicated | 2 | 7GB | ~$146 | Large organization compliance |
+| **Enterprise** | Premium EP3 | Dedicated | 4 | 14GB | ~$292 | Multi-tenant compliance platform |
+
+### **Consumption Plan Memory Options:**
+If you're using **Consumption Plan** (pay-per-execution), you'll see these memory options:
+
+| Memory Option | Recommendation | Use Case | Notes |
+|---------------|----------------|----------|-------|
+| **512MB** | ❌ Not Recommended | Light workloads only | Too small for compliance data processing |
+| **2048MB (2GB)** ⭐ | ✅ **Best for cATO** | Production compliance workloads | **Recommended choice** |
+| **4096MB (4GB)** | ⚠️ Expensive | Very large datasets | Overkill for most cATO scenarios |
+
+**💡 For your cATO application: Choose 2048MB (2GB)**
+- Provides sufficient memory for NIST control processing
+- Cost-effective for compliance data synchronization
+- Handles Azure API calls and data transformation efficiently
+- Allows for future growth without over-provisioning
+
+### **Runtime Version Selection:**
+Since Azure only offers Node.js 20 LTS and 22 LTS now:
+- ✅ **Node.js 20 LTS** (Recommended) - Stable, well-tested, long-term support
+- ❓ **Node.js 22 LTS** (Optional) - Newer but may have compatibility issues with some Azure Functions features
+
+**For cATO production, stick with Node.js 20 LTS for maximum compatibility.**
 
 ---
 
