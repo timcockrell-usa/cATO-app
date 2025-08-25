@@ -49,7 +49,7 @@ az storage account create `
   --resource-group $resourceGroupName `
   --sku Standard_LRS
 
-# Create Function App
+# Create Function App with Managed Identity for Storage
 az functionapp create `
   --resource-group $resourceGroupName `
   --consumption-plan-location $location `
@@ -57,10 +57,40 @@ az functionapp create `
   --runtime-version 20 `
   --functions-version 4 `
   --name $functionAppName `
-  --storage-account $storageAccountName
+  --storage-account $storageAccountName `
+  --assign-identity
+
+# Configure storage to use Managed Identity (recommended for security)
+# Enable system-assigned managed identity for storage authentication
+az functionapp identity assign `
+  --name $functionAppName `
+  --resource-group $resourceGroupName
 ```
 
-### Step 2: Configure Function App Settings
+### Step 2: Configure Storage Authentication with Managed Identity
+```powershell
+# Get the Function App's managed identity principal ID
+$principalId = az functionapp identity show `
+  --name $functionAppName `
+  --resource-group $resourceGroupName `
+  --query principalId -o tsv
+
+# Assign Storage Blob Data Owner role to the managed identity
+az role assignment create `
+  --assignee $principalId `
+  --role "Storage Blob Data Owner" `
+  --scope "/subscriptions/$(az account show --query id -o tsv)/resourceGroups/$resourceGroupName/providers/Microsoft.Storage/storageAccounts/$storageAccountName"
+
+# Configure Function App to use Managed Identity for storage
+az functionapp config appsettings set `
+  --name $functionAppName `
+  --resource-group $resourceGroupName `
+  --settings `
+    "AzureWebJobsStorage__accountName=$storageAccountName" `
+    "AzureWebJobsStorage__credential=managedidentity"
+```
+
+### Step 3: Configure Function App Settings
 ```powershell
 # Configure application settings
 az functionapp config appsettings set `
@@ -72,7 +102,7 @@ az functionapp config appsettings set `
     "AzureWebJobsFeatureFlags=EnableWorkerIndexing"
 ```
 
-### Step 3: Deploy Function Code
+### Step 4: Deploy Function Code
 
 #### Install Azure Functions Core Tools
 ```powershell
@@ -108,17 +138,47 @@ func azure functionapp publish $functionAppName
 func azure functionapp publish $functionAppName --publish-local-settings
 ```
 
-### Step 4: Configure Managed Identity and Permissions (CLI)
+### Step 5: Configure Managed Identity and Permissions (CLI)
 
-#### Enable System-Assigned Managed Identity
+**🎯 IMPORTANT: Use Existing User-Assigned Managed Identity**
+
+#### **Option A: Use Existing User-Assigned Identity (Recommended)**
+
 ```powershell
+# Find existing user-assigned managed identity from your cATO deployment
+$existingIdentityId = az identity list `
+  --resource-group $resourceGroupName `
+  --query "[?contains(name, 'cato') || contains(name, 'id-')].id" -o tsv
+
+# Display found identities for verification
+az identity list `
+  --resource-group $resourceGroupName `
+  --query "[].{Name:name, ResourceId:id, PrincipalId:principalId}" -o table
+
+# Assign existing user-assigned identity to Function App
+az functionapp identity assign `
+  --name $functionAppName `
+  --resource-group $resourceGroupName `
+  --identities $existingIdentityId
+
+# Get the principal ID of the existing identity for any additional role assignments
+$principalId = az identity show `
+  --ids $existingIdentityId `
+  --query principalId -o tsv
+
+Write-Host "Using existing managed identity with Principal ID: $principalId"
+```
+
+#### **Option B: System-Assigned Identity (Fallback)**
+
+Only use if you cannot find the existing user-assigned identity:
+
+```powershell
+# Enable System-Assigned Managed Identity
 az functionapp identity assign `
   --name $functionAppName `
   --resource-group $resourceGroupName
-```
 
-#### Assign Required Azure Roles
-```powershell
 # Get Function App's managed identity
 $principalId = az functionapp identity show `
   --name $functionAppName `
@@ -147,7 +207,7 @@ az role assignment create `
   --scope "/subscriptions/$subscriptionId"
 ```
 
-### Step 5: Configure Function Triggers (CLI)
+### Step 6: Configure Function Triggers (CLI)
 
 #### Timer Function Configuration
 ```powershell
@@ -163,7 +223,7 @@ az role assignment create `
 # HTTP Methods: POST, GET (configurable)
 ```
 
-### Step 6: Test the Functions (CLI)
+### Step 7: Test the Functions (CLI)
 
 #### Test Timer Function
 ```powershell
@@ -226,8 +286,25 @@ Invoke-RestMethod -Uri $functionUrl -Method POST
    - **If Premium Plan**: Instance Size: EP1 (1 vCore, 3.5GB RAM) - optimal for cATO workloads
    - **Storage Account**: Create new or use existing
 
-5. **Review and Create**
-   - Review all settings
+5. **Configure Authentication** ⭐ **IMPORTANT**
+   ```
+   🔐 **Resource Authentication Settings:**
+   
+   Resource | Current Default | Recommended | Action Required
+   ---------|----------------|-------------|----------------
+   Host Storage (AzureWebJobsStorage) | Secrets | **Managed Identity** | ✅ Change dropdown
+   Deployment Storage | Secrets | **Managed Identity** | ✅ Change dropdown
+   ```
+   
+   **⚠️ Azure Portal Instructions:**
+   - On the **"Authentication"** tab, you'll see resource authentication options
+   - **Change BOTH dropdowns** from "Secrets" to "Managed Identity"
+   - This eliminates stored connection strings and enhances security
+   - Azure message: *"For best security practice, use managed identity authentication when available"*
+
+6. **Review and Create**
+   - ✅ **Verify Authentication tab shows "Managed Identity" for both storage resources**
+   - Review all other settings
    - Click **"Create"** and wait for deployment
 
 ### Step 2: Configure Function App Settings via Portal
@@ -298,30 +375,71 @@ Invoke-RestMethod -Uri $functionUrl -Method POST
 
 ### Step 4: Configure Managed Identity via Portal
 
+**🎯 IMPORTANT: Use Existing User-Assigned Managed Identity**
+
+Your cATO application already has a User-Assigned Managed Identity from the original deployment. You should use this existing identity rather than creating a new system-assigned identity.
+
+#### **Option A: Use Existing User-Assigned Identity (Recommended)**
+
+1. **Find Your Existing User-Assigned Identity**
+   - Navigate to **Resource Groups** → Your cATO Resource Group
+   - Look for a resource with type **"Managed Identity"**
+   - Name will be similar to: `id-cato-production` or `cato-app-identity`
+   - Note the **Resource ID** and **Client ID**
+
+2. **Assign User-Assigned Identity to Function App**
+   - In your Function App, select **"Identity"** from the Settings section
+   - Click the **"User assigned"** tab
+   - Click **"Add"**
+   - Select your subscription and the existing managed identity
+   - Click **"Add"** to assign it
+
+3. **Verify Permissions**
+   - The existing identity should already have required roles:
+     - Security Reader (for Azure Security Center)
+     - Policy Insights Data Writer (for Azure Policy)
+     - Monitoring Reader (for Azure Monitor)
+   - If missing, assign additional roles as needed
+
+#### **Option B: System-Assigned Identity (Alternative)**
+
+Only use this if you cannot locate the existing user-assigned identity:
+
 1. **Enable System-Assigned Managed Identity**
    - In your Function App, select **"Identity"** from the Settings section
    - Under **"System assigned"** tab, toggle **"Status"** to **"On"**
    - Click **"Save"** and confirm the action
    - Note the **Object (principal) ID** for role assignments
 
-2. **Assign Azure Roles**
+2. **Assign Azure Roles** (if using system-assigned)
    - Navigate to your **Subscription** or **Resource Group**
    - Select **"Access control (IAM)"**
    - Click **"Add"** → **"Add role assignment"**
    
-   **Assign Security Reader Role:**
-   - **Role**: Security Reader
-   - **Assign access to**: Managed identity
-   - **Subscription**: Your subscription
-   - **Managed identity**: Function App
-   - **Select**: Your Function App name
-   - Click **"Save"**
+   **Assign Required Roles:**
+   - **Security Reader**: For reading Azure security policies
+   - **Policy Insights Data Writer**: For writing compliance data  
+   - **Monitoring Reader**: For accessing Azure Monitor data
 
-   **Assign Policy Insights Data Writer Role:**
-   - Repeat above steps with **Role**: Policy Insights Data Writer
+#### **CLI Commands for User-Assigned Identity:**
 
-   **Assign Monitoring Reader Role:**
-   - Repeat above steps with **Role**: Monitoring Reader
+```powershell
+# Find existing user-assigned managed identity
+$existingIdentityId = az identity list `
+  --resource-group $resourceGroupName `
+  --query "[?contains(name, 'cato')].id" -o tsv
+
+# Assign existing user-assigned identity to Function App
+az functionapp identity assign `
+  --name $functionAppName `
+  --resource-group $resourceGroupName `
+  --identities $existingIdentityId
+
+# Get the principal ID of the existing identity for role assignments
+$principalId = az identity show `
+  --ids $existingIdentityId `
+  --query principalId -o tsv
+```
 
 ### Step 5: Create Functions via Portal
 
@@ -617,6 +735,46 @@ This section provides detailed guidance for all Azure Function App configuration
    ```
 
 ### **🔐 Authentication & Authorization**
+
+#### Portal Authentication Tab Configuration
+When creating your Function App in the Azure Portal, you'll encounter the **"Authentication"** tab as shown in the screenshot. This tab is crucial for security configuration:
+
+**Resource Authentication Settings:**
+```
+📋 **Authentication Tab Configuration:**
+
+Resource Type | Default Setting | Recommended Setting | Security Impact
+--------------|----------------|-------------------|----------------
+Host Storage (AzureWebJobsStorage) | Secrets | **Managed Identity** ⭐ | Eliminates connection strings
+Deployment Storage | Secrets | **Managed Identity** ⭐ | Enhanced security for deployments
+```
+
+**Step-by-Step Configuration:**
+1. **Navigate to Authentication Tab**
+   - During Function App creation, click the **"Authentication"** tab
+   - You'll see "Resource authentication" section
+
+2. **Configure Host Storage**
+   - **Resource**: Host storage (AzureWebJobsStorage)
+   - **Name**: Will show your storage account name (e.g., `ampeeastusdevrg0f2e`)
+   - **Authentication type**: Change dropdown from "Secrets" to **"Managed Identity"**
+   - **Minimum roles required**: Automatically configured
+
+3. **Configure Deployment Storage**
+   - **Resource**: Deployment storage
+   - **Name**: Will show deployment package name (e.g., `app-package-func-cato-datasync-portal-23c9c9e`)
+   - **Authentication type**: Change dropdown from "Secrets" to **"Managed Identity"**
+   - **Minimum roles required**: N/A (automatically handled)
+
+4. **Security Benefits**
+   ```
+   ✅ **Managed Identity Advantages:**
+   - No connection strings stored in configuration
+   - Automatic credential rotation by Azure
+   - Enhanced audit trail through Azure AD
+   - Compliance with government security standards
+   - Reduced credential theft attack surface
+   ```
 
 #### Managed Identity Configuration
 1. **System-Assigned Identity**
