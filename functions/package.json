@@ -1,0 +1,18 @@
+{
+  "name": "cato-azure-functions",
+  "version": "1.0.0",
+  "description": "Azure Functions for cATO compliance data synchronization",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "func azure functionapp publish func-cato-datasync-portal"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.5.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
