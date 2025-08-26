@@ -10,7 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { Shield, Eye, FileText, AlertTriangle, Filter, X, ArrowLeft, Cloud, CloudSun, CheckCircle, AlertCircle, XCircle } from "lucide-react";
 import { useNavigationContext, filterUtils } from '@/services/navigationService';
 import { useNavigate } from 'react-router-dom';
-import { nistControlsEnhanced, NISTControl } from '@/data/nistControlsEnhanced.ts';
+import { NISTControl } from '@/data/nistControlsEnhanced.ts';
+import { useEnhancedControlsData } from '@/hooks/useEnhancedControlsData';
 
 // Calculate control families from the actual data
 const controlFamilies: { [key: string]: string } = {
@@ -36,15 +37,6 @@ const controlFamilies: { [key: string]: string } = {
   'SR': 'Supply Chain Risk Management'
 };
 
-// Calculate overall metrics
-const overallMetrics = {
-  total: nistControlsEnhanced.length,
-  compliant: nistControlsEnhanced.filter(c => c.status === 'compliant').length,
-  partial: nistControlsEnhanced.filter(c => c.status === 'partial').length,
-  noncompliant: nistControlsEnhanced.filter(c => c.status === 'noncompliant').length,
-  compliancePercentage: Math.round((nistControlsEnhanced.filter(c => c.status === 'compliant').length / nistControlsEnhanced.length) * 100)
-};
-
 export default function NistControls() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFamily, setSelectedFamily] = useState("");
@@ -56,12 +48,16 @@ export default function NistControls() {
   const { getContext, clearContext } = useNavigationContext();
   const navigate = useNavigate();
 
+  // Use enhanced controls data with Azure shared responsibility assessment
+  const { controls: enhancedControls, loading, getComplianceMetrics } = useEnhancedControlsData();
+  const overallMetrics = getComplianceMetrics();
+
   // Get navigation context
   const navigationContext = getContext();
 
-  // Calculate family statistics from real data
+  // Calculate family statistics from enhanced data
   const familyStats = Object.entries(controlFamilies).map(([code, name]) => {
-    const familyControls = nistControlsEnhanced.filter(c => c.controlFamily === name);
+    const familyControls = enhancedControls.filter(c => c.controlFamily === name);
     return {
       id: code,
       name,
@@ -74,6 +70,14 @@ export default function NistControls() {
   });
 
   const stats = overallMetrics;
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-lg">Loading enhanced controls data...</div>
+      </div>
+    );
+  }
 
   // Filter logic
   const getFilteredFamilies = () => {
@@ -523,19 +527,19 @@ export default function NistControls() {
               {statusModalType === 'compliant' && (
                 <>
                   <CheckCircle className="h-5 w-5 text-green-600" />
-                  Compliant Controls ({nistControlsEnhanced.filter(c => c.status === 'compliant').length})
+                  Compliant Controls ({enhancedControls.filter(c => c.status === 'compliant').length})
                 </>
               )}
               {statusModalType === 'partial' && (
                 <>
                   <AlertCircle className="h-5 w-5 text-yellow-600" />
-                  Partially Compliant Controls ({nistControlsEnhanced.filter(c => c.status === 'partial').length})
+                  Partially Compliant Controls ({enhancedControls.filter(c => c.status === 'partial').length})
                 </>
               )}
               {statusModalType === 'noncompliant' && (
                 <>
                   <XCircle className="h-5 w-5 text-red-600" />
-                  Non-Compliant Controls ({nistControlsEnhanced.filter(c => c.status === 'noncompliant').length})
+                  Non-Compliant Controls ({enhancedControls.filter(c => c.status === 'noncompliant').length})
                 </>
               )}
             </DialogTitle>
@@ -545,7 +549,7 @@ export default function NistControls() {
           </DialogHeader>
           <ScrollArea className="h-[500px]">
             <div className="space-y-4">
-              {statusModalType && nistControlsEnhanced
+              {statusModalType && enhancedControls
                 .filter(control => control.status === statusModalType)
                 .map((control) => (
                   <Card key={control.controlIdentifier} className="p-4">

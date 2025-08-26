@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { NotificationsButton } from "@/components/NotificationsButton";
+import { NotificationCenter } from "@/components/NotificationCenter";
 import { ClassificationBadges } from "@/components/ClassificationBadges";
 import { useAuth } from "../contexts/SimpleAuthContext";
 import { useTheme } from "next-themes";
@@ -83,7 +83,7 @@ export function Header() {
             <Shield className="h-8 w-8 text-primary" />
             <div>
               <h1 className="text-xl font-bold text-foreground">cATO Dashboard</h1>
-              <p className="text-sm text-muted-foreground">Continuous Authority to Operate</p>
+              <p className="text-sm text-muted-foreground">Continuous Authority to Operate - Enhanced v2.0</p>
             </div>
           </div>
           <ClassificationBadges />
@@ -101,8 +101,13 @@ export function Header() {
         </div>
         
         <div className="flex items-center space-x-3">
+          {/* Test indicator - Enhanced Features Active */}
+          <div className="bg-green-500 text-white px-2 py-1 rounded text-xs font-bold">
+            ENHANCED v2.0
+          </div>
+          
           {/* Notifications */}
-          <NotificationsButton />
+          <NotificationCenter />
 
           {/* Settings Dialog */}
           <Dialog>

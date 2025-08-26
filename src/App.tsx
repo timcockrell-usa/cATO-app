@@ -11,7 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import NistControls from "./pages/NistControls";
 import ZeroTrust from "./pages/ZeroTrust";
 import ExecutionEnablers from "./pages/ExecutionEnablers";
-import PoamManagement from "./pages/PoamManagement";
+import POAMs from "./pages/POAMs";
 import ExportPackage from "./pages/ExportPackage";
 import ContinuousMonitoring from "./pages/ContinuousMonitoring";
 import FrameworkUpgrade from "./pages/FrameworkUpgrade";
@@ -77,7 +77,7 @@ const App = () => (
               <Route path="/poam" element={
                 <ProtectedRoute>
                   <Layout>
-                    <PoamManagement />
+                    <POAMs />
                   </Layout>
                 </ProtectedRoute>
               } />
