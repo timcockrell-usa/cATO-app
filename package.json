@@ -23,7 +23,8 @@
     "local-setup": "echo 'Setting up local development...' && npm install && echo 'Copy .env.local.example to .env.local and configure your values'",
     "setup": "echo 'Use Azure CLI deployment - see DEPLOYMENT_GUIDE.md'",
     "deploy": "echo 'Use Azure CLI deployment - see DEPLOYMENT_GUIDE.md'",
-    "install:clean": "rm -rf node_modules package-lock.json && npm install"
+    "install:clean": "rm -rf node_modules package-lock.json && npm install",
+    "update-azure-coverage": "node scripts/update-azure-coverage.cjs"
   },
   "dependencies": {
     "@azure/arm-compute": "^21.0.0",

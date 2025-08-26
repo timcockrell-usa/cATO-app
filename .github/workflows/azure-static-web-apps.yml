@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
       
       - name: Install dependencies
@@ -33,6 +33,8 @@ jobs:
         run: npm run build
         env:
           VITE_ENVIRONMENT: IL2
+          VITE_AZURE_FUNCTIONS_ENDPOINT: ${{ secrets.AZURE_FUNCTIONS_ENDPOINT }}
+          VITE_AZURE_FUNCTIONS_KEY: ${{ secrets.AZURE_FUNCTIONS_KEY }}
           # Add other environment variables as needed
       
       - name: Build And Deploy
@@ -45,7 +47,7 @@ jobs:
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/" # App source code path
-          api_location: "" # Api source code path - optional
+          api_location: "functions" # Api source code path - Azure Functions integration
           output_location: "dist" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
 

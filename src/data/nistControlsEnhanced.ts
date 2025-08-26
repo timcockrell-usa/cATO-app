@@ -21,6 +21,11 @@ export interface NISTControl {
   evidence: any[];
   riskLevel: 'low' | 'medium' | 'high';
   poamItems: any[];
+  // Azure Cloud Provider Coverage
+  providerCovered?: boolean;
+  providerCoverageType?: 'Full' | 'Partial' | 'None';
+  azureInherited?: boolean;
+  azureSharedResponsibility?: boolean;
 }
 
 export const nistControlsEnhanced: NISTControl[] = [
@@ -42,7 +47,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AC-2",
@@ -62,7 +71,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(1)",
@@ -82,7 +95,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "medium",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(2)",
@@ -102,7 +119,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(3)",
@@ -122,7 +143,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(4)",
@@ -142,7 +167,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "medium",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(5)",
@@ -162,7 +191,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(6)",
@@ -182,7 +215,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(7)",
@@ -202,7 +239,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(8)",
@@ -222,7 +263,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "medium",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(9)",
@@ -242,7 +287,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(10)",
@@ -262,7 +311,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "medium",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-2(11)",
@@ -342,7 +395,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-3(1)",
@@ -382,7 +439,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-4(1)",
@@ -422,7 +483,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AC-6",
@@ -442,7 +507,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-6(1)",
@@ -462,7 +531,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-6(2)",
@@ -482,7 +555,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AC-6(3)",
@@ -522,7 +599,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-7(2)",
@@ -582,7 +663,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AC-9",
@@ -622,7 +707,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-11",
@@ -642,7 +731,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-12",
@@ -662,7 +755,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-12(1)",
@@ -742,7 +839,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AC-17",
@@ -762,7 +863,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-17(1)",
@@ -782,7 +887,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-17(2)",
@@ -802,7 +911,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-17(3)",
@@ -822,7 +935,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AC-18",
@@ -842,7 +959,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AC-18(1)",
@@ -882,7 +1003,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AC-20",
@@ -902,7 +1027,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AC-21",
@@ -1062,7 +1191,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AT-2",
@@ -1082,7 +1215,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AT-3",
@@ -1102,7 +1239,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AT-4",
@@ -1122,7 +1263,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AU-1",
@@ -1142,7 +1287,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "AU-2",
@@ -1162,7 +1311,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AU-3",
@@ -1182,7 +1335,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AU-3(1)",
@@ -1202,7 +1359,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AU-4",
@@ -1222,7 +1383,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AU-5",
@@ -1242,7 +1407,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "AU-5(2)",
@@ -1282,7 +1451,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "medium",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CA-1",
@@ -1302,7 +1475,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CA-2",
@@ -1322,7 +1499,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CA-2(1)",
@@ -1362,7 +1543,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CA-3(1)",
@@ -1422,7 +1607,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CA-6",
@@ -1442,7 +1631,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CA-7",
@@ -1462,7 +1655,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CA-8",
@@ -1502,7 +1699,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CM-2",
@@ -1522,7 +1723,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CM-3",
@@ -1542,7 +1747,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CM-4",
@@ -1562,7 +1771,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CM-5",
@@ -1582,7 +1795,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CM-6",
@@ -1602,7 +1819,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CM-7",
@@ -1622,7 +1843,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CM-8",
@@ -1642,7 +1867,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CM-8(1)",
@@ -1662,7 +1891,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CM-9",
@@ -1682,7 +1915,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CM-10",
@@ -1702,7 +1939,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CM-11",
@@ -1722,7 +1963,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CP-1",
@@ -1742,7 +1987,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CP-2",
@@ -1762,7 +2011,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CP-2(1)",
@@ -1842,7 +2095,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CP-4",
@@ -1862,7 +2119,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "CP-6",
@@ -1882,7 +2143,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CP-7",
@@ -1902,7 +2167,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CP-7(4)",
@@ -1942,7 +2211,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "CP-9",
@@ -1962,7 +2235,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-1",
@@ -1982,7 +2259,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "IA-2",
@@ -2002,7 +2283,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-2(1)",
@@ -2022,7 +2307,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-2(2)",
@@ -2042,7 +2331,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-2(3)",
@@ -2062,7 +2355,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-3",
@@ -2082,7 +2379,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-4",
@@ -2102,7 +2403,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-4(1)",
@@ -2182,7 +2487,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-5(1)",
@@ -2202,7 +2511,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-5(2)",
@@ -2222,7 +2535,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-6",
@@ -2242,7 +2559,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-7",
@@ -2262,7 +2583,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "IA-8",
@@ -2282,7 +2607,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IA-9",
@@ -2342,7 +2671,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "IR-2",
@@ -2362,7 +2695,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "IR-2(1)",
@@ -2402,7 +2739,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "IR-4",
@@ -2422,7 +2763,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IR-5",
@@ -2442,7 +2787,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IR-6",
@@ -2462,7 +2811,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "IR-7",
@@ -2482,7 +2835,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "IR-8",
@@ -2502,7 +2859,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "IR-8(1)",
@@ -2542,7 +2903,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MA-2",
@@ -2562,7 +2927,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MA-3",
@@ -2582,7 +2951,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MA-4",
@@ -2602,7 +2975,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MA-5",
@@ -2622,7 +2999,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MA-6",
@@ -2642,7 +3023,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MA-7",
@@ -2702,7 +3087,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MP-2",
@@ -2722,7 +3111,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MP-3",
@@ -2742,7 +3135,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MP-4",
@@ -2762,7 +3159,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MP-5",
@@ -2782,7 +3183,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MP-6",
@@ -2802,7 +3207,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "MP-6(1)",
@@ -2862,7 +3271,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PE-2",
@@ -2882,7 +3295,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "PE-3",
@@ -2902,7 +3319,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "PE-4",
@@ -2922,7 +3343,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PE-5",
@@ -2942,7 +3367,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PE-6",
@@ -2962,7 +3391,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "PE-8",
@@ -2982,7 +3415,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "PE-9",
@@ -3002,7 +3439,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PE-11",
@@ -3022,7 +3463,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PE-12",
@@ -3042,7 +3487,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PE-13",
@@ -3062,7 +3511,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PE-14",
@@ -3082,7 +3535,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PE-15",
@@ -3102,7 +3559,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PE-16",
@@ -3122,7 +3583,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PL-1",
@@ -3142,7 +3607,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PL-2",
@@ -3162,7 +3631,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PL-4",
@@ -3182,7 +3655,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-1",
@@ -3202,7 +3679,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-2",
@@ -3222,7 +3703,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-3",
@@ -3242,7 +3727,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-4",
@@ -3262,7 +3751,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-5",
@@ -3282,7 +3775,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-6",
@@ -3302,7 +3799,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-7",
@@ -3322,7 +3823,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "medium",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-8",
@@ -3342,7 +3847,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-9",
@@ -3362,7 +3871,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-10",
@@ -3382,7 +3895,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-11",
@@ -3402,7 +3919,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "medium",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PM-12",
@@ -3422,7 +3943,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PS-1",
@@ -3442,7 +3967,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PS-2",
@@ -3462,7 +3991,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "PS-3",
@@ -3482,7 +4015,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PS-3(2)",
@@ -3502,7 +4039,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PS-4",
@@ -3522,7 +4063,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "PS-5",
@@ -3542,7 +4087,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "PS-6",
@@ -3562,7 +4111,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "PS-7",
@@ -3582,7 +4135,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "PS-8",
@@ -3602,7 +4159,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "RA-1",
@@ -3622,7 +4183,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "RA-2",
@@ -3642,7 +4207,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "RA-2(1)",
@@ -3662,7 +4231,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "RA-3",
@@ -3682,7 +4255,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "RA-5",
@@ -3702,7 +4279,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "RA-5(1)",
@@ -3722,7 +4303,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "RA-5(2)",
@@ -3742,7 +4327,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "RA-5(3)",
@@ -3762,7 +4351,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "RA-5(4)",
@@ -3782,7 +4375,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "RA-6",
@@ -3802,7 +4399,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SA-1",
@@ -3822,7 +4423,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SA-2",
@@ -3842,7 +4447,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SA-3",
@@ -3862,7 +4471,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SA-4",
@@ -3882,7 +4495,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SA-4(1)",
@@ -3902,7 +4519,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SA-4(2)",
@@ -3922,7 +4543,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SA-4(3)",
@@ -3942,7 +4567,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SA-5",
@@ -3962,7 +4591,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SA-5(1)",
@@ -3982,7 +4615,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SA-6",
@@ -4002,7 +4639,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SA-7",
@@ -4022,7 +4663,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SA-8",
@@ -4262,7 +4907,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SC-2",
@@ -4282,7 +4931,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-3",
@@ -4302,7 +4955,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-4",
@@ -4322,7 +4979,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-5",
@@ -4342,7 +5003,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SC-7",
@@ -4362,7 +5027,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-7(1)",
@@ -4382,7 +5051,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-7(2)",
@@ -4422,7 +5095,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-7(4)",
@@ -4522,7 +5199,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SC-8(1)",
@@ -4542,7 +5223,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SC-8(3)",
@@ -4602,7 +5287,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-12(1)",
@@ -4662,7 +5351,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SC-13(1)",
@@ -4682,7 +5375,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SC-17",
@@ -4702,7 +5399,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-17(1)",
@@ -4742,7 +5443,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SC-19",
@@ -4762,7 +5467,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SC-20",
@@ -4782,7 +5491,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-21",
@@ -4802,7 +5515,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-22",
@@ -4822,7 +5539,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-23",
@@ -4842,7 +5563,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SC-24",
@@ -4902,7 +5627,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Full",
+    "azureInherited": true,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SI-1",
@@ -4922,7 +5651,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SI-2",
@@ -4942,7 +5675,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SI-3",
@@ -4962,7 +5699,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SI-3(1)",
@@ -5002,7 +5743,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   },
   {
     "id": "SI-4(1)",
@@ -5082,7 +5827,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SI-5(3)",
@@ -5122,7 +5871,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SI-8",
@@ -5142,7 +5895,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SI-8(1)",
@@ -5202,7 +5959,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": false,
+    "providerCoverageType": "None",
+    "azureInherited": false,
+    "azureSharedResponsibility": false
   },
   {
     "id": "SI-16",
@@ -5222,7 +5983,11 @@ export const nistControlsEnhanced: NISTControl[] = [
     "assessedBy": "CSV Import",
     "evidence": [],
     "riskLevel": "low",
-    "poamItems": []
+    "poamItems": [],
+    "providerCovered": true,
+    "providerCoverageType": "Partial",
+    "azureInherited": false,
+    "azureSharedResponsibility": true
   }
 ];
 

@@ -1,0 +1,241 @@
+Control Identifier,Control Name,Azure Covered?,Coverage Type
+AC-1,Policy and Procedures,No,
+AC-2,Account Management,Yes,Partially
+AC-2(1),Automated System Account Management,Yes,Partially
+AC-2(2),Automated Temporary and Emergency Accounts,Yes,Partially
+AC-2(3),Disable Accounts,Yes,Partially
+AC-2(4),Automated Audit Actions,Yes,Partially
+AC-2(5),Inactivity Logout,Yes,Partially
+AC-2(6),Dynamic Privileges,Yes,Partially
+AC-2(7),Privileged User Accounts,Yes,Partially
+AC-2(8),Shared / Group Accounts,Yes,Partially
+AC-2(9),Concurrent Session Control,Yes,Partially
+AC-2(10),Unsuccessful Logon Attempts,Yes,Partially
+AC-3,Access Enforcement,Yes,Partially
+AC-3(3),Unauthorized Access Use Notification,No,
+AC-4,Information Flow Enforcement,Yes,Partially
+AC-5,Separation of Duties,No,
+AC-6,Least Privilege,Yes,Partially
+AC-6(1),Authorizations,Yes,Partially
+AC-6(2),Non-privileged Access for Nonsecurity Functions,No,
+AC-6(5),Privileged Accounts,Yes,Partially
+AC-6(9),Auditing Use of Privileged Functions,Yes,Partially
+AC-6(10),Prohibit Non-privileged Users from Executing Privileged Functions,Yes,Partially
+AC-7,Unsuccessful Logon Attempts,Yes,Partially
+AC-8,System Use Notification,No,
+AC-10,Concurrent Session Control,Yes,Partially
+AC-11,Session Lock,Yes,Partially
+AC-12,Session Termination,Yes,Partially
+AC-14,Permitted Actions without Identification or Authentication,No,
+AC-17,Remote Access,Yes,Partially
+AC-17(1),Managed Access Control Points,Yes,Partially
+AC-17(2),Protection of Remote Access Sessions,Yes,Partially
+AC-17(3),Managed External Connections,Yes,Partially
+AC-18,Wireless Access,No,
+AC-19,Access Control for Mobile Devices,No,
+AC-19(5),Full Device/Container-based Encryption,No,
+AC-20,Use of External Information Systems,No,
+AC-20(1),Limits on Authorized Use,No,
+AC-20(2),Portable Storage Devices,No,
+AC-20(3),Non-Organizationally Owned Systems (Risk Considerations),No,
+AT-1,Security Awareness and Training Policy and Procedures,No,
+AT-2,Security Awareness Training,No,
+AT-3,Role-Based Training,No,
+AT-4,Training Records,No,
+AU-1,Audit and Accountability Policy and Procedures,No,
+AU-2,Event Logging,Yes,Partially
+AU-2(1),System-Wide Event Logging,Yes,Partially
+AU-3,Content of Audit Records,Yes,Partially
+AU-3(1),Additional Audit Information,Yes,Partially
+AU-4,Audit Log Storage Capacity,Yes,Partially
+AU-5,Response to Audit Logging Process Failures,Yes,Partially
+AU-6,Audit Review, Analysis, and Reporting,Yes,Partially
+AU-6(1),Automated Audit Analysis and Reporting,Yes,Partially
+AU-6(3),Correlation with Physical Monitoring,Yes,Partially
+AU-7,Audit Reduction and Report Generation,Yes,Partially
+AU-8,Time Stamps,Yes,Partially
+AU-8(1),Synchronization with Authoritative Time Source,Yes,Partially
+AU-9,Protection of Audit Information,Yes,Partially
+AU-9(2),Audit Backup on Separate Physical Systems,Yes,Partially
+AU-9(4),Access by Subset of Privileged Users,Yes,Partially
+AU-11,Audit Record Retention,Yes,Partially
+AU-12,Audit Generation,Yes,Partially
+CA-1,Security Assessment and Authorization Policies and Procedures,No,
+CA-2,Security Assessments,Yes,Partially
+CA-3,System Interconnections,No,
+CA-5,Plan of Action and Milestones,No,
+CA-6,Authorization,Yes,Partially
+CA-7,Continuous Monitoring,Yes,Partially
+CA-9,Internal System Connections,No,
+CM-1,Configuration Management Policy and Procedures,No,
+CM-2,Baseline Configuration,Yes,Partially
+CM-2(1),Reviews and Updates,Yes,Partially
+CM-3,Configuration Change Control,Yes,Partially
+CM-3(2),Automated Change Implementation,Yes,Partially
+CM-4,Impact Analyses,No,
+CM-5,Access Restrictions for Change,Yes,Partially
+CM-6,Configuration Settings,Yes,Partially
+CM-7,Least Functionality,Yes,Partially
+CM-7(1),Periodic Review,Yes,Partially
+CM-7(2),Prevent Program Execution,Yes,Partially
+CM-8,System Component Inventory,Yes,Partially
+CM-8(1),Updates During Installations/Removals,Yes,Partially
+CM-8(3),Automated Unauthorized Component Detection,Yes,Partially
+CM-9,Configuration Management Plan,No,
+CM-10,Software Usage Restrictions,No,
+CM-11,User-Installed Software,Yes,Partially
+CP-1,Contingency Planning Policy and Procedures,No,
+CP-2,Contingency Plan,No,
+CP-3,Contingency Training,No,
+CP-4,Contingency Plan Testing,No,
+CP-6,Alternate Storage Site,Yes,Partially
+CP-7,Alternate Processing Site,Yes,Partially
+CP-8,Telecommunications Services,Yes,Partially
+CP-9,Information System Backup,Yes,Partially
+CP-10,Information System Recovery and Reconstitution,Yes,Partially
+IA-1,Identification and Authentication Policy and Procedures,No,
+IA-2,Identification and Authentication (Organizational Users),Yes,Partially
+IA-2(1),Network Access to Privileged Accounts,Yes,Partially
+IA-2(2),Network Access to Non-Privileged Accounts,Yes,Partially
+IA-2(3),Local Access to Privileged Accounts,Yes,Partially
+IA-2(8),Access to Accounts,Yes,Partially
+IA-3,Device Identification and Authentication,Yes,Partially
+IA-4,Identifier Management,Yes,Partially
+IA-5,Authenticator Management,Yes,Partially
+IA-5(1),Password-Based Authentication,Yes,Partially
+IA-5(2),PKI-Based Authentication,Yes,Partially
+IA-5(7),No Embedded Unencrypted Static Authenticators,Yes,Partially
+IA-5(13),Expiring Authenticators,Yes,Partially
+IA-6,Authenticator Feedback,Yes,Partially
+IA-7,Cryptographic Module Authentication,Yes,Fully
+IA-8,Identification and Authentication (Non-Organizational Users),Yes,Partially
+IA-8(1),Acceptance of Third-party Credentials,Yes,Partially
+IA-8(3),Dynamic Identity Proofing,No,
+IA-8(4),Identity Proofing Documents,No,
+IA-8(5),Derived Credentials,Yes,Partially
+IA-8(6),Cryptographic Bidirectional Authentication,Yes,Partially
+IA-11,Re-authentication,Yes,Partially
+IR-1,Incident Response Policy and Procedures,No,
+IR-2,Incident Response Training,No,
+IR-3,Incident Response Testing,No,
+IR-4,Incident Handling,Yes,Partially
+IR-4(1),Automated Incident Handling,Yes,Partially
+IR-5,Incident Monitoring,Yes,Partially
+IR-6,Incident Reporting,No,
+IR-7,Incident Response Assistance,Yes,Partially
+IR-8,Incident Response Plan,No,
+MA-1,System Maintenance Policy and Procedures,No,
+MA-2,Controlled Maintenance,Yes,Fully
+MA-3,Maintenance Tools,Yes,Fully
+MA-4,Non-Local Maintenance,Yes,Fully
+MA-4(1),Auditing and Monitoring Non-Local Maintenance,Yes,Fully
+MA-5,Maintenance Personnel,Yes,Fully
+MA-6,Timely Maintenance,Yes,Fully
+MP-1,Media Protection Policy and Procedures,No,
+MP-2,Media Access,Yes,Fully
+MP-3,Media Marking,No,
+MP-4,Media Storage,Yes,Fully
+MP-5,Media Transport,Yes,Fully
+MP-6,Media Sanitization,Yes,Fully
+MP-7,Media Use,No,
+PE-1,Physical and Environmental Protection Policy and Procedures,No,
+PE-2,Physical Access Authorizations,Yes,Partially
+PE-3,Physical Access Control,Yes,Partially
+PE-4,Access Control for Transmission Medium,Yes,Fully
+PE-5,Access Control for Output Devices,No,
+PE-6,Monitoring Physical Access,Yes,Partially
+PE-8,Visitor Controls,Yes,Partially
+PE-9,Power Equipment and Cabling,Yes,Fully
+PE-11,Emergency Power,Yes,Fully
+PE-12,Emergency Lighting,Yes,Fully
+PE-13,Fire Protection,Yes,Fully
+PE-14,Temperature and Humidity Controls,Yes,Fully
+PE-15,Water Damage Protection,Yes,Fully
+PE-16,Delivery and Removal,No,
+PL-1,Planning Policy and Procedures,No,
+PL-2,System Security Plan,No,
+PL-4,Rules of Behavior,No,
+PL-8,Security and Privacy Plans,No,
+PL-10,Baseline Selection,No,
+PL-11,Privacy Impact Assessment,No,
+PM-1,Information Security Program Plan,No,
+PM-2,Information Security Program Roles,No,
+PM-3,Information Security Program Strategy,No,
+PM-4,Plan of Action and Milestones Process,No,
+PM-5,System Inventory,No,
+PM-6,Information Security Measures of Performance,No,
+PM-7,Enterprise Architecture,No,
+PM-8,Critical Infrastructure Plan,No,
+PM-9,Risk Management Strategy,No,
+PM-10,Security and Privacy Resources,No,
+PM-11,Threat Awareness Program,No,
+PM-12,Insider Threat Program,No,
+PM-14,Testing, Training, and Monitoring,No,
+PM-16,Threat Hunting,No,
+PS-1,Personnel Security Policy and Procedures,No,
+PS-2,Position Risk Designation,Yes,Partially
+PS-3,Personnel Screening,No,
+PS-3(2),Personnel Screening | Reinvestigation,No,
+PS-4,Personnel Termination,Yes,Partially
+PS-5,Personnel Transfer,Yes,Partially
+PS-6,Access Agreements,No,
+PS-7,External Personnel Security,Yes,Partially
+PS-8,Personnel Sanctions,No,
+RA-1,Risk Assessment Policy and Procedures,No,
+RA-2,Risk Assessment,Yes,Partially
+RA-2(1),Risk Assessment | Update,Yes,Partially
+RA-3,Risk Assessment – Updates,No,
+RA-5,Vulnerability Monitoring and Scanning,Yes,Partially
+RA-5(1),Vulnerability Scanning | Unauthenticated Scans,Yes,Partially
+RA-5(2),Vulnerability Scanning | Authenticated Scans,Yes,Partially
+RA-5(3),Vulnerability Scanning | Analysis and Reporting,Yes,Partially
+RA-5(4),Vulnerability Scanning | Continuous Monitoring,Yes,Partially
+RA-6,Technical Surveillance Countermeasures,No,
+SA-1,System and Services Acquisition Policy and Procedures,No,
+SA-2,Allocation of Resources,No,
+SA-3,System Development Life Cycle,Yes,Partially
+SA-4,Acquisition Process,No,
+SA-4(1),Acquisition Process | Functional Properties of Controls,No,
+SA-4(2),Acquisition Process | External Information System Services,No,
+SA-4(3),Acquisition Process | Security Considerations for External Providers,Yes,Partially
+SA-5,System Documentation,No,
+SA-5(1),System Documentation | Functional Properties of Controls,No,
+SA-6,Software Usage Restrictions,No,
+SA-7,User-Installed Software,Yes,Partially
+SC-1,System and Communications Protection Policy and Procedures,No,
+SC-2,Application Partitioning,Yes,Partially
+SC-3,Security Function Isolation,Yes,Partially
+SC-4,Information in Shared Resources,Yes,Partially
+SC-5,Denial-of-Service Protection,Yes,Fully
+SC-7,Boundary Protection,Yes,Partially
+SC-7(1),Boundary Protection | Least Privilege,Yes,Partially
+SC-7(3),Boundary Protection | Access Points,Yes,Partially
+SC-8,Transmission Confidentiality and Integrity,Yes,Fully
+SC-8(1),Transmission Confidentiality and Integrity | Cryptographic Protection,Yes,Fully
+SC-10,Network Disconnect,Yes,Partially
+SC-12,Cryptographic Key Establishment and Management,Yes,Partially
+SC-13,Cryptographic Protection,Yes,Fully
+SC-13(1),Cryptographic Protection | FIPS-validated Cryptography,Yes,Fully
+SC-15,Collaborative Computing Devices,No,
+SC-17,Public Key Infrastructure Certificates,Yes,Partially
+SC-18,Mobile Code,No,
+SC-19,Voice Over Internet Protocol,No,
+SC-20,Secure Name / Address Resolution Service (Authoritative Source),Yes,Partially
+SC-21,Secure Name / Address Resolution Service (Recursive or Caching Resolver),Yes,Partially
+SC-22,Architecture and Provisioning for Name/Address Resolution Service,Yes,Partially
+SC-23,Session Authenticity,Yes,Partially
+SC-28,Protection of Information at Rest,Yes,Fully
+SC-28(1),Protection of Information at Rest | Cryptographic Protection,Yes,Fully
+SC-39,Supervision and Review—Industrial Control Systems,No,
+SI-1,System and Information Integrity Policy and Procedures,No,
+SI-2,Flaw Remediation,Yes,Partially
+SI-3,Malicious Code Protection,Yes,Partially
+SI-4,System Monitoring,Yes,Partially
+SI-4(14),System Monitoring | Integrated SIEM,Yes,Partially
+SI-5,Security Alerts, Advisories, and Directives,Yes,Partially
+SI-7,Software, Firmware and Information Integrity,Yes,Partially
+SI-7(8),Software, Firmware and Information Integrity | Auditing Detection Mechanisms,Yes,Partially
+SI-8,Spam Protection,No,
+SI-10,Information Input Validation,No,
+SI-12,Information Handling and Retention,No,
+SI-16,Memory Protection,Yes,Partially

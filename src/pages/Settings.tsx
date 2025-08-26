@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, Shield, Bell, Monitor, Database, Download, Trash2, Upload, Key, RefreshCw, FileText, Server } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useTheme } from "next-themes";
+import { azureFunctionsService } from '../services/azureFunctionsService';
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
@@ -34,8 +35,60 @@ export default function Settings() {
     connectionStatus: 'disconnected'
   });
 
+  const [azureFunctionsStatus, setAzureFunctionsStatus] = useState({
+    enabled: false,
+    healthy: false,
+    lastSync: null,
+    syncInProgress: false,
+    endpoint: '',
+    message: ''
+  });
+
   const [importing, setImporting] = useState(false);
   const [syncing, setSyncing] = useState(false);
+
+  // Check Azure Functions status on component mount
+  useEffect(() => {
+    checkAzureFunctionsStatus();
+  }, []);
+
+  const checkAzureFunctionsStatus = async () => {
+    try {
+      const isEnabled = azureFunctionsService.isEnabled();
+      setAzureFunctionsStatus(prev => ({
+        ...prev,
+        enabled: isEnabled,
+        endpoint: import.meta.env.VITE_AZURE_FUNCTIONS_ENDPOINT || 'Not configured'
+      }));
+
+      if (isEnabled) {
+        const healthCheck = await azureFunctionsService.healthCheck();
+        setAzureFunctionsStatus(prev => ({
+          ...prev,
+          healthy: healthCheck.healthy,
+          message: healthCheck.message
+        }));
+
+        // Get last sync info
+        try {
+          const status = await azureFunctionsService.getSyncStatus();
+          setAzureFunctionsStatus(prev => ({
+            ...prev,
+            lastSync: status.timestamp
+          }));
+        } catch (error) {
+          console.warn('Could not get sync status:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Azure Functions status check failed:', error);
+      setAzureFunctionsStatus(prev => ({
+        ...prev,
+        healthy: false,
+        message: `Status check failed: ${error.message}`
+      }));
+    }
+  };
 
   const handleSettingChange = (key: string, value: boolean | string) => {
     setSettings(prev => ({ ...prev, [key]: value }));
@@ -134,17 +187,45 @@ export default function Settings() {
   };
 
   const handleAzureDataSync = async () => {
+    if (!azureFunctionsService.isEnabled()) {
+      alert('Azure Functions integration is not configured. Please check your environment variables.');
+      return;
+    }
+
     setSyncing(true);
+    setAzureFunctionsStatus(prev => ({ ...prev, syncInProgress: true }));
+
     try {
-      console.log('Syncing Azure data...');
-      // This will call the Azure Function when implemented
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      alert('Azure data sync completed successfully!');
+      console.log('Triggering Azure Functions manual sync...');
+      
+      const response = await azureFunctionsService.triggerManualSync();
+      const result = azureFunctionsService.parseSyncResults(response);
+      
+      if (result.success) {
+        alert(`Azure data sync completed successfully!\n\n${result.summary}`);
+        setAzureFunctionsStatus(prev => ({
+          ...prev,
+          lastSync: new Date().toISOString(),
+          healthy: true,
+          message: 'Last sync completed successfully'
+        }));
+      } else {
+        alert(`Azure data sync failed:\n${result.summary}`);
+        setAzureFunctionsStatus(prev => ({
+          ...prev,
+          message: `Sync failed: ${result.summary}`
+        }));
+      }
     } catch (error) {
       console.error('Azure data sync failed:', error);
-      alert('Azure data sync failed. Please try again.');
+      alert(`Azure data sync failed: ${error.message}`);
+      setAzureFunctionsStatus(prev => ({
+        ...prev,
+        message: `Sync failed: ${error.message}`
+      }));
     } finally {
       setSyncing(false);
+      setAzureFunctionsStatus(prev => ({ ...prev, syncInProgress: false }));
     }
   };
 
@@ -510,31 +591,77 @@ export default function Settings() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="w-5 h-5" />
-              Azure Integration
+              Azure Functions Integration
+              <Badge variant={azureFunctionsStatus.enabled ? (azureFunctionsStatus.healthy ? "default" : "destructive") : "secondary"}>
+                {azureFunctionsStatus.enabled ? (azureFunctionsStatus.healthy ? "Connected" : "Error") : "Disabled"}
+              </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <p className="text-sm text-muted-foreground mb-4">
-                Automatically sync compliance data from Azure Policy and other Azure services
+                Automatically sync compliance data from Azure Policy, Security Center, and other Azure services
               </p>
+              
+              {/* Status Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Endpoint</Label>
+                  <p className="text-sm font-mono truncate">{azureFunctionsStatus.endpoint || 'Not configured'}</p>
+                </div>
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Last Sync</Label>
+                  <p className="text-sm">
+                    {azureFunctionsStatus.lastSync 
+                      ? new Date(azureFunctionsStatus.lastSync).toLocaleString()
+                      : 'Never'
+                    }
+                  </p>
+                </div>
+              </div>
+
+              {/* Status Message */}
+              {azureFunctionsStatus.message && (
+                <Alert className="mb-4">
+                  <Shield className="h-4 w-4" />
+                  <AlertDescription>
+                    {azureFunctionsStatus.message}
+                  </AlertDescription>
+                </Alert>
+              )}
+
               <div className="flex gap-3">
                 <Button 
                   onClick={handleAzureDataSync}
+                  disabled={syncing || azureFunctionsStatus.syncInProgress || !azureFunctionsStatus.enabled}
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${(syncing || azureFunctionsStatus.syncInProgress) ? 'animate-spin' : ''}`} />
+                  {syncing || azureFunctionsStatus.syncInProgress ? 'Syncing...' : 'Sync Azure Data'}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={checkAzureFunctionsStatus}
                   disabled={syncing}
                 >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
-                  {syncing ? 'Syncing...' : 'Sync Azure Data'}
+                  <Monitor className="w-4 h-4 mr-2" />
+                  Check Status
                 </Button>
                 <Button variant="outline">
                   <SettingsIcon className="w-4 h-4 mr-2" />
                   Configure Auto-Sync
                 </Button>
               </div>
+              
               <Alert className="mt-3">
                 <Database className="h-4 w-4" />
                 <AlertDescription>
-                  Azure Function integration will automatically pull compliance data from Azure Policy, Security Center, and other Azure services on a scheduled basis.
+                  Azure Functions integration provides automated synchronization of:
+                  <ul className="list-disc list-inside mt-2 space-y-1">
+                    <li>Azure Policy compliance states</li>
+                    <li>Security Center recommendations</li>
+                    <li>Compliance scores and assessments</li>
+                    <li>NIST control mappings</li>
+                  </ul>
                 </AlertDescription>
               </Alert>
             </div>

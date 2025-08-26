@@ -1,0 +1,56 @@
+{
+  "routes": [
+    {
+      "route": "/api/*",
+      "allowedRoles": ["authenticated"]
+    },
+    {
+      "route": "/login",
+      "rewrite": "/login"
+    },
+    {
+      "route": "/.auth/login/aad",
+      "statusCode": 301,
+      "redirect": "/"
+    }
+  ],
+  "responseOverrides": {
+    "401": {
+      "redirect": "/login",
+      "statusCode": 302
+    }
+  },
+  "globalHeaders": {
+    "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+  },
+  "mimeTypes": {
+    ".json": "text/json"
+  },
+  "auth": {
+    "rolesSource": "/api/GetRoles",
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "registration": {
+          "openIdIssuer": "https://login.microsoftonline.com/v2.0",
+          "clientIdSettingName": "AZURE_CLIENT_ID",
+          "clientSecretSettingName": "AZURE_CLIENT_SECRET"
+        },
+        "login": {
+          "loginParameters": [
+            "resource=https://graph.microsoft.com/"
+          ]
+        }
+      }
+    }
+  },
+  "networking": {
+    "allowedIpRanges": []
+  },
+  "forwardingGateway": {
+    "allowedForwardedHosts": [],
+    "requiredHeaders": {}
+  },
+  "platform": {
+    "apiRuntime": "node:18"
+  }
+}

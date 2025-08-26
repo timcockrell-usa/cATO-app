@@ -10,6 +10,7 @@ services:
     language: js
     host: staticwebapp
     dist: dist
+    api: functions
 
 infra:
   provider: bicep
